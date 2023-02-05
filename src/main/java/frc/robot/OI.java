@@ -35,7 +35,7 @@ class OI {
     public JoystickButton autoClimb;
     public Trigger shootLow;
     public JoystickButton shootHighFar;
-    public JoystickButton shootLaunchpad;lear
+    public JoystickButton shootLaunchpad;
     public Trigger abortVisionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
