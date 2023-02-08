@@ -151,7 +151,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Calculate wheel velocities and angles
         double a, b, c, d;
-
+        /* 
         a = this.xVelocity - rotationVelocity * wheelbase / 2;
         b = this.xVelocity + rotationVelocity * wheelbase / 2;
         c = this.yVelocity - rotationVelocity * trackWidth / 2;
@@ -167,7 +167,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         angles[1] = Math.atan2(b, d);
         angles[2] = Math.atan2(a, c);
         angles[3] = Math.atan2(a, d);
-
+        */
         if (!safetyDisable) {
             // if (Constants.REPORTING_DIAGNOSTICS) {
             // SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
