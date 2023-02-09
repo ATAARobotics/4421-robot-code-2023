@@ -112,6 +112,13 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
+                joysticks.intake.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
+                () -> 1,
+                joysticks::getRotationVelocity, () -> 1,
+                () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                joysticks::getYVelocity,
+                joysticks::getRotationVelocity, () -> 1,
+                () -> 1));
         }
 
         public OI getOI() {

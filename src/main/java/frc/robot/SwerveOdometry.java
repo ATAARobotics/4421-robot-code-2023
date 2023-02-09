@@ -9,7 +9,7 @@ public class SwerveOdometry {
     private Pose2d pose;
 
     //The last time the odometry was updated
-    private double lastUpdate = 0.0;
+    private double lastUpdate = -1.0;
 
     public SwerveOdometry(Pose2d initialPose) {
         
@@ -23,7 +23,12 @@ public class SwerveOdometry {
      */
     public Pose2d update(double xVelocity, double yVelocity, double currentAngle, double timestamp) {
         //Get the amount of time since the last update
-        double period = timestamp - lastUpdate;
+        double period;
+        if (lastUpdate >= 0) {
+            period = timestamp - lastUpdate;
+        } else {
+            period = 0.0;
+        }
 
         //Stores the current timestamp as the most recent update
         lastUpdate = timestamp;

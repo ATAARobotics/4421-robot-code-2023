@@ -68,6 +68,7 @@ class OI {
         abortAutoClimb = gunnerStick.getWPIJoystickButton("AbortAutoClimb");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         autoClimb = gunnerStick.getWPIJoystickButton("AutoClimb");
+        intake = driveStick.getWPIJoystickButton("Intake");
     }
 
     public int getElevatorDirection() {
