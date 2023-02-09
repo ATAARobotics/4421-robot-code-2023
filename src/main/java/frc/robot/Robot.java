@@ -1,11 +1,5 @@
 package frc.robot;
 
-<<<<<<< HEAD
-=======
-import java.util.List;
-
-
->>>>>>> b6e67774626d2e33a32a35b2129f984621e419ff
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,11 +13,7 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer = null;
 
-<<<<<<< HEAD
     private Command m_autonomousCommand = null;;
-=======
-    private Command m_autonomousCommand = null;
->>>>>>> b6e67774626d2e33a32a35b2129f984621e419ff
     //Auto selector on SmartDashboard
 
     public Robot() {
@@ -36,20 +26,11 @@ public class Robot extends TimedRobot {
 
         
     }
-<<<<<<< HEAD
-
-=======
-    // add path group
->>>>>>> b6e67774626d2e33a32a35b2129f984621e419ff
     
     @Override
     public void robotInit() {
         //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
         //auto.createPrograms();
-<<<<<<< HEAD
-
-=======
->>>>>>> b6e67774626d2e33a32a35b2129f984621e419ff
     }
 
     @Override
@@ -86,15 +67,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-<<<<<<< HEAD
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
         robotContainer.AutoInit(0);
         m_autonomousCommand.schedule();
     }
-=======
-        
-      }
->>>>>>> b6e67774626d2e33a32a35b2129f984621e419ff
 
     @Override
     public void autonomousPeriodic() {
@@ -105,21 +81,13 @@ public class Robot extends TimedRobot {
         if(!Constants.FIELD_ORIENTED){
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
         }
-<<<<<<< HEAD
         SmartDashboard.putString("Limelight State", "Messuring Not Started");
-=======
-
->>>>>>> b6e67774626d2e33a32a35b2129f984621e419ff
 
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;
         }
         robotContainer.getSwerveDriveSubsystem().setBrakes(true);
-<<<<<<< HEAD
-=======
-
->>>>>>> b6e67774626d2e33a32a35b2129f984621e419ff
     }
 
     @Override
