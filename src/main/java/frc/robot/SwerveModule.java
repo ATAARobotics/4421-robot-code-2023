@@ -187,7 +187,6 @@ public class SwerveModule {
         } else {
             reverseMultiplier = 1.0;
         }
-
         angleController.setSetpoint(angle);
     }
 

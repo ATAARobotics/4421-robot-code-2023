@@ -33,8 +33,8 @@ public class Constants {
     public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
 
     // Measurements are in meters
-    public static final double WHEELBASE = COMP_BOT ? 0.476: 0.476; 
-    public static final double TRACK_WIDTH = COMP_BOT ? 0.584: 0.584;
+    public static final double WHEELBASE = COMP_BOT ? 0.584: 0.584; 
+    public static final double TRACK_WIDTH = COMP_BOT ? 0.476: 0.476;
 
     // Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 2;
@@ -74,9 +74,12 @@ public class Constants {
     public static final int PIGEON_ID = 20;
 
     // CAN Legacy Device IDs
-    public static final int CLIMB_MOTOR_ID = 13;
-    public static final int MAIN_SHOOT_MOTOR_ID = 14;
-    public static final int SECONDARY_SHOOT_MOTOR_ID = 15;
+    public static final int PIVOT_MOTOR_ID = 13;
+    public static final int TELESCOPING_ARM_MOTOR_ID = 14;
+    public static final int INTAKE_MOTOR_ID = 15;
+
+    public static final int PIVOT_ENCODER_ID = 16;
+    public static final int TELESCOPING_ARM_ENCODER_ID = 17;
 
     /*
      * CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
