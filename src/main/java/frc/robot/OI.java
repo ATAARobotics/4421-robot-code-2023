@@ -128,9 +128,9 @@ class OI {
             rotationVelocity = 0;
         }
 
-        xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, Constants.JOYSTICK_SENSITIVITY));
-        yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, Constants.JOYSTICK_SENSITIVITY));
-        rotationVelocity = Math.signum(rotationVelocity)
+        xVelocity = -Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, Constants.JOYSTICK_SENSITIVITY));
+        yVelocity = -Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, Constants.JOYSTICK_SENSITIVITY));
+        rotationVelocity = -Math.signum(rotationVelocity)
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
         
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");

@@ -137,19 +137,20 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         a = this.xVelocity - rotationVelocity * wheelbase / 2;
         b = this.xVelocity + rotationVelocity * wheelbase / 2;
         c = this.yVelocity - rotationVelocity * trackWidth / 2;
+        
         d = this.yVelocity + rotationVelocity * trackWidth / 2;
 
         velocities = new double[] {
-                Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2)),
-                Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2)),
-                Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2)),
-                Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2))
+                Math.sqrt(Math.pow(d, 2) + Math.pow(b, 2)),
+                Math.sqrt(Math.pow(c, 2) + Math.pow(b, 2)),
+                Math.sqrt(Math.pow(d, 2) + Math.pow(a, 2)),
+                Math.sqrt(Math.pow(c, 2) + Math.pow(a, 2))
         };
         angles = new double[]{
-            Math.atan2(d, b),
             Math.atan2(c, b),
-            Math.atan2(d, a),
-            Math.atan2(c, a)
+            Math.atan2(d, b),
+            Math.atan2(c, a),
+            Math.atan2(d, a)
         };
                 // Math.atan2(y, x) computes the angle to a given point from the x axis
         

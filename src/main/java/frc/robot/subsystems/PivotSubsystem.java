@@ -27,8 +27,8 @@ public class PivotSubsystem extends SubsystemBase {
     private double winchCircumference = 0.0287 * Math.PI;
 
     public PivotSubsystem() {
-        climbMotor.setInverted(true);
-        climbMotor.setIdleMode(IdleMode.kBrake);
+        pivotMotor.setInverted(true);
+        pivotMotor.setIdleMode(IdleMode.kBrake);
 
         resetElevatorEncoder();
     }
@@ -66,35 +66,35 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void up() {
-        climbMotor.set(climbMotorSpeed);
+        pivotMotor.set(climbMotorSpeed);
     }
 
     public void down() {
         if (!atMin()) {
-            climbMotor.set(-climbMotorSpeed);
+            pivotMotor.set(-climbMotorSpeed);
         } else {
-            climbMotor.set(0.0);
+            pivotMotor.set(0.0);
         }
     }
 
     public void autoUp() {
         if (autoClimbEnabled) {
-            climbMotor.set(climbMotorSpeed);
+            pivotMotor.set(climbMotorSpeed);
         }
     }
 
     public void autoDown() {
         if (!atMin()) {
             if (autoClimbEnabled) {
-                climbMotor.set(-climbMotorSpeed);
+                pivotMotor.set(-climbMotorSpeed);
             }
         } else {
-            climbMotor.set(0.0);
+            pivotMotor.set(0.0);
         }
     }
 
     public void stop() {
-        climbMotor.set(0.0);
+        pivotMotor.set(0.0);
     }
 
     public void resetElevatorEncoder() {
@@ -118,7 +118,7 @@ public class PivotSubsystem extends SubsystemBase {
         climbMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0); // Disable
         climbMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 0); // Disable
     }
-
+ 
     public void preventAutoClimb() {
         autoClimbEnabled = false;
     }
