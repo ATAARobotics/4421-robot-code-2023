@@ -31,7 +31,6 @@ class OI {
     public JoystickButton climbArm;
     public JoystickButton climbSlow;
     public JoystickButton abortAutoClimb;
-    public JoystickButton intake;
     public JoystickButton autoClimb;
     public Trigger shootLow;
     public JoystickButton shootHighFar;
@@ -40,6 +39,8 @@ class OI {
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
     private double speed;
+    public JoystickButton armIntake;
+    public JoystickButton armIntakeReversed;
 
     public OI() {
         // Configure the button bindings
@@ -68,7 +69,10 @@ class OI {
         abortAutoClimb = gunnerStick.getWPIJoystickButton("AbortAutoClimb");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         autoClimb = gunnerStick.getWPIJoystickButton("AutoClimb");
-        intake = driveStick.getWPIJoystickButton("Intake");
+        // intake = driveStick.getWPIJoystickButton("Intake");
+        armIntake = driveStick.getWPIJoystickButton("ArmIntake");
+        armIntakeReversed = driveStick.getWPIJoystickButton("ArmIntakeReversed");
+        
     }
 
     public int getElevatorDirection() {
