@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.AprilTagLimelight;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class RobotContainer {
 
         private final SwerveDriveSubsystem m_swerveDriveSubsystem;
         private final PivotSubsystem m_pivotSubsystem;
+        private final ArmSubsystem m_armSubsystem;
         // private final LimelightSubsystem m_limelightSubsystem;
         private final AutoPaths m_autoPaths;
 
@@ -56,6 +58,7 @@ public class RobotContainer {
 
         private double aimRotationSpeed = 0.25 * 0.7;
 
+        
 
         // Auto Stuff
         private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -69,18 +72,17 @@ public class RobotContainer {
                 pigeon = new Pigeon();
 
                 m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
+                m_armSubsystem = new ArmSubsystem();
                 m_pivotSubsystem = new PivotSubsystem();
                 m_autoPaths = new AutoPaths();
                 // m_limelightSubsystem = new LimelightSubsystem();
 
-                // path planner loader  // TODO: array list?
-                
+                // path planner loader // TODO: array list?
 
                 HashMap<String, Command> eventMap = new HashMap<>();
 
                 // Set the magazine to index
                 m_swerveDriveSubsystem.setBrakes(false);
-
 
                 m_swerveDriveSubsystem.setDefaultCommand(
                                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
@@ -115,16 +117,18 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
-                joysticks.intake.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
-                () -> 1,
-                joysticks::getRotationVelocity, () -> 1,
-                () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                joysticks::getYVelocity,
-                joysticks::getRotationVelocity, () -> 1,
-                () -> 1));
-
                 joysticks.armAngleUp.onTrue(new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem))
                 .onFalse(new InstantCommand(m_pivotSubsystem::stop, m_pivotSubsystem));
+                // joysticks.intake.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
+                //                 () -> 1,
+                //                 joysticks::getRotationVelocity, () -> 1,
+                //                 () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                //                                 joysticks::getYVelocity,
+                //                                 joysticks::getRotationVelocity, () -> 1,
+                //                                 () -> 1));
+
+                joysticks.armIntake.onTrue(m_armSubsystem.runIntake());
+                joysticks.armIntakeReversed.onTrue(m_armSubsystem.runIntake());
         }
 
         public OI getOI() {
