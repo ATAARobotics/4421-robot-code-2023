@@ -77,7 +77,6 @@ public class Constants {
     public static final int PIVOT_MOTOR_ID = 13;
     public static final int TELESCOPING_ARM_MOTOR_ID = 14;
     public static final int INTAKE_MOTOR_ID = 15;
-
     public static final int PIVOT_ENCODER_ID = 16;
     public static final int TELESCOPING_ARM_ENCODER_ID = 17;
 

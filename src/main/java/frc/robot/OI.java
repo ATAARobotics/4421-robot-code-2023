@@ -41,6 +41,9 @@ class OI {
     public JoystickButton aimLeft;
     private double speed;
 
+
+    public JoystickButton armAngleUp;
+
     public OI() {
         // Configure the button bindings
         try (InputStream input = new FileInputStream("/home/lvuser/deploy/bindings.properties")) {
@@ -69,6 +72,7 @@ class OI {
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         autoClimb = gunnerStick.getWPIJoystickButton("AutoClimb");
         intake = driveStick.getWPIJoystickButton("Intake");
+        armAngleUp = driveStick.getWPIJoystickButton("ArmAngleUp");
     }
 
     public int getElevatorDirection() {

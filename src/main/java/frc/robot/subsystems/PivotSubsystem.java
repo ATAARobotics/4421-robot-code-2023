@@ -1,4 +1,6 @@
-/*package frc.robot.subsystems;
+package frc.robot.subsystems;
+
+import org.ejml.dense.row.SpecializedOps_DDRM;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
@@ -21,6 +23,7 @@ public class PivotSubsystem extends SubsystemBase {
     private double midElevatorEncoderTicks = 35;
     private double maxElevatorEncoderTicks = 150;
 
+    private int direction = 0;
     private boolean autoClimbEnabled = true;
 
     private double ropeLength = 1;
@@ -30,11 +33,36 @@ public class PivotSubsystem extends SubsystemBase {
         pivotMotor.setInverted(true);
         pivotMotor.setIdleMode(IdleMode.kBrake);
 
-        resetElevatorEncoder();
+    }
+
+    @Override
+    public void periodic() {
+        switch (direction) {
+
+            case 1:
+                if (pivotEncoder.getPosition() < 500 ) {
+                    setSpeed(0);
+                }
+            case 2:
+                if (pivotEncoder.getPosition() > 0 ) {
+                    setSpeed(1);
+                }
+
+            // case 3: 
+            // if (pivotEncoder.getPosition() = 0 ) {
+            //      setSpeed();
+            // }
+
+            default: 
+            break;
+
+        }
+
     }
 
     public void setUp() {
         setSpeed(1);
+
     }
 
     public void setNormalSpeed() {
@@ -66,15 +94,8 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void up() {
-        pivotMotor.set(climbMotorSpeed);
-    }
-
-    public void down() {
-        if (!atMin()) {
-            pivotMotor.set(-climbMotorSpeed);
-        } else {
-            pivotMotor.set(0.0);
-        }
+        pivotMotor.set(1);
+        direction = 1;
     }
 
     public void autoUp() {
@@ -83,43 +104,12 @@ public class PivotSubsystem extends SubsystemBase {
         }
     }
 
-    public void autoDown() {
-        if (!atMin()) {
-            if (autoClimbEnabled) {
-                pivotMotor.set(-climbMotorSpeed);
-            }
-        } else {
-            pivotMotor.set(0.0);
-        }
-    }
-
     public void stop() {
         pivotMotor.set(0.0);
     }
 
-    public void resetElevatorEncoder() {
-        m_elevatorEncoder.setPosition(0);
-    }
-
-    public boolean atMin() {
-        return !elevatorDownDetector.get();
-    }
-
-    public boolean atMid() {
-        return m_elevatorEncoder.getPosition() >= midElevatorEncoderTicks;
-    }
-
-    public boolean atMax() {
-        return m_elevatorEncoder.getPosition() >= maxElevatorEncoderTicks;
-    }
-
-    public void slowRate() {
-        climbMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0); // Disable
-        climbMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0); // Disable
-        climbMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 0); // Disable
-    }
  
     public void preventAutoClimb() {
         autoClimbEnabled = false;
     }
-} */
+} 
