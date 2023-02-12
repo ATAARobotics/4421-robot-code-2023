@@ -56,6 +56,8 @@ public class RobotContainer {
 
         private double aimRotationSpeed = 0.25 * 0.7;
 
+        
+
         // Auto Stuff
         private final SendableChooser<Command> autoChooser = new SendableChooser<>();
         public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001,
