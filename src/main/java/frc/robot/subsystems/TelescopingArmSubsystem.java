@@ -32,13 +32,13 @@ public class TelescopingArmSubsystem extends SubsystemBase {
         switch (direction) {
 
             case 1:
-                if (telescopingArmEncoder.getPosition() < 500 ) {
+                if (telescopingArmEncoder.getPosition() > 500 ) {
                     telescopingArmMotor.set(0);
                 } else {
-                    telescopingArmMotor.set(0.1);
+                    telescopingArmMotor.set(0.3);
                 }
             case 2:
-                if (telescopingArmEncoder.getPosition() > 0 ) {
+                if (telescopingArmEncoder.getPosition() < 0 ) {
                     telescopingArmMotor.set(0);
                 } else {
                     telescopingArmMotor.set(-0.1);
@@ -52,14 +52,12 @@ public class TelescopingArmSubsystem extends SubsystemBase {
 
     }
 
-    public void backward() {
-        telescopingArmMotor.set(-0.1);
-        direction = 2;
+    public void in() {
+        telescopingArmMotor.set(-0.2);
     }
 
-    public void forward() {
-        telescopingArmMotor.set(0.1);
-        direction = 1;
+    public void out() {
+        telescopingArmMotor.set(0.2);
     }
 
     public void stop() {

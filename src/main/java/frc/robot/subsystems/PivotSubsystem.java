@@ -35,75 +35,16 @@ public class PivotSubsystem extends SubsystemBase {
 
     }
 
-    @Override
-    public void periodic() {
-        switch (direction) {
 
-            case 1:
-                if (pivotEncoder.getPosition() < 500 ) {
-                    setSpeed(0);
-                }
-            case 2:
-                if (pivotEncoder.getPosition() > 0 ) {
-                    setSpeed(1);
-                }
-
-            // case 3: 
-            // if (pivotEncoder.getPosition() = 0 ) {
-            //      setSpeed();
-            // }
-
-            default: 
-            break;
-
-        }
-
-    }
-
-    public void setUp() {
-        setSpeed(1);
-
-    }
-
-    public void setNormalSpeed() {
-        setSpeed(2);
-    }
-
-    public void setMaxSpeed() {
-        setSpeed(3);
-    }
-
-    public void setSpeed(int speedLevel) {
-        switch (speedLevel) {
-            case 1:
-                climbMotorSpeed = 0.3;
-                break;
-
-            case 2:
-                climbMotorSpeed = 0.85;
-                break;
-
-            case 3:
-                climbMotorSpeed = 1.0;
-                break;
-
-            default:
-                DriverStation.reportError(speedLevel + " is not a valid speed level for the climber!", false);
-                break;
-        }
-    }
 
     public void up() {
-        pivotMotor.set(1);
-        direction = 1;
+        pivotMotor.set(-0.2);
     }
 
-    public void autoUp() {
-        if (autoClimbEnabled) {
-            pivotMotor.set(climbMotorSpeed);
-        }
-    }
 
+    public void down() {
+        pivotMotor.set(0.2);
+    }
     public void stop() {
         pivotMotor.set(0.0);
     }

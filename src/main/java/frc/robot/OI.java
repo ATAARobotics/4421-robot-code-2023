@@ -16,34 +16,22 @@ class OI {
     private BetterJoystick rotationStick = new BetterJoystick(1, 1);
     private BetterJoystick gunnerStick = new BetterJoystick(2, 0);
 
+    //Driver Values
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
-    private int elevatorDirection;
-    private boolean toggleClimbArm;
-    private boolean toggleIntake;
-    private boolean toggleShooterPercent;
-    private boolean toggleShooterPID;
     private boolean toggleFieldOriented;
-
-    public Trigger climbMotorUp;
-    public Trigger climbMotorDown;
-    public JoystickButton climbArm;
-    public JoystickButton climbSlow;
-    public JoystickButton abortAutoClimb;
-    public JoystickButton autoClimb;
-    public Trigger shootLow;
-    public JoystickButton shootHighFar;
-    public JoystickButton shootLaunchpad;
-    public Trigger abortVisionAlign;
-    public JoystickButton aimRight;
-    public JoystickButton aimLeft;
     private double speed;
-    public JoystickButton armIntake;
-    public JoystickButton armIntakeReversed;
+    public JoystickButton Forward;
 
+    //Gunner Values
+    public JoystickButton PivotUp;
+    public JoystickButton PivotDown;
+    public JoystickButton IntakeIn;
+    public JoystickButton IntakeOut;
+    public JoystickButton TelescopingOut;
+    public JoystickButton TelescopingIn;
 
-    public JoystickButton armAngleUp;
 
     public OI() {
         // Configure the button bindings
@@ -64,51 +52,14 @@ class OI {
         }
 
         // Set up command-based stuff
-        abortVisionAlign = gunnerStick.getDPadTrigger("AbortVisionAlign");
-        climbMotorUp = gunnerStick.getDPadTrigger("ElevatorUp");
-        climbMotorDown = gunnerStick.getDPadTrigger("ElevatorDown");
-        climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
-        climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
-        abortAutoClimb = gunnerStick.getWPIJoystickButton("AbortAutoClimb");
-        aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
-        autoClimb = gunnerStick.getWPIJoystickButton("AutoClimb");
-        armAngleUp = driveStick.getWPIJoystickButton("ArmAngleUp");
-        // intake = driveStick.getWPIJoystickButton("Intake");
-        armIntake = driveStick.getWPIJoystickButton("ArmIntake");
-        armIntakeReversed = driveStick.getWPIJoystickButton("ArmIntakeReversed");
-        
-    }
+        Forward = driveStick.getWPIJoystickButton("Forward");
+        PivotUp = gunnerStick.getWPIJoystickButton("PivotUp");
+        PivotDown = gunnerStick.getWPIJoystickButton("PivotDown");
+        IntakeIn = gunnerStick.getWPIJoystickButton("IntakeIn");
+        IntakeOut = gunnerStick.getWPIJoystickButton("IntakeOut");
+        TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
+        TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
 
-    public int getElevatorDirection() {
-        return elevatorDirection;
-    }
-
-    public boolean getToggleIntake() {
-        return toggleIntake;
-    }
-
-    public boolean getToggleShootPercent() {
-        return toggleShooterPercent;
-    }
-
-    public boolean getToggleShootPID() {
-        return toggleShooterPID;
-    }
-
-    public boolean getToggleClimbArm() {
-        return toggleClimbArm;
-    }
-
-    public boolean aimLeft() {
-
-        DriverStation.reportWarning("Aiming Left", false);
-        return aimLeft.getAsBoolean();
-    }
-
-    public boolean aimRight() {
-
-        DriverStation.reportWarning("Aiming Right", false);
-        return aimLeft.getAsBoolean();
     }
 
     public void rumbleGunnerOn() {

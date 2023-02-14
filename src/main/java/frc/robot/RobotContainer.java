@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.TelescopingArmSubsystem;
 import frc.robot.subsystems.AprilTagLimelight;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
@@ -50,6 +51,8 @@ public class RobotContainer {
         private final SwerveDriveSubsystem m_swerveDriveSubsystem;
         private final PivotSubsystem m_pivotSubsystem;
         private final ArmSubsystem m_armSubsystem;
+        private final TelescopingArmSubsystem m_telescopingSubsystem;
+
         // private final LimelightSubsystem m_limelightSubsystem;
         private final AutoPaths m_autoPaths;
 
@@ -74,6 +77,7 @@ public class RobotContainer {
                 m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
                 m_armSubsystem = new ArmSubsystem();
                 m_pivotSubsystem = new PivotSubsystem();
+                m_telescopingSubsystem = new TelescopingArmSubsystem();
                 m_autoPaths = new AutoPaths();
                 // m_limelightSubsystem = new LimelightSubsystem();
 
@@ -117,18 +121,34 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
-                joysticks.armAngleUp.onTrue(new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem))
-                .onFalse(new InstantCommand(m_pivotSubsystem::stop, m_pivotSubsystem));
-                // joysticks.intake.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
-                //                 () -> 1,
-                //                 joysticks::getRotationVelocity, () -> 1,
-                //                 () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                //                                 joysticks::getYVelocity,
-                //                                 joysticks::getRotationVelocity, () -> 1,
-                //                                 () -> 1));
+                joysticks.IntakeIn.onTrue(new InstantCommand(m_armSubsystem::timerReset))
+                .whileTrue(new RunCommand(m_armSubsystem::runIntake))
+                .onFalse(new InstantCommand(m_armSubsystem::stopIntake));
 
-                joysticks.armIntake.onTrue(m_armSubsystem.runIntake());
-                joysticks.armIntakeReversed.onTrue(m_armSubsystem.runIntake());
+                joysticks.IntakeOut.whileTrue(new RunCommand(m_armSubsystem::runIntakeReversed))
+                .onFalse(new InstantCommand(m_armSubsystem::stopIntake));
+               
+                joysticks.PivotUp.whileTrue(new RunCommand(m_pivotSubsystem::up, m_pivotSubsystem))
+                .onFalse(new InstantCommand(m_pivotSubsystem::stop));
+                joysticks.PivotDown.whileTrue(new RunCommand(m_pivotSubsystem::down, m_pivotSubsystem))
+                .onFalse(new InstantCommand(m_pivotSubsystem::stop));
+
+                joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
+                .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+                joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
+                .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+
+                // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
+                // .onFalse(new InstantCommand(m_telescopingSubsystem::stop));
+
+                joysticks.Forward.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
+                                () -> 1,
+                                joysticks::getRotationVelocity, () -> 1,
+                                () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                                                joysticks::getYVelocity,
+                                                joysticks::getRotationVelocity, () -> 1,
+                                                () -> 1));
+
         }
 
         public OI getOI() {

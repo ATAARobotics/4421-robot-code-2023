@@ -12,11 +12,11 @@ public class ArmSubsystem extends SubsystemBase{
     PWMSparkMax intake_motor;
     Counter intake_encoder;
 
-    private double intake_speed = 0.65;
-    private double outtake_speed = 0.15;
+    private double intake_speed = 0.5;
+    private double outtake_speed = 1;
     private boolean hasGamePiece = false;
     private double intakeDelay = 0.2;
-    private double rateCutoff = 1000;
+    private double rateCutoff = 0;
     private boolean runStarted = false;
     private Timer timer;
 
@@ -38,42 +38,45 @@ public class ArmSubsystem extends SubsystemBase{
 
     }
 
-    public CommandBase runIntake() {
-        return this.runOnce(() -> {
-            runStarted = false;
-            timer.stop();
-            timer.reset();
-        }).andThen(this.runEnd(() -> {
-            if (intake_encoder.getRate() > rateCutoff) {
-                runStarted = true;
+    public void timerReset(){
+        runStarted = false;
+        timer.stop();
+        timer.reset();
+    }
+    public void runIntake() {
+        
+        if (intake_encoder.getRate() > rateCutoff) {
+            runStarted = true;
+        }
+
+        if (!hasGamePiece) {
+            // turns motor on
+            intake_motor.set(intake_speed);
+            // if has gamepiece, turns motor off
+            if (runStarted && intake_encoder.getRate() < rateCutoff) {
+                timer.start();
             }
 
-            if (!hasGamePiece) {
-                // turns motor on
-                intake_motor.set(intake_speed);
-                // if has gamepiece, turns motor off
-                if (runStarted && intake_encoder.getRate() < rateCutoff) {
-                    timer.start();
-                }
-
-                if (timer.hasElapsed(intakeDelay)) {
-                    intake_motor.set(0.0);
-                    this.hasGamePiece = true;
-                }
+            if (timer.hasElapsed(intakeDelay)) {
+                intake_motor.set(0.0);
+                this.hasGamePiece = true;
             }
-        }, () -> {
+        }else{
             intake_motor.set(0.0);
             runStarted = false;
             timer.stop();
             timer.reset();
-        }));
+        };
     }
 
-    public CommandBase runIntakeReversed() {
-        return this.runEnd(() -> {
-            intake_motor.set(-outtake_speed);
-            hasGamePiece = false;
-        }, () -> intake_motor.set(0.0));
+    public void runIntakeReversed() {
+        intake_motor.set(-outtake_speed);
+        hasGamePiece = false;
+    }
+
+    public void stopIntake(){
+        intake_motor.set(0);
+
     }
 
     public boolean hasGamePiece() {
