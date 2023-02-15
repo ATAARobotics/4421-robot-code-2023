@@ -118,7 +118,7 @@ public class Constants {
 
     // Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {
-            43191.3003, 43777.7504, 43744.6686, 42909.4215
+        43310.1955374, 43310.1955374, 43310.1955374, 43310.1955374
     }
             : new double[] {
                     0, 0, 0, 0
