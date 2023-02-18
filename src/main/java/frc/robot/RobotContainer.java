@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -12,10 +13,13 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.LightingCommand;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopingArmSubsystem;
 import frc.robot.subsystems.AprilTagLimelight;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.LightingSubsystem;
+import frc.robot.subsystems.MusicSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 
 import java.util.ArrayList;
@@ -52,7 +56,8 @@ public class RobotContainer {
         private final PivotSubsystem m_pivotSubsystem;
         private final ArmSubsystem m_armSubsystem;
         private final TelescopingArmSubsystem m_telescopingSubsystem;
-
+        private final LightingSubsystem m_lightingSubsystem;
+        private final MusicSubsystem m_musicSubsystem;
         // private final LimelightSubsystem m_limelightSubsystem;
         private final AutoPaths m_autoPaths;
 
@@ -75,10 +80,13 @@ public class RobotContainer {
                 pigeon = new Pigeon();
 
                 m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
+                m_lightingSubsystem = new LightingSubsystem();
+                m_musicSubsystem = new MusicSubsystem();
                 m_armSubsystem = new ArmSubsystem();
                 m_pivotSubsystem = new PivotSubsystem();
                 m_telescopingSubsystem = new TelescopingArmSubsystem();
                 m_autoPaths = new AutoPaths();
+                LightingCommand lightingCommand = new LightingCommand(m_lightingSubsystem, m_armSubsystem, OI.wantACone());
                 // m_limelightSubsystem = new LimelightSubsystem();
 
                 // path planner loader // TODO: array list?
@@ -87,7 +95,7 @@ public class RobotContainer {
 
                 // Set the magazine to index
                 m_swerveDriveSubsystem.setBrakes(false);
-
+                m_musicSubsystem.setDefaultCommand(new RunCommand(m_musicSubsystem::musicPlay));
                 m_swerveDriveSubsystem.setDefaultCommand(
                                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                                 joysticks::getYVelocity,
@@ -121,6 +129,10 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
+                joysticks.PlayMusic.onTrue(new ConditionalCommand(
+                        new RunCommand(m_musicSubsystem::musicPause), 
+                        new RunCommand(m_musicSubsystem::musicPlay), 
+                        m_musicSubsystem.isPlaying()));
                 joysticks.IntakeIn.onTrue(new InstantCommand(m_armSubsystem::timerReset))
                 .whileTrue(new RunCommand(m_armSubsystem::runIntake))
                 .onFalse(new InstantCommand(m_armSubsystem::stopIntake));

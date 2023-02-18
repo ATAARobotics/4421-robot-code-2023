@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,7 +33,9 @@ class OI {
     public JoystickButton IntakeOut;
     public JoystickButton TelescopingOut;
     public JoystickButton TelescopingIn;
-
+    public JoystickButton ChangeLEDs;
+    public JoystickButton PlayMusic;
+    private static boolean wantCone;
 
     public OI() {
         // Configure the button bindings
@@ -59,6 +63,8 @@ class OI {
         IntakeOut = gunnerStick.getWPIJoystickButton("IntakeOut");
         TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
         TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
+        ChangeLEDs = gunnerStick.getWPIJoystickButton("ChangeLEDs");
+        PlayMusic = gunnerStick.getWPIJoystickButton("PlayMusic");
 
     }
 
@@ -93,6 +99,7 @@ class OI {
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
         
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
+        wantCone = gunnerStick.getButton("ChangeLEDs");
     }
 
     // Getter functions for controls
@@ -114,5 +121,9 @@ class OI {
 
     public boolean getToggleFieldOriented() {
         return toggleFieldOriented;
+    }
+
+    public static boolean wantACone() {
+        return wantCone;
     }
 }

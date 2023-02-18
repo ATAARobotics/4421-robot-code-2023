@@ -79,6 +79,13 @@ public class Constants {
     public static final int INTAKE_MOTOR_ID = 15;
     public static final int PIVOT_ENCODER_ID = 16;
     public static final int TELESCOPING_ARM_ENCODER_ID = 17;
+    
+    // CANdle
+    public static final int CANDLE_ID = 21;
+    public static final int[] yellow = {255, 255, 0};
+    public static final int[] red = {255, 0, 0};
+    public static final int[] blue = {100, 100, 255};
+    public static final int[] purple = {100, 0, 100};
 
     /*
      * CAN Bus (Legacy) NOT CURRENTLY SUPPORTED

@@ -96,6 +96,7 @@ public class Robot extends TimedRobot {
         if(robotContainer.getOI().getToggleFieldOriented()){
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(!robotContainer.getSwerveDriveSubsystem().getFieldOriented(), 0);
         }
+        
         if (Constants.REPORTING_DIAGNOSTICS) {
 
             SmartDashboard.putNumber("Joy X", robotContainer.getOI().getXVelocity());
