@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -16,7 +17,7 @@ public class SwerveModule {
     // Restrictions on the minimum and maximum speed of the rotation motors (0 to 1)
     private double maxRotationSpeed = 1.0;
     private double minRotationSpeed = 0.0;
-
+    private double epsilon = 0.000000000000001;
     private TalonFX driveMotor;
     private TalonFX rotationMotor;
     private CANCoder rotationEncoder;
@@ -45,7 +46,25 @@ public class SwerveModule {
     private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     // Create a PID for controlling the velocity of the module
-    private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
+    private PIDController velocityController = new PIDController(0.2, 1.2, 0.005);
+
+    // Create a feedforward for Velocity
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.driveKS, Constants.driveKV, Constants.driveKA);
+    double newP = 0.65;
+    double newI = 0.65;
+    double newD = 0.005;
+    private double curP = 0;
+    private double curI = 0;
+    private double curD = 0;
+
+    private double feedforwardValue;
+
+    //The last time the Swerve Module was updated
+    private double lastUpdate = 0.0;
+    private double lastVelocity = 0.0;
+
+    // percent Output
+    private double voltage;
 
     // Safety override
     private boolean cancelAllMotion = false;
@@ -100,7 +119,33 @@ public class SwerveModule {
     /**
      * This function should run every teleopPeriodic
      */
-    public boolean periodic() {
+    public boolean periodic(double timestamp) {
+        newP = SmartDashboard.getNumber("Drive-P", newP);
+        newI = SmartDashboard.getNumber("Drive-I", newI);
+        newD = SmartDashboard.getNumber("Drive-D", newD);
+        if (Math.abs(curP - newP) > epsilon) {
+            curP = newP;
+            velocityController.setP(curP);
+            velocityController.reset();
+        }
+        if (Math.abs(curI - newI) > epsilon) {
+            curI = newI;
+            velocityController.setI(curI);
+            velocityController.reset();
+        }
+        if (Math.abs(curD - newD) > epsilon) {
+            curD = newD;
+            velocityController.setD(curD);
+            velocityController.reset();
+        }
+
+        //Get the amount of time since the last update
+        double period = timestamp - lastUpdate;
+        double velocityChange = getVelocity() - lastVelocity;
+
+        //Stores the current timestamp as the most recent update
+        lastUpdate = timestamp;
+
         // Set the drive velocity
         double calculated = 0.0;
         double velocity = 0.0;
@@ -118,18 +163,12 @@ public class SwerveModule {
             rotationMotor.set(ControlMode.PercentOutput, rotationVelocity);
 
             calculated = velocityController.calculate(getVelocity());
-
-            velocity = MathUtil.clamp(calculated, -Constants.MAX_SAFE_SPEED_OVERRIDE,
-                    Constants.MAX_SAFE_SPEED_OVERRIDE);
-
-            // DO NOT MESS WITH THIS CODE please
-            // thanks
-            if (Math.abs(velocity) > Constants.MAX_SAFE_SPEED_OVERRIDE) {
-                // For some reason, the robot is above the max safe speed - disable the bot
-                return true;
-            } else {
-                driveMotor.set(ControlMode.PercentOutput, velocity * inversionConstant);
-            }
+            // divide feed forward by battery voltage (about 12.5?) to convert to percent output
+            // maybe get the actual battery voltage instead?
+            voltage = (calculated * inversionConstant) + ((feedforwardValue * inversionConstant) / 12.5);
+            double percentVoltage = voltage;
+            driveMotor.set(ControlMode.PercentOutput, percentVoltage);
+            SmartDashboard.putNumber(name + " Percent Output", percentVoltage);
         } else {
             driveMotor.set(ControlMode.PercentOutput, 0.0);
             velocityController.reset();
@@ -137,17 +176,22 @@ public class SwerveModule {
             angleController.reset();
         }
 
+        // change feedforward
+        feedforwardValue = feedforward.calculate(getVelocity(), velocityChange / period);
+
         if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber(name + " Speed Setpoint", driveVelocity);
             SmartDashboard.putNumber(name + " PID Output", rotationVelocity);
             SmartDashboard.putNumber(name + " PID Error", angleController.getPositionError());
             SmartDashboard.putNumber(name + " Raw Speed", velocity);
-            SmartDashboard.putNumber(name + " Speed (m/s)", getVelocity());
+            SmartDashboard.putNumber(name + " Speed (m per s)", getVelocity());
             SmartDashboard.putNumber(name + " Angle", getAngle());
             SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
             SmartDashboard.putNumber(name + " Distance", getDistance(false));
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
             SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
+            SmartDashboard.putNumber(name + " Calculated", calculated);
+            SmartDashboard.putNumber(name + " FeedForward", feedforwardValue);
         }
 
         return false;
@@ -187,6 +231,7 @@ public class SwerveModule {
         } else {
             reverseMultiplier = 1.0;
         }
+
         angleController.setSetpoint(angle);
     }
 
@@ -216,12 +261,13 @@ public class SwerveModule {
         double velocity = driveMotor.getSelectedSensorVelocity();
 
         // Raw encoder ticks per 1 s
-        // velocity *= 10;
+        velocity *= 10;
 
         // Meters per second
         velocity /= ticksPerMeter;
 
-        return -velocity * inversionConstant;
+        velocity = velocity * inversionConstant;
+        return velocity;
     }
 
     /**
@@ -244,6 +290,19 @@ public class SwerveModule {
     public double getTargetAngle() {
         return angleController.getSetpoint();
     }
+
+    public double getxvelocity() {
+        double x = 0.0;
+        x = getVelocity() * Math.cos(getAngle());
+        return x;
+    }
+
+    public double getyvelocity() {
+        double y = 0.0;
+        y = getVelocity() * Math.sin(getAngle());
+        return y;
+    }
+                
 
     /**
      * Stops all motion on this module - safety override

@@ -12,11 +12,19 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.DrivePlaceCommand;
+import frc.robot.commands.VisionAlignCommand;
+import frc.robot.commands.auto.Square;
+import frc.robot.commands.auto.Straight;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
-import frc.robot.subsystems.TelescopingArmSubsystem;
+import frc.robot.subsystems.LimelightSubsystem.CameraMode;
 import frc.robot.subsystems.AprilTagLimelight;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.ClimbArmSubsystem;
+import frc.robot.subsystems.ClimbMotorSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,146 +32,266 @@ import java.util.List;
 
 import org.photonvision.PhotonCamera;
 
-/*
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
-*/
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class RobotContainer {
 
-        // The initial position of the robot relative to the field. This is measured
-        // from the left-hand corner of the field closest to the driver, from the
-        // driver's perspective
-        public Translation2d initialPosition = new Translation2d(0, 0);
+    // The initial position of the robot relative to the field. This is measured
+    // from the left-hand corner of the field closest to the driver, from the
+    // driver's perspective
 
-        // Create hardware objects
-        private Pigeon pigeon;
-        private final OI joysticks = new OI();
+    public Translation2d initialPosition = new Translation2d(0, 0);
 
-        private final SwerveDriveSubsystem m_swerveDriveSubsystem;
-        private final PivotSubsystem m_pivotSubsystem;
-        private final ArmSubsystem m_armSubsystem;
-        private final TelescopingArmSubsystem m_telescopingSubsystem;
+    // Create hardware objects
+    private Pigeon pigeon;
+    private final OI joysticks = new OI();
 
-        // private final LimelightSubsystem m_limelightSubsystem;
-        private final AutoPaths m_autoPaths;
+    private final SwerveDriveSubsystem m_swerveDriveSubsystem;
+    private final ClimbMotorSubsystem m_climbMotorSubsystem;
+    private final ClimbArmSubsystem m_climbArmSubsystem;
+    private final HoodSubsystem m_hoodSubsystem;
+    private final ShooterSubsystem m_shooterSubsystem;
+    private final AprilTagLimelight m_aprilTagLimeLight;
+    // private final LimelightSubsystem m_limelightSubsystem;
+    private final IntakeSubsystem m_intakeSubsystem;
+    private final AutoPaths m_autoPaths;
 
-        private boolean visionEnabled = true;
-        private boolean visionTargeting = false;
+    private VisionAlignCommand visionAlignCommand;
+    private boolean visionEnabled = true;
+    private boolean visionTargeting = false;
 
-        private double aimRotationSpeed = 0.25 * 0.7;
+    private double aimRotationSpeed = 0.25 * 0.7;
 
+    public SwerveAutoBuilder autoBuilder;
+    
+    // Auto Stuff
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+
+    public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001,
+            new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED_AUTO,
+                    Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
+
+    public RobotContainer() {
+        // Hardware-based objects
+        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        pigeon = new Pigeon();
+
+        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
+        m_climbMotorSubsystem = new ClimbMotorSubsystem();
+        m_climbArmSubsystem = new ClimbArmSubsystem();
+        m_hoodSubsystem = new HoodSubsystem();
+        m_shooterSubsystem = new ShooterSubsystem("canivore");
+        m_intakeSubsystem = new IntakeSubsystem();
+        m_autoPaths = new AutoPaths();
+        m_aprilTagLimeLight = new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
         
 
-        // Auto Stuff
-        private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-        public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001,
-                        new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED_AUTO,
-                                        Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
+        // this is for PathPlanner, currently not using
+        // HashMap<String, Command> eventMap = new HashMap<>();
 
-        public RobotContainer() {
-                // Hardware-based objects
-                // NetworkTableInstance inst = NetworkTableInstance.getDefault();
-                pigeon = new Pigeon();
+        // autoBuilder = new SwerveAutoBuilder(
+        //         m_swerveDriveSubsystem::getPose,
+        //         m_swerveDriveSubsystem::setInitialPose,
+        //         new PIDConstants(0.3, 0.0, 0.0),
+        //         new PIDConstants(0.1, 0.0, 0.001),
+        //         m_swerveDriveSubsystem.setChassisSpeed,
+        //         eventMap,
+        //         false,
+        //         m_swerveDriveSubsystem);
 
-                m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
-                m_armSubsystem = new ArmSubsystem();
-                m_pivotSubsystem = new PivotSubsystem();
-                m_telescopingSubsystem = new TelescopingArmSubsystem();
-                m_autoPaths = new AutoPaths();
-                // m_limelightSubsystem = new LimelightSubsystem();
+        // Set the magazine to index
+        new RunCommand(m_shooterSubsystem::diagnostic).schedule();
+        m_swerveDriveSubsystem.setBrakes(true);
 
-                // path planner loader // TODO: array list?
+        m_shooterSubsystem.shooterOff();
 
-                HashMap<String, Command> eventMap = new HashMap<>();
+        m_swerveDriveSubsystem.setDefaultCommand(
+                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                        joysticks::getYVelocity,
+                        joysticks::getRotationVelocity, () -> 1,
+                        () -> 1));
 
-                // Set the magazine to index
-                m_swerveDriveSubsystem.setBrakes(false);
+        // autoChooser
+        autoChooser.setDefaultOption("Square", new Square(m_swerveDriveSubsystem));
+        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+        LiveWindow.disableAllTelemetry();
 
-                m_swerveDriveSubsystem.setDefaultCommand(
-                                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                                joysticks::getYVelocity,
-                                                joysticks::getRotationVelocity, () -> 1,
-                                                () -> 1));
-                // m_shooterSubsystem.setDefaultCommand(new
-                // RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
-                /*
-                 * autoChooser.setDefaultOption("Straight",
-                 * new Straight(m_swerveDriveSubsystem, m_intakeSubsystem,
-                 * m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
-                 */
-                // autoChooser.addOption("Test Path", testPath);
-                SmartDashboard.putData("Auto Chooser", autoChooser);
-                LiveWindow.disableAllTelemetry();
-                // visionAlignCommand = new VisionAlignCommand(m_limelightSubsystem,
-                // m_swerveDriveSubsystem);
-                /*
-                 * autoClimbCommand = new AutoClimbCommand(m_climbArmSubsystem,
-                 * m_climbMotorSubsystem, joysticks.autoClimb,
-                 * joysticks.abortAutoClimb);
-                 */
-                configureBindings();
-        }
+        configureBindings();
+    }
 
-        public void AutoInit(double rotation) {
-                rotationController.enableContinuousInput(-Math.PI, Math.PI);
+    public void AutoInit(double rotation) {
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
-                rotationController.reset(new TrapezoidProfile.State(rotation, 0.0));
+        rotationController.reset(new TrapezoidProfile.State(rotation, 0.0));
 
-        }
+    }
 
-        private void configureBindings() {
-                joysticks.IntakeIn.onTrue(new InstantCommand(m_armSubsystem::timerReset))
-                .whileTrue(new RunCommand(m_armSubsystem::runIntake))
-                .onFalse(new InstantCommand(m_armSubsystem::stopIntake));
+    private void configureBindings() {
 
-                joysticks.IntakeOut.whileTrue(new RunCommand(m_armSubsystem::runIntakeReversed))
-                .onFalse(new InstantCommand(m_armSubsystem::stopIntake));
-               
-                joysticks.PivotUp.whileTrue(new RunCommand(m_pivotSubsystem::up, m_pivotSubsystem))
-                .onFalse(new InstantCommand(m_pivotSubsystem::stop));
-                joysticks.PivotDown.whileTrue(new RunCommand(m_pivotSubsystem::down, m_pivotSubsystem))
-                .onFalse(new InstantCommand(m_pivotSubsystem::stop));
 
-                joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
-                .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
-                joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
-                .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+        joysticks.shootLow
+                // Raise the hood
+                .whenActive(
+                        new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
 
-                // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
-                // .onFalse(new InstantCommand(m_telescopingSubsystem::stop));
+                // Lower the climb arm
+                .whenActive(
+                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
 
-                joysticks.Forward.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
-                                () -> 1,
-                                joysticks::getRotationVelocity, () -> 1,
-                                () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                                joysticks::getYVelocity,
-                                                joysticks::getRotationVelocity, () -> 1,
-                                                () -> 1));
+                // Turn on the shooter (automatically turns off when released)
+                .whileActiveOnce(
+                        new RunCommand(
+                                m_shooterSubsystem::shooterLow,
+                                m_shooterSubsystem));
 
-        }
+        joysticks.climbMotorUp
+                .whileActiveOnce(
+                        new RunCommand(m_climbMotorSubsystem::up, m_climbMotorSubsystem))
 
-        public OI getOI() {
-                return joysticks;
-        }
+                .whenInactive(m_climbMotorSubsystem::stop, m_climbMotorSubsystem);
 
-        public SwerveDriveSubsystem getSwerveDriveSubsystem() {
-                return m_swerveDriveSubsystem;
-        }
+        joysticks.climbMotorDown
+                .whileActiveOnce(new RunCommand(m_climbMotorSubsystem::down,
+                        m_climbMotorSubsystem))
 
-        public SendableChooser<Command> getAutonomousChooser() {
-                return autoChooser;
-        }
+                .whenInactive(m_climbMotorSubsystem::stop, m_climbMotorSubsystem);
 
-        public ProfiledPIDController getRotationController() {
-                return rotationController;
-        }
+        joysticks.climbArm
+                .toggleWhenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt,
+                        m_climbArmSubsystem::armVertical,
+                        m_climbArmSubsystem));
+
+        joysticks.climbSlow
+                .whenPressed(() -> m_climbMotorSubsystem.setSlowSpeed())
+                .whenReleased(() -> m_climbMotorSubsystem.setNormalSpeed());
+
+        joysticks.shootHighFar
+                // .whenActive(new InstantCommand(m_limelightSubsystem::getTargetDistance,
+                // m_limelightSubsystem))
+                // Lower the hood
+                .whenActive(
+                        new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
+
+                // Vision align
+                .whenActive(
+                        new SequentialCommandGroup(
+                                // visionAlignCommand,
+                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint)
+                                        .withTimeout(3)))
+
+                // Lower the climb arm
+                .whenActive(
+                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+                .whileActiveOnce(new RunCommand(
+                        () -> m_shooterSubsystem.shooterHighFar(),
+                        m_shooterSubsystem))
+                .whenInactive(
+                        new InstantCommand(
+                                m_shooterSubsystem::shooterOff,
+                                m_shooterSubsystem));
+
+        /*
+         * joysticks.shootHighFar.and(new Trigger(() -> !visionEnabled))
+         * .whileActiveOnce(
+         * new RunCommand(
+         * m_magazineSubsystem::magazineOn,
+         * m_magazineSubsystem));
+         */
+
+        joysticks.shootLaunchpad
+                // Lower the hood
+                .whenActive(
+                        new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))
+
+                // Lower the climb arm
+                .whenActive(
+                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+
+                // Vision align
+                .whenActive(
+                        new SequentialCommandGroup(
+                                
+                                // VisionAlignCommand(m_limelightSubsystem,
+                                // m_swerveDriveSubsystem),
+                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint)
+                                        .withTimeout(2)))
+                .whenActive(
+                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+                .whileActiveOnce(new RunCommand(
+                        m_shooterSubsystem::shooterLaunchpad,
+                        m_shooterSubsystem))
+
+                .whenInactive(
+                        new RunCommand(
+                                m_shooterSubsystem::shooterOff,
+                                m_shooterSubsystem));
+
+        /*
+         * joysticks.shootLaunchpad.and(new Trigger(() -> !visionEnabled))
+         * .whileActiveOnce(
+         * new SequentialCommandGroup(
+         * new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+         * new RunCommand(
+         * m_magazineSubsystem::magazineOn,
+         * m_magazineSubsystem)));
+         */
+
+        joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
+
+
+        joysticks.intake.whileTrue(
+                new DrivePlaceCommand(m_swerveDriveSubsystem, new Pose2d(12.9, 2.7, new Rotation2d(Math.PI))));
+
+    }
+
+    public OI getOI() {
+        return joysticks;
+    }
+
+    public SwerveDriveSubsystem getSwerveDriveSubsystem() {
+        return m_swerveDriveSubsystem;
+    }
+
+    public ClimbMotorSubsystem getClimbMotorSubsystem() {
+        return m_climbMotorSubsystem;
+    }
+
+    public ClimbArmSubsystem getClimbArmSubsystem() {
+        return m_climbArmSubsystem;
+    }
+
+    public HoodSubsystem getHoodSubsystem() {
+        return m_hoodSubsystem;
+    }
+
+    public ShooterSubsystem getShooterSubsystem() {
+        return m_shooterSubsystem;
+    }
+
+    public IntakeSubsystem getIntakeSubsystem() {
+        return m_intakeSubsystem;
+    }
+
+    public SendableChooser<Command> getAutonomousChooser() {
+        return autoChooser;
+    }
+
+    public ProfiledPIDController getRotationController() {
+        return rotationController;
+    }
 }

@@ -2,18 +2,21 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveOdometry {
 
     //Stores the current position of the robot
     private Pose2d pose;
-
+    private Pigeon pigeon;
     //The last time the odometry was updated
-    private double lastUpdate = -1.0;
+    private double lastUpdate = 0.0;
 
-    public SwerveOdometry(Pose2d initialPose) {
-        
+    private boolean isInitialized = false;
+
+    public SwerveOdometry(Pose2d initialPose, Pigeon pigeon) {
         this.pose = initialPose;
+        this.pigeon = pigeon;
     }
 
     /**
@@ -22,13 +25,12 @@ public class SwerveOdometry {
      * @param timestamp The current timestamp
      */
     public Pose2d update(double xVelocity, double yVelocity, double currentAngle, double timestamp) {
+        
+        if (!isInitialized) {
+            return new Pose2d(0, 0, new Rotation2d(0));
+        } 
         //Get the amount of time since the last update
-        double period;
-        if (lastUpdate >= 0) {
-            period = timestamp - lastUpdate;
-        } else {
-            period = 0.0;
-        }
+        double period = timestamp - lastUpdate;
 
         //Stores the current timestamp as the most recent update
         lastUpdate = timestamp;
@@ -55,5 +57,32 @@ public class SwerveOdometry {
      */
     public void setPose(Pose2d pose) {
         this.pose = pose;
+    }
+
+    // take the average of the 2 poses
+    public void addAprilTag(Pose2d pose) {
+
+        if (!isInitialized) {
+            setPose(pose);
+            pigeon.setYaw(pose.getRotation().getDegrees());
+            isInitialized = true;
+            return;
+        }
+        if (AprilTagError(this.pose, pose)){
+            double x, y;
+        
+            x = (this.pose.getX() + pose.getX()) / 2.0;
+            y = (this.pose.getY() + pose.getY()) / 2.0;
+            this.pose = new Pose2d(x, y, this.pose.getRotation());
+        }
+    }
+    public boolean AprilTagError(Pose2d currentPose, Pose2d newPose){
+        double error = Math.sqrt(Math.pow(currentPose.getX() - newPose.getX(), 2) + Math.pow(currentPose.getY() - newPose.getY(), 2));
+        if (error < 0.1){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

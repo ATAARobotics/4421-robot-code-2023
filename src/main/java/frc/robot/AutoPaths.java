@@ -15,7 +15,6 @@ public class AutoPaths {
     private AutoCommand straight1;
     private AutoCommand quadrant1LeftBall2;
     private AutoCommand ball2Launchpad;
-    private AutoCommand fastRotation;
 
     public AutoPaths() {
         /*  
@@ -45,14 +44,7 @@ public class AutoPaths {
             differential drive would have to - over the course of the path, the robot will turn toward that angle, without regard to the current
             direction of travel. This does have the drawback that if the path is too short, the turning may not be complete, and would simply stop.
         */
-        fastRotation = new AutoCommand(
-            0,
-            Arrays.asList(
-                new Translation2d(5, 5),
-                new Translation2d(5, 6)
-            ),
-            Math.PI
-        );
+
         straight = new AutoCommand(
             Math.PI,
             Arrays.asList(
@@ -93,9 +85,7 @@ public class AutoPaths {
             return pathName;
         }
     */
-    public AutoCommand getFastRotation(){
-        return fastRotation;
-    }
+
     public AutoCommand getStraight() {
         return straight;
     }

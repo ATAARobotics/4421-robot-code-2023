@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -33,15 +34,15 @@ public class Constants {
     public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
 
     // Measurements are in meters
-    public static final double WHEELBASE = COMP_BOT ? 0.584: 0.584; 
-    public static final double TRACK_WIDTH = COMP_BOT ? 0.476: 0.476;
+    public static final double WHEELBASE = COMP_BOT ? 0.65 : 0.65;
+    public static final double TRACK_WIDTH = COMP_BOT ? 0.47 : 0.52;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 0.4;
+    public static final double MAXIMUM_SPEED = 2;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
-    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI/5;
+    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI;
     // Maximum rotational speed is in radians/second Auto
     public static final double MAXIMUM_ROTATIONAL_SPEED_AUTO = Math.PI;
     // USED ONLY IN AUTO - Maximum rotational acceleration is in
@@ -50,7 +51,7 @@ public class Constants {
 
     // Swerve offset
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-        0, 0, 0, 0
+        2.1138, -0.3758, -2.1506, 0.4740
     }
             : new double[] {
                     0, 0, 0, 0
@@ -74,11 +75,9 @@ public class Constants {
     public static final int PIGEON_ID = 20;
 
     // CAN Legacy Device IDs
-    public static final int PIVOT_MOTOR_ID = 13;
-    public static final int TELESCOPING_ARM_MOTOR_ID = 14;
-    public static final int INTAKE_MOTOR_ID = 15;
-    public static final int PIVOT_ENCODER_ID = 16;
-    public static final int TELESCOPING_ARM_ENCODER_ID = 17;
+    public static final int CLIMB_MOTOR_ID = 13;
+    public static final int MAIN_SHOOT_MOTOR_ID = 14;
+    public static final int SECONDARY_SHOOT_MOTOR_ID = 15;
 
     /*
      * CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
@@ -118,7 +117,7 @@ public class Constants {
 
     // Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {
-        43310.1955374, 43310.1955374, 43310.1955374, 43310.1955374
+            43191.3003, 43777.7504, 43744.6686, 42909.4215
     }
             : new double[] {
                     0, 0, 0, 0
@@ -157,5 +156,68 @@ public class Constants {
         public static final Transform3d CAMERA_TO_ROBOT =
             new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
         public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+
+        // AprilTag Positions for the 2023 competition
+        public static final AprilTag[] AprilTagPos  = {
+                new AprilTag(1, 15.513558, 1.071626, 0.462788, 0.0, 0.0, 0.0, 1.0), 
+                new AprilTag(4, 16.178784, 6.749796, 0.695452, 0.0, 0.0, 0.0, 1.0),
+                new AprilTag(3, 15.513558, 4.424426, 0.462788, 0.0, 0.0, 0.0, 1.0),
+                
+                new AprilTag(2, 15.513558, 2.748026, 0.462788, 0.0, 0.0, 0.0, 1.0),
+                new AprilTag(5, 0.36195, 6.749796, 0.695452, 1.0, 0.0, 0.0, 0.0),
+                
+                new AprilTag(6, 1.02743, 4.424426, 0.462788, 1.0, 0.0, 0.0, 0.0),
+                new AprilTag(7, 1.02743, 2.748026, 0.462788, 1.0, 0.0, 0.0, 0.0),
+                new AprilTag(8, 1.02743, 1.071626, 0.462788, 1.0, 0.0, 0.0, 0.0)
+        };
       }
+
+
+      public static class placementConstants {
+
+                public static enum placements {
+                        leftLeftBlue(0),
+                        leftMidBlue(1),
+                        leftRightBlue(2),
+
+                        midLeftBlue(3),
+                        midMidBlue(4),
+                        midRightBlue(5),
+
+                        rightLeftBlue(6),
+                        rightMidBlue(7),
+                        rightRightBlue(8),
+
+                        leftLeftRed(9),
+                        leftMidRed(10),
+                        leftRightRed(11),
+
+                        midLeftRed(12),
+                        midMidRed(13),
+                        midRightRed(14),
+
+                        rightLeftRed(15),
+                        rightMidRed(16),
+                        rightRightRed(17),
+
+                        feederBlue(18),
+                        feederRed(19);
+
+                        private final int value;
+                        placements(final int newvalue) {
+                                value = newvalue;
+                        }
+                        public int getValue() {
+                                return value;
+                        }
+                };
+        
+        };
+
+        public static final double DTOLERANCE = 0.03; // meters
+        public static final double RTOLERANCE = 3.0; // degrees
+        public static final double SPEEDLIMIT = 1.0; // meters per second
+        public static final double ROTLIMIT = Math.PI;
+
+    
 }

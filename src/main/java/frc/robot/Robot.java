@@ -1,5 +1,12 @@
 package frc.robot;
 
+import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.server.PathPlannerServer;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,7 +20,7 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer = null;
 
-    private Command m_autonomousCommand = null;;
+    private Command m_autonomousCommand = null;
     //Auto selector on SmartDashboard
 
     public Robot() {
@@ -26,11 +33,13 @@ public class Robot extends TimedRobot {
 
         
     }
+    // add path group
     
     @Override
     public void robotInit() {
         //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
         //auto.createPrograms();
+        PathPlannerServer.startServer(5811);
     }
 
     @Override
@@ -51,6 +60,7 @@ public class Robot extends TimedRobot {
         // Cancel all commands
         CommandScheduler.getInstance().cancelAll();
         // Write remaining blackbox data to file
+        Blackbox.getInstance().finishLog();
         // Start brake timer
         brakesOffTimer.reset();
         brakesOffTimer.start();
@@ -68,7 +78,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
-        robotContainer.AutoInit(0);
+
+        // robotContainer.AutoInit(0);
         m_autonomousCommand.schedule();
     }
 
@@ -82,16 +93,23 @@ public class Robot extends TimedRobot {
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
         }
         SmartDashboard.putString("Limelight State", "Messuring Not Started");
+        Blackbox.getInstance().startLog();
+
+        Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);
+        Blackbox.getInstance().addLog("Field Oriented", robotContainer.getSwerveDriveSubsystem()::getFieldOriented);
+
 
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;
         }
         robotContainer.getSwerveDriveSubsystem().setBrakes(true);
+
     }
 
     @Override
     public void teleopPeriodic() {
+        Blackbox.getInstance().periodic();
         robotContainer.getOI().checkInputs();
         if(robotContainer.getOI().getToggleFieldOriented()){
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(!robotContainer.getSwerveDriveSubsystem().getFieldOriented(), 0);
@@ -107,6 +125,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        Blackbox.getInstance().startLog();
         CommandScheduler.getInstance().cancelAll();
     }
 }
