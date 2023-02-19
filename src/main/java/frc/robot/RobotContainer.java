@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.Auto.ScoreConeLevel;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopingArmSubsystem;
 import frc.robot.subsystems.AprilTagLimelight;
@@ -95,11 +96,8 @@ public class RobotContainer {
                                                 () -> 1));
                 // m_shooterSubsystem.setDefaultCommand(new
                 // RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
-                /*
-                 * autoChooser.setDefaultOption("Straight",
-                 * new Straight(m_swerveDriveSubsystem, m_intakeSubsystem,
-                 * m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
-                 */
+                autoChooser.setDefaultOption("Level", new ScoreConeLevel(m_swerveDriveSubsystem, m_pivotSubsystem, m_armSubsystem, m_telescopingSubsystem, m_autoPaths));
+                 
                 // autoChooser.addOption("Test Path", testPath);
                 SmartDashboard.putData("Auto Chooser", autoChooser);
                 LiveWindow.disableAllTelemetry();
@@ -133,10 +131,14 @@ public class RobotContainer {
                 joysticks.PivotDown.whileTrue(new RunCommand(m_pivotSubsystem::down, m_pivotSubsystem))
                 .onFalse(new InstantCommand(m_pivotSubsystem::stop));
 
-                joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
-                .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
-                joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
-                .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+                joysticks.TelescopingOut.onTrue(new InstantCommand(m_pivotSubsystem::midway));
+                joysticks.TelescopingIn.onTrue(new InstantCommand(m_pivotSubsystem::negmidway));
+
+                // joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
+                // .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+                // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
+                // .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+
 
                 // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
                 // .onFalse(new InstantCommand(m_telescopingSubsystem::stop));

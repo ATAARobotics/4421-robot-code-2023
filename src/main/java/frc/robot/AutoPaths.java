@@ -57,7 +57,7 @@ public class AutoPaths {
             Math.PI,
             Arrays.asList(
                 new Translation2d(5, 5),
-                new Translation2d(5, 3)
+                new Translation2d(5, 4)
             ),
             Math.PI/2
         );
