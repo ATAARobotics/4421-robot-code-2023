@@ -2,10 +2,10 @@ package frc.robot;
 
 import java.util.List;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.server.PathPlannerServer;
+// import com.pathplanner.lib.PathConstraints;
+// import com.pathplanner.lib.PathPlanner;
+// import com.pathplanner.lib.PathPlannerTrajectory;
+// import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
         //auto.createPrograms();
-        PathPlannerServer.startServer(5811);
+        // PathPlannerServer.startServer(5811);
     }
 
     @Override

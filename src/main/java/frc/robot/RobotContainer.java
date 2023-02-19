@@ -32,12 +32,6 @@ import java.util.List;
 
 import org.photonvision.PhotonCamera;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -74,7 +68,7 @@ public class RobotContainer {
 
     private double aimRotationSpeed = 0.25 * 0.7;
 
-    public SwerveAutoBuilder autoBuilder;
+//     public SwerveAutoBuilder autoBuilder;
     
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
