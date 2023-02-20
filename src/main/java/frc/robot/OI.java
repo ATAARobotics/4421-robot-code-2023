@@ -23,6 +23,7 @@ class OI {
     private boolean toggleFieldOriented;
     private double speed;
     public JoystickButton Forward;
+    public JoystickButton AutoBalance;
 
     //Gunner Values
     public JoystickButton PivotUp;
@@ -31,7 +32,6 @@ class OI {
     public JoystickButton IntakeOut;
     public JoystickButton TelescopingOut;
     public JoystickButton TelescopingIn;
-
 
     public OI() {
         // Configure the button bindings
@@ -53,13 +53,14 @@ class OI {
 
         // Set up command-based stuff
         Forward = driveStick.getWPIJoystickButton("Forward");
+        AutoBalance = driveStick.getWPIJoystickButton("AutoBalance");
+        
         PivotUp = gunnerStick.getWPIJoystickButton("PivotUp");
         PivotDown = gunnerStick.getWPIJoystickButton("PivotDown");
         IntakeIn = gunnerStick.getWPIJoystickButton("IntakeIn");
         IntakeOut = gunnerStick.getWPIJoystickButton("IntakeOut");
         TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
         TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
-
     }
 
     public void rumbleGunnerOn() {

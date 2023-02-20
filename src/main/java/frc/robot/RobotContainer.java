@@ -106,6 +106,9 @@ public class RobotContainer {
                                         joysticks::getYVelocity,
                                         joysticks::getRotationVelocity, () -> 1,
                                         () -> 1));
+        joysticks.AutoBalance.whileTrue(
+                new AutoBalance(m_swerveDriveSubsystem, true)
+        );
 
     }
 
