@@ -47,12 +47,12 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-        SmartDashboard.putNumber("Pivot Speed", pivotPid.calculate(pivotEncoder.getPosition()));
+        // SmartDashboard.putNumber("Pivot Speed", pivotPid.calculate(pivotEncoder.getPosition()));
         
-        pivotMotor.set(pivotPid.calculate(pivotEncoder.getPosition()));
+        // pivotMotor.set(pivotPid.calculate(pivotEncoder.getPosition()));
 
-        SmartDashboard.putNumber("Pivot Encoder", pivotEncoder.getPosition());
-        SmartDashboard.putNumber("SetPoint", setpoint);
+        // SmartDashboard.putNumber("Pivot Encoder", pivotEncoder.getPosition());
+        // SmartDashboard.putNumber("SetPoint", setpoint);
     
     }
 

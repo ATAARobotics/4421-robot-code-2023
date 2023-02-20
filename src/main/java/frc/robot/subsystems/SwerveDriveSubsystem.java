@@ -108,9 +108,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * This function should be run during every teleop and auto periodic
      */
     public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
-        this.xVelocity = xVelocity;
-        this.yVelocity = yVelocity;
-        this.rotationVelocity = rotationVelocity;
+        this.xVelocity = -xVelocity;
+        this.yVelocity = -yVelocity;
+        this.rotationVelocity = -rotationVelocity;
         this.useOdometry = useOdometry;
     }
 
@@ -160,17 +160,18 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         c = this.yVelocity - rotationVelocity * trackWidth / 2;
         d = this.yVelocity + rotationVelocity * trackWidth / 2;
 
-        velocities[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
-        velocities[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
-        velocities[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
-        velocities[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
-        
-                // Math.atan2(y, x) computes the angle to a given point from the x axis
-        angles[0] = Math.atan2(b, c);
-        angles[1] = Math.atan2(b, d);
-        angles[2] = Math.atan2(a, c);
-        angles[3] = Math.atan2(a, d);
-
+        velocities = new double[] {
+            Math.sqrt(Math.pow(d, 2) + Math.pow(b, 2)),
+            Math.sqrt(Math.pow(c, 2) + Math.pow(b, 2)),
+            Math.sqrt(Math.pow(d, 2) + Math.pow(a, 2)),
+            Math.sqrt(Math.pow(c, 2) + Math.pow(a, 2))
+        };
+        angles = new double[]{
+            Math.atan2(c, b),
+            Math.atan2(d, b),
+            Math.atan2(c, a),
+            Math.atan2(d, a)
+        };
         if (!safetyDisable) {
             // if (Constants.REPORTING_DIAGNOSTICS) {
             // SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
