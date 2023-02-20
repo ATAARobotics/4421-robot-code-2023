@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Pigeon {
 
     private Pigeon2 pigeon;
-    private double initPitch;
+
     public Pigeon() {
         pigeon = new Pigeon2(Constants.PIGEON_ID, "rio");
 
         // Mount direction settings - (forward, up) as according to the pigeon's casing
-        pigeon.configMountPose(AxisDirection.NegativeY, AxisDirection.PositiveZ);
+        pigeon.configMountPose(AxisDirection.NegativeZ, AxisDirection.PositiveY);
 
         // CALIBRATION OF PIGEON (attempt to complete all steps quickly):
         // 1. Drive the robot flush with a flat surface
@@ -31,27 +31,16 @@ public class Pigeon {
         // with a value from step 5 that is very close to half the value from step 7.
         // PUT YOUR ERROR VALUE IN HERE: (was 3.5, mateo)
         pigeon.configYAxisGyroError(0);
-    }
-    public void resetYaw() {
+        
         pigeon.setYaw(0);
-    }
-
-    public void resetPitch() {
-        initPitch = pigeon.getPitch();
     }
 
     public void setYaw(double yaw) {
         pigeon.setYaw(yaw);
     }
-    public double getPitch() {
-        // Subtract inital pitch due to angle of field and orientation
-        return pigeon.getPitch(); //- initPitch;
-    }
-    public double getRoll() {
-        return pigeon.getRoll();
-    }
+
     public double getYaw() {
-        double yaw = -pigeon.getYaw();
+        double yaw = pigeon.getYaw();
 
         yaw *= Math.PI / 180.0;
 
@@ -62,7 +51,7 @@ public class Pigeon {
         yaw %= Math.PI * 2;
 
         yaw -= Math.PI;
-
+        
         return yaw;
     }
 

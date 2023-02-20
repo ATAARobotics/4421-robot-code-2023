@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -33,8 +34,8 @@ public class Constants {
     public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
 
     // Measurements are in meters
-    public static final double WHEELBASE = COMP_BOT ? 0.584: 0.584; 
-    public static final double TRACK_WIDTH = COMP_BOT ? 0.476: 0.476;
+    public static final double WHEELBASE = COMP_BOT ? 0.65 : 0.65;
+    public static final double TRACK_WIDTH = COMP_BOT ? 0.47 : 0.52;
 
     // Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 2;
@@ -79,7 +80,6 @@ public class Constants {
     public static final int INTAKE_MOTOR_ID = 15;
     public static final int PIVOT_ENCODER_ID = 16;
     public static final int TELESCOPING_ARM_ENCODER_ID = 17;
-
     /*
      * CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
      * public static final String SPARK_MOTOR_BUS = "rio";
@@ -88,33 +88,6 @@ public class Constants {
     // PWM Ports
     public static final int INTAKE_MOTOR_PORT = 0;
 
-    // Sensor Ports
-    public static final int[] BOTTOM_DETECTOR = { 0, 1 };
-    public static final int[] TOP_DETECTOR = { 2, 3 };
-    public static final int[] PASSIVE_HOOK_DETECTORS = { 9, 8 };
-
-    // Solenoid Ports
-    public static final int[] CLIMB_ARM = { 6, 7 };
-    public static final int[] INTAKE_PISTONS = { 4, 5 };
-    public static final int[] HOOD_PISTONS = { 0, 1 };
-
-    // Sensor Config: Intake detector min and max distance to detect a ball
-    // (supposedly inches)
-    public static final double[] INDEX_RANGE = { 0.5, 3 };
-
-    // Sensor config
-    // Intake detector min and max distance to detect a ball (supposedly
-    // millimeters)
-    public static final double[] INTAKE_RANGE = { 0.0, 75.0 };
-    // Periodic ticks to wait before assuming the vision targeting is done
-    public static final int TARGETED_TICKS = 10;
-    // Angle that the robot can be off by acceptably for the vision targeting to be
-    // considered done (radians)
-    public static final double VISION_TARGET_TOLERANCE = 0.0523; // This isn't a magic number - it's the central
-                                                                 // angle
-                                                                 // given from an arc length of 8 inches at a radius
-                                                                 // of
-                                                                 // 204 inches
 
     // Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {
@@ -135,20 +108,10 @@ public class Constants {
     // normal sensitivity, and decimals increase sensitivity
     public static final double JOYSTICK_SENSITIVITY = 1;
     public static final double TURNING_SENSITIVITY = 3;
-    // Time remaining in match to light up the climb indicator
-    public static final double CLIMB_TIME = 40;
 
-    //LimeLight Angle
-    public static final double LIMELIGHT_ANGLE = 0.5034;
     // LOGGING
     // Set this to true if you want to log diagnostics to SmartDashboard
     public static final boolean REPORTING_DIAGNOSTICS = true;
-    // Set this to true if you want to log lasershark values from the magazine to
-    // SmartDashboard
-    public static final boolean LASERSHARK_DIAGNOSTICS = true;
-    // Set this to true if you want to visualize the robot's movement during auto -
-    // talk to Jacob if you have no idea what this does
-    public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
 
     public static class VisionConstants {
         /**
@@ -157,5 +120,68 @@ public class Constants {
         public static final Transform3d CAMERA_TO_ROBOT =
             new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
         public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+
+        // AprilTag Positions for the 2023 competition
+        public static final AprilTag[] AprilTagPos  = {
+                new AprilTag(1, 15.513558, 1.071626, 0.462788, 0.0, 0.0, 0.0, 1.0), 
+                new AprilTag(4, 16.178784, 6.749796, 0.695452, 0.0, 0.0, 0.0, 1.0),
+                new AprilTag(3, 15.513558, 4.424426, 0.462788, 0.0, 0.0, 0.0, 1.0),
+                
+                new AprilTag(2, 15.513558, 2.748026, 0.462788, 0.0, 0.0, 0.0, 1.0),
+                new AprilTag(5, 0.36195, 6.749796, 0.695452, 1.0, 0.0, 0.0, 0.0),
+                
+                new AprilTag(6, 1.02743, 4.424426, 0.462788, 1.0, 0.0, 0.0, 0.0),
+                new AprilTag(7, 1.02743, 2.748026, 0.462788, 1.0, 0.0, 0.0, 0.0),
+                new AprilTag(8, 1.02743, 1.071626, 0.462788, 1.0, 0.0, 0.0, 0.0)
+        };
       }
+
+
+      public static class placementConstants {
+
+                public static enum placements {
+                        leftLeftBlue(0),
+                        leftMidBlue(1),
+                        leftRightBlue(2),
+
+                        midLeftBlue(3),
+                        midMidBlue(4),
+                        midRightBlue(5),
+
+                        rightLeftBlue(6),
+                        rightMidBlue(7),
+                        rightRightBlue(8),
+
+                        leftLeftRed(9),
+                        leftMidRed(10),
+                        leftRightRed(11),
+
+                        midLeftRed(12),
+                        midMidRed(13),
+                        midRightRed(14),
+
+                        rightLeftRed(15),
+                        rightMidRed(16),
+                        rightRightRed(17),
+
+                        feederBlue(18),
+                        feederRed(19);
+
+                        private final int value;
+                        placements(final int newvalue) {
+                                value = newvalue;
+                        }
+                        public int getValue() {
+                                return value;
+                        }
+                };
+        
+        };
+
+        public static final double DTOLERANCE = 0.03; // meters
+        public static final double RTOLERANCE = 3.0; // degrees
+        public static final double SPEEDLIMIT = 1.0; // meters per second
+        public static final double ROTLIMIT = Math.PI;
+
+    
 }

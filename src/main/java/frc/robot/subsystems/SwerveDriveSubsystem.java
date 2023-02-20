@@ -154,25 +154,22 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
          // Calculate wheel velocities and angles
         double a, b, c, d;
-        
+
         a = this.xVelocity - rotationVelocity * wheelbase / 2;
         b = this.xVelocity + rotationVelocity * wheelbase / 2;
         c = this.yVelocity - rotationVelocity * trackWidth / 2;
-        
         d = this.yVelocity + rotationVelocity * trackWidth / 2;
 
-        velocities = new double[] {
-                Math.sqrt(Math.pow(d, 2) + Math.pow(b, 2)),
-                Math.sqrt(Math.pow(c, 2) + Math.pow(b, 2)),
-                Math.sqrt(Math.pow(d, 2) + Math.pow(a, 2)),
-                Math.sqrt(Math.pow(c, 2) + Math.pow(a, 2))
-        };
-        angles = new double[]{
-            Math.atan2(c, b),
-            Math.atan2(d, b),
-            Math.atan2(c, a),
-            Math.atan2(d, a)
-        };
+        velocities[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
+        velocities[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
+        velocities[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
+        velocities[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
+        
+                // Math.atan2(y, x) computes the angle to a given point from the x axis
+        angles[0] = Math.atan2(b, c);
+        angles[1] = Math.atan2(b, d);
+        angles[2] = Math.atan2(a, c);
+        angles[3] = Math.atan2(a, d);
 
         if (!safetyDisable) {
             // if (Constants.REPORTING_DIAGNOSTICS) {
@@ -214,8 +211,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             // convert coordinates to field-centric
             double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
-            averagex = velocity * Math.sin(finalAngle);
-            averagey = velocity * Math.cos(finalAngle);
+            averagex = velocity * Math.cos(finalAngle);
+            averagey = velocity * Math.sin(finalAngle);
 
             pose = odometry.update(averagex, averagey, pigeon.getYaw(), Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Pose X", pose.getX());

@@ -37,11 +37,29 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        xVelocity = xSupplier.getAsDouble() * speedSupplier.getAsDouble() * Constants.MAXIMUM_SPEED;
-        yVelocity = ySupplier.getAsDouble() * speedSupplier.getAsDouble() * Constants.MAXIMUM_SPEED;
-        rotationVelocity = rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble()
-                * Constants.MAXIMUM_ROTATIONAL_SPEED;
-        swerveSubsystem.setSwerveDrive(xVelocity, yVelocity, rotationVelocity, false);
+        double xSpeed = xSupplier.getAsDouble();
+        if (xSpeed > 0.0) {
+            xVelocity = Math.min(xSupplier.getAsDouble() * speedSupplier.getAsDouble(), Constants.MAXIMUM_SPEED);
+        } else {
+            xVelocity = Math.max(xSupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED);
+        }
+
+        double ySpeed = ySupplier.getAsDouble();
+        if (ySpeed > 0.0) {
+            yVelocity = Math.min(ySupplier.getAsDouble() * speedSupplier.getAsDouble(), Constants.MAXIMUM_SPEED);
+        } else {
+            yVelocity = Math.max(ySupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED);
+        }
+
+        double rotationSpeed = rotationSupplier.getAsDouble();
+        if (rotationSpeed > 0.0) {
+            rotationVelocity = Math.min(rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble(), Constants.MAXIMUM_ROTATIONAL_SPEED);
+        } else {
+            rotationVelocity = Math.max(rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble(), -Constants.MAXIMUM_ROTATIONAL_SPEED);
+        }
+
+
+        swerveSubsystem.setSwerveDrive(xVelocity, yVelocity, rotationVelocity, true);
     }
 
 }
