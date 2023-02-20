@@ -53,7 +53,7 @@ public class Pigeon {
         return pigeon.getRoll();
     }
     public double getYaw() {
-        double yaw = -pigeon.getYaw();
+        double yaw = pigeon.getYaw();
 
         yaw *= Math.PI / 180.0;
 
@@ -66,16 +66,6 @@ public class Pigeon {
         yaw -= Math.PI;
 
         return yaw;
-    }
-
-    public double getPitch() {
-        double pitch = pigeon.getPitch();
-        return pitch;
-    }
-
-    public double getRoll() {
-        double roll = pigeon.getRoll();
-        return roll;
     }
 
     public double getYawRaw() {
