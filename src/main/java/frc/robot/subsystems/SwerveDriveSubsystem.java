@@ -360,4 +360,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public double getRotationVelocity() {
         return rotationVelocity;
     }
+    public Pigeon getPigeon(){
+        return pigeon;
+    }
 }

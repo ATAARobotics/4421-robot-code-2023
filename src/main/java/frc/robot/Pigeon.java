@@ -6,7 +6,7 @@ import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pigeon {
-
+    private double initPitch;
     private Pigeon2 pigeon;
 
     public Pigeon() {
@@ -34,13 +34,26 @@ public class Pigeon {
         
         pigeon.setYaw(0);
     }
+    public void resetYaw() {
+        pigeon.setYaw(0);
+    }
+
+    public void resetPitch() {
+        initPitch = pigeon.getPitch();
+    }
 
     public void setYaw(double yaw) {
         pigeon.setYaw(yaw);
     }
-
+    public double getPitch() {
+        // Subtract inital pitch due to angle of field and orientation
+        return pigeon.getPitch(); //- initPitch;
+    }
+    public double getRoll() {
+        return pigeon.getRoll();
+    }
     public double getYaw() {
-        double yaw = pigeon.getYaw();
+        double yaw = -pigeon.getYaw();
 
         yaw *= Math.PI / 180.0;
 
@@ -51,7 +64,7 @@ public class Pigeon {
         yaw %= Math.PI * 2;
 
         yaw -= Math.PI;
-        
+
         return yaw;
     }
 
