@@ -372,4 +372,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             odometry.reinitialize();
         }
     }
+    
+    public Pigeon getPigeon(){
+        return pigeon;
+    }
 }
