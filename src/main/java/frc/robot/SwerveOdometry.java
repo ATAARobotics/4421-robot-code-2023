@@ -90,4 +90,8 @@ public class SwerveOdometry {
     public void reinitialize() {
         isInitialized = false;
     }
+
+    public boolean getIsInitialized() {
+        return isInitialized;
+    }
 }
