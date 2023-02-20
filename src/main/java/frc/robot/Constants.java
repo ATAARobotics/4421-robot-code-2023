@@ -113,6 +113,11 @@ public class Constants {
     // Set this to true if you want to log diagnostics to SmartDashboard
     public static final boolean REPORTING_DIAGNOSTICS = true;
 
+    //Auto Balence
+    public static final double BEAM_BALANACED_DRIVE_KP = 0.020;
+    public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
+    public static final double BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES = 1;
+
     public static class VisionConstants {
         /**
          * Physical location of the camera on the robot, relative to the center of the robot.
