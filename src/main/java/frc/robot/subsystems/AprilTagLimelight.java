@@ -100,7 +100,7 @@ public class AprilTagLimelight extends SubsystemBase {
 
         // rotation should from pigeon
         Transform3d cameraToRobot = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
-        Transform3d cameraToTarget = new Transform3d();
+        Transform3d cameraToTarget = target.getBestCameraToTarget();
 
         // red or blue side calculation
         boolean redSide = false;
@@ -111,8 +111,8 @@ public class AprilTagLimelight extends SubsystemBase {
           // Calculate robot's field relative pose
           Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, aprilTagPos.aprilTagPose, cameraToRobot);
           redSide = (aprilTagPos.aprilTagPose.getRotation().getQuaternion().getZ() > 0.5);
-          Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d(), redSide);
-          odometry.addAprilTag(tempPose);
+          // Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d(), redSide);
+          odometry.addAprilTag(robotPose.toPose2d());
         }
     }
     }
@@ -127,6 +127,10 @@ public class AprilTagLimelight extends SubsystemBase {
 
     x = robot.getX() * inverseMultipler + april.getX();
     y = robot.getY() * inverseMultipler + april.getY();
+
+    // System.out.println("ROBOT: " + robot);
+    // System.out.println(april);
+
     rot = (robot.getRotation().getRadians() + april.getRotation().getRadians()) % (2*Math.PI) - Math.PI;
     Pose2d newPose = new Pose2d(x, y, new Rotation2d(rot));
     return newPose;

@@ -210,13 +210,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             double averagex = totalx / 4;
             double averagey = totaly / 4;
 
-            double angle = Math.atan2(averagey, averagex);
+            double angle = Math.atan2(averagex, averagey);
             double finalAngle = pigeon.getYaw() + angle;
 
             // convert coordinates to field-centric
             double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
-            averagex = velocity * Math.sin(finalAngle);
-            averagey = velocity * Math.cos(finalAngle);
+            averagex = velocity * Math.cos(finalAngle);
+            averagey = velocity * Math.sin(finalAngle);
 
             pose = odometry.update(averagex, averagey, pigeon.getYaw(), Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Pose X", pose.getX());
@@ -367,11 +367,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void checkTipped() {
 
         // Tipping Checker
-        if (pigeon.getPitch() > Constants.tipThreshold) {
+        if (Math.abs(pigeon.getPitch()) > Constants.tipThreshold) {
             odometry.reinitialize();
         }
 
-        if (pigeon.getRoll() > Constants.tipThreshold) {
+        if (Math.abs(pigeon.getRoll()) > Constants.tipThreshold) {
             odometry.reinitialize();
         }
     }

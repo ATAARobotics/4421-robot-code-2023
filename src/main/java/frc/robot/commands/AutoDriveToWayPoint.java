@@ -73,15 +73,17 @@ public class AutoDriveToWayPoint extends CommandBase {
       SmartDashboard.putNumber("robotPoseR", robotPose.getRotation().getRadians());
 
       // var xSpeed = Math.clamp(xController.calculate(robotPose.getX()), speedLimit);
+      SmartDashboard.putBoolean("X-ACH", false);
       xSpeed = MathUtil.clamp(xController.calculate(robotPose.getX()), -speedLimit, speedLimit);
       if (xController.atSetpoint()) {
-        System.out.println("X ACHIEVED");
+        SmartDashboard.putBoolean("X-ACH", true);
         xSpeed = 0;
       }
 
+      SmartDashboard.putBoolean("Y-ACH", false);
       ySpeed = MathUtil.clamp(yController.calculate(robotPose.getY()), -speedLimit, speedLimit);
       if (yController.atSetpoint()) {
-        System.out.println("Y ACHIEVED");
+        SmartDashboard.putBoolean("Y-ACH", true);
         ySpeed = 0;
       }
 
@@ -93,9 +95,10 @@ public class AutoDriveToWayPoint extends CommandBase {
         rotTemp = rotTemp + Math.PI;
       }
 
+      SmartDashboard.putBoolean("ROT-ACH", false);
       rotSpeed = MathUtil.clamp(-rotController.calculate(rotTemp), -rotLimit, rotLimit);
       if (rotController.atSetpoint()) {
-        System.out.println("ROT ACHIEVED");
+        SmartDashboard.putBoolean("ROT-ACH", true);
         rotSpeed = 0;
       }
 

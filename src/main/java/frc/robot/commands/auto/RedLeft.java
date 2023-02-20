@@ -14,20 +14,31 @@ public class RedLeft extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
 
     public RedLeft(SwerveDriveSubsystem swerveDriveSubsystem) {
-        addRequirements(swerveDriveSubsystem);
         m_swerveDriveSubsystem = swerveDriveSubsystem;
+
+        addRequirements(m_swerveDriveSubsystem);
 
         addCommands(
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
                 // score
                 
                 // drive to cone + rotate parallel with (lower arm, run intake(run until finished))
-                new ParallelCommandGroup(new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(14.6, 6.7, new Rotation2d(0)))) 
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(12.84, 4.46, new Rotation2d(Math.PI))),
+                // just rotating
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.46, new Rotation2d(0.0))),
 
                 // drive back + rotate parallel with raising arm to scoring pos
-                // new ParallelCommandGroup(new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(14.6, 6.7, new Rotation2d(0))))
-
+                
+                // mid point + rotate
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(12.84, 4.46, new Rotation2d(Math.PI))),
+                // scoring position
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(15.17, 4.80, new Rotation2d(Math.PI)))
                 // place cone
+
+                // drive to cone
+                // new ParallelCommandGroup(new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.05, new Rotation2d(Math.PI)))),
+                // drive left
+                // new ParallelCommandGroup(new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.05, new Rotation2d(Math.PI)))),
         );
 
     }
