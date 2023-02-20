@@ -86,4 +86,8 @@ public class SwerveOdometry {
             return false;
         }
     }
+
+    public void reinitialize() {
+        isInitialized = false;
+    }
 }

@@ -183,5 +183,9 @@ public class Constants {
         public static final double SPEEDLIMIT = 1.0; // meters per second
         public static final double ROTLIMIT = Math.PI;
 
+
+        // pigeon tip threshold to reset odometry in degrees
+        public static final double tipThreshold = 5.0;
+
     
 }

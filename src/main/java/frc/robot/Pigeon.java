@@ -55,6 +55,16 @@ public class Pigeon {
         return yaw;
     }
 
+    public double getPitch() {
+        double pitch = pigeon.getPitch();
+        return pitch;
+    }
+
+    public double getRoll() {
+        double roll = pigeon.getRoll();
+        return roll;
+    }
+
     public double getYawRaw() {
         return pigeon.getYaw();
     }

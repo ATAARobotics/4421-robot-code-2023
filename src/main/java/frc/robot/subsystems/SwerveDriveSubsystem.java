@@ -360,4 +360,16 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public double getRotationVelocity() {
         return rotationVelocity;
     }
+
+    public void checkTipped() {
+
+        // Tipping Checker
+        if (pigeon.getPitch() > Constants.tipThreshold) {
+            odometry.reinitialize();
+        }
+
+        if (pigeon.getRoll() > Constants.tipThreshold) {
+            odometry.reinitialize();
+        }
+    }
 }
