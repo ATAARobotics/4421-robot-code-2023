@@ -13,7 +13,7 @@ public class Pigeon {
         pigeon = new Pigeon2(Constants.PIGEON_ID, "rio");
 
         // Mount direction settings - (forward, up) as according to the pigeon's casing
-        pigeon.configMountPose(AxisDirection.NegativeZ, AxisDirection.PositiveY);
+        pigeon.configMountPose(AxisDirection.NegativeY, AxisDirection.PositiveZ);
 
         // CALIBRATION OF PIGEON (attempt to complete all steps quickly):
         // 1. Drive the robot flush with a flat surface

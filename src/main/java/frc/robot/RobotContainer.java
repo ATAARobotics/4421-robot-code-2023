@@ -64,8 +64,9 @@ public class RobotContainer {
                         () -> 1));
 
         // autoChooser
-        autoChooser.setDefaultOption("Square", new Square(m_swerveDriveSubsystem));
-        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        autoChooser.setDefaultOption("Left", new left(m_swerveDriveSubsystem));
+        // autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        autoChooser.addOption("Left", new left(m_swerveDriveSubsystem));
         SmartDashboard.putData("Auto Chooser", autoChooser);
         LiveWindow.disableAllTelemetry();
 

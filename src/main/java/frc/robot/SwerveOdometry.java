@@ -41,7 +41,8 @@ public class SwerveOdometry {
 
         //Updates the position of the robot based on the distance traveled
         pose = new Pose2d(pose.getX() + distanceX, pose.getY() + distanceY, new Rotation2d(currentAngle));
-
+        SmartDashboard.putNumber("Robot Pose X", pose.getX());
+        SmartDashboard.putNumber("Robot Pose Y", pose.getY());
         return pose;
     }
 

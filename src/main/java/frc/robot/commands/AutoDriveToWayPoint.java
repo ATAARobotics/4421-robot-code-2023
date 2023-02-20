@@ -53,17 +53,16 @@ public class AutoDriveToWayPoint extends CommandBase {
     @Override
     public void initialize() {
         m_swerveDriveSubsystem.setBrakes(true);
+        goalPose = targetPose;
+        xController.setSetpoint(goalPose.getX());
+        yController.setSetpoint(goalPose.getY());
+        rotController.setSetpoint(goalPose.getRotation().getRadians());
     }
 
     @Override
     public void execute() {
 
       robotPose = odometry.getPose();
-      goalPose = targetPose;
-      
-      xController.setSetpoint(goalPose.getX());
-      yController.setSetpoint(goalPose.getY());
-      rotController.setSetpoint(goalPose.getRotation().getRadians());
 
       SmartDashboard.putNumber("X-Goal", goalPose.getX());
       SmartDashboard.putNumber("Y-Goal", goalPose.getY());
@@ -105,7 +104,7 @@ public class AutoDriveToWayPoint extends CommandBase {
       SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
       // Drive // x and y is flipped
-      m_swerveDriveSubsystem.setSwerveDrive(ySpeed, xSpeed, rotSpeed, true);
+      m_swerveDriveSubsystem.setSwerveDrive(-ySpeed, -xSpeed, rotSpeed, true);
     }
 
     @Override

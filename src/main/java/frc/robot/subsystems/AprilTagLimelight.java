@@ -9,7 +9,11 @@ import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SwerveOdometry;
@@ -50,9 +54,11 @@ public class AprilTagLimelight extends SubsystemBase {
     // Get the current best target.
     
     int targetID = -1;
+    SmartDashboard.putBoolean("See AprilTag", hasTargets);
 
     if (hasTargets == true) {
       // Get information from target.
+      SmartDashboard.putBoolean("See AprilTag", hasTargets);
       PhotonTrackedTarget target = result.getBestTarget();
       double yaw = target.getYaw();
       double pitch = target.getPitch();
@@ -91,20 +97,19 @@ public class AprilTagLimelight extends SubsystemBase {
         //   range, Rotation2d.fromDegrees(target.getYaw()));
 
         double kTargetPitch = target.getPitch();
-        edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
-        Pose3d aprilTagFieldLayout = new Pose3d();
+
+        // rotation should from pigeon
+        Transform3d cameraToRobot = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+        Transform3d cameraToTarget = new Transform3d();
 
         // red or blue side calculation
         boolean redSide = false;
       
-        
-        // Calculate robot's field relative pose
-        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
-        
-
         // adds the position of robot to april tag to find the actual position
         if (targetID >= 1 && targetID <= 8) {
           aprilTagPos = Constants.VisionConstants.AprilTagPos[targetID-1];
+          // Calculate robot's field relative pose
+          Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, aprilTagPos.aprilTagPose, cameraToRobot);
           redSide = (aprilTagPos.aprilTagPose.getRotation().getQuaternion().getZ() > 0.5);
           Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d(), redSide);
           odometry.addAprilTag(tempPose);
