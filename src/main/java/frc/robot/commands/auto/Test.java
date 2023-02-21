@@ -9,10 +9,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoDriveToWayPoint;
 import frc.robot.subsystems.*;
 
-public class left extends SequentialCommandGroup {
+public class Test extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
 
-    public left(SwerveDriveSubsystem swerveDriveSubsystem) {
+    public Test(SwerveDriveSubsystem swerveDriveSubsystem) {
         addRequirements(swerveDriveSubsystem);
         m_swerveDriveSubsystem = swerveDriveSubsystem;
 

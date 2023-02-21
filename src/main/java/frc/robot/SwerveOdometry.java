@@ -26,9 +26,7 @@ public class SwerveOdometry {
      */
     public Pose2d update(double xVelocity, double yVelocity, double currentAngle, double timestamp) {
         
-        if (!isInitialized) {
-            return new Pose2d(0, 0, new Rotation2d(0));
-        } 
+         
         //Get the amount of time since the last update
         double period = timestamp - lastUpdate;
 
@@ -65,7 +63,7 @@ public class SwerveOdometry {
 
         if (!isInitialized) {
             setPose(pose);
-            pigeon.setYaw(pose.getRotation().getDegrees());
+            pigeon.setYaw(-Math.PI);
             isInitialized = true;
             return;
         }
@@ -89,5 +87,9 @@ public class SwerveOdometry {
 
     public void reinitialize() {
         isInitialized = false;
+    }
+
+    public boolean getIsInitialized() {
+        return isInitialized;
     }
 }
