@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoDriveToWayPoint;
 import frc.robot.subsystems.*;
 
-public class RedLeft extends SequentialCommandGroup {
+public class RedLeftStack extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
 
-    public RedLeft(SwerveDriveSubsystem swerveDriveSubsystem) {
+    public RedLeftStack(SwerveDriveSubsystem swerveDriveSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
 
         addRequirements(m_swerveDriveSubsystem);
@@ -35,12 +35,10 @@ public class RedLeft extends SequentialCommandGroup {
                 
                 // scoring position
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(15.17, 4.80, new Rotation2d(Math.PI)))
+                
                 // place cone
 
-                // drive to cone
-                // new ParallelCommandGroup(new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.05, new Rotation2d(Math.PI)))),
-                // drive left
-                // new ParallelCommandGroup(new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.05, new Rotation2d(Math.PI)))),
+
         );
 
     }
