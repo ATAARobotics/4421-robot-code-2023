@@ -22,15 +22,17 @@ public class RedLeft extends SequentialCommandGroup {
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
                 // score
                 
-                // drive to cone + rotate parallel with (lower arm, run intake(run until finished))
+                // drive to midpoint + rotate parallel with (lower arm, run intake(run until finished))
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(12.84, 4.46, new Rotation2d(Math.PI))),
-                // just rotating
+                
+                // drive to cone
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.46, new Rotation2d(0.0))),
 
                 // drive back + rotate parallel with raising arm to scoring pos
                 
                 // mid point + rotate
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(12.84, 4.46, new Rotation2d(Math.PI))),
+                
                 // scoring position
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(15.17, 4.80, new Rotation2d(Math.PI)))
                 // place cone

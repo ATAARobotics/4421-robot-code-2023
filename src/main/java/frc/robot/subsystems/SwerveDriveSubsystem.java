@@ -200,25 +200,29 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             // Update the current pose with the latest velocities, angle, and a timestamp
 
-            double totalx = 0.0;
-            double totaly = 0.0;
+            double x = 0.0;
+            double y = 0.0;
+            double heading = pigeon.getYaw();
+            double timestamp = Timer.getFPGATimestamp();
+            
             for (SwerveModule module : swerveModules) {
-                totalx += module.getxvelocity();
-                totaly += module.getyvelocity();
+                double moduleAngle = module.getAngle();
+                double moduleVelocity = module.getVelocity();
 
+                // Calculate the x and y components of the module's velocity
+                double xVelocity = moduleVelocity * Math.cos(Math.toRadians(moduleAngle));
+                double yVelocity = moduleVelocity * Math.sin(Math.toRadians(moduleAngle));
+
+                // Rotate the velocity vector to align with the robot's heading
+                double rotatedX = xVelocity * Math.cos(Math.toRadians(heading)) - yVelocity * Math.sin(Math.toRadians(heading));
+                double rotatedY = xVelocity * Math.sin(Math.toRadians(heading)) + yVelocity * Math.cos(Math.toRadians(heading));
+
+                // Add the rotated velocity vector to the robot's position
+                x += rotatedX;
+                y += rotatedY;
             }
-            double averagex = totalx / 4;
-            double averagey = totaly / 4;
 
-            double angle = Math.atan2(averagex, averagey);
-            double finalAngle = pigeon.getYaw() + angle;
-
-            // convert coordinates to field-centric
-            double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
-            averagex = velocity * Math.cos(finalAngle);
-            averagey = velocity * Math.sin(finalAngle);
-
-            pose = odometry.update(averagex, averagey, pigeon.getYaw(), Timer.getFPGATimestamp());
+            pose = odometry.update(x, y, heading, timestamp);
             SmartDashboard.putNumber("Pose X", pose.getX());
             SmartDashboard.putNumber("Pose Y", pose.getY());
 
