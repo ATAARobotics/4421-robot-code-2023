@@ -79,24 +79,6 @@ public class AprilTagLimelight extends SubsystemBase {
     result = camera.getLatestResult();
 
       robotPose = odometry.getPose();
-        // First calculate range
-        // double range = PhotonUtils.calculateDistanceToTargetMeters(
-        //                   CAMERA_HEIGHT_METERS,
-        //                   TARGET_HEIGHT_METERS,
-        //                   CAMERA_PITCH_RADIANS,
-        //                   Units.degreesToRadians(result.getBestTarget().getPitch()));
-        //                   double GOAL_RANGE_METERS = range-SAFETY_OFFSET;
-        //                   // Use this range as the measurement we give to the PID controller.
-            
-        // this.range = range; 
-
-
-
-        // Calculate a translation from the camera to the target.
-        // Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
-        //   range, Rotation2d.fromDegrees(target.getYaw()));
-
-        double kTargetPitch = target.getPitch();
 
         // rotation should from pigeon
         Transform3d cameraToRobot = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
@@ -117,24 +99,25 @@ public class AprilTagLimelight extends SubsystemBase {
     }
     }
 
-  public Pose2d getActualPose(Pose2d robot, Pose2d april, boolean redSide) {
-    double x, y, rot, inverseMultipler;
-    inverseMultipler = 1.0;
+  // No longer Used
+  // public Pose2d getActualPose(Pose2d robot, Pose2d april, boolean redSide) {
+  //   double x, y, rot, inverseMultipler;
+  //   inverseMultipler = 1.0;
 
-    if (redSide) {
-      inverseMultipler = -1.0;
-    }
+  //   if (redSide) {
+  //     inverseMultipler = -1.0;
+  //   }
 
-    x = robot.getX() * inverseMultipler + april.getX();
-    y = robot.getY() * inverseMultipler + april.getY();
+  //   x = robot.getX() * inverseMultipler + april.getX();
+  //   y = robot.getY() * inverseMultipler + april.getY();
 
-    // System.out.println("ROBOT: " + robot);
-    // System.out.println(april);
+  //   // System.out.println("ROBOT: " + robot);
+  //   // System.out.println(april);
 
-    rot = (robot.getRotation().getRadians() + april.getRotation().getRadians()) % (2*Math.PI) - Math.PI;
-    Pose2d newPose = new Pose2d(x, y, new Rotation2d(rot));
-    return newPose;
-  }
+  //   rot = (robot.getRotation().getRadians() + april.getRotation().getRadians()) % (2*Math.PI) - Math.PI;
+  //   Pose2d newPose = new Pose2d(x, y, new Rotation2d(rot));
+  //   return newPose;
+  // }
 
 
   @Override
