@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,6 +12,9 @@ import frc.robot.Constants;
 public class ArmSubsystem extends SubsystemBase{
     PWMSparkMax intake_motor;
     Counter intake_encoder;
+    DigitalInput proximitySwitchBottom;
+    DigitalInput proximitySwitchTop;
+
 
     private double intake_speed = 0.5;
     private double outtake_speed = 1;
@@ -19,6 +23,8 @@ public class ArmSubsystem extends SubsystemBase{
     private double rateCutoff = 0;
     private boolean runStarted = false;
     private Timer timer;
+    private boolean sensedMetalBottom = false;
+    private boolean sensedMetalTop = false;
 
     
     public ArmSubsystem () {
@@ -26,6 +32,8 @@ public class ArmSubsystem extends SubsystemBase{
         this.intake_encoder = new Counter(0);
         this.intake_encoder.setDistancePerPulse(1.0);
         this.timer = new Timer();
+        this.proximitySwitchBottom = new DigitalInput(1);
+        this.proximitySwitchTop = new DigitalInput(2);
     }
 
     @Override
@@ -35,7 +43,9 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putBoolean("runStarted", runStarted);
         SmartDashboard.putNumber("rate", intake_encoder.getRate());
         SmartDashboard.putBoolean("hasGamePiece", this.hasGamePiece);
-
+        SmartDashboard.putBoolean("sensedMetalBottom", sensedMetalBottom);
+        SmartDashboard.putBoolean("sensedMetalTop", sensedMetalTop);
+        checkMetal();
     }
 
     public void timerReset(){
@@ -81,5 +91,31 @@ public class ArmSubsystem extends SubsystemBase{
 
     public boolean hasGamePiece() {
         return hasGamePiece;
+    }
+
+    public void checkMetal() {
+        System.out.println("BOT: " + proximitySwitchBottom.get());
+        System.out.println("TOP: " + proximitySwitchTop.get());
+        if (proximitySwitchBottom.get()) {
+            // Proximity switch is triggered
+            sensedMetalBottom = true;
+            System.out.println("YAY");
+            SmartDashboard.putBoolean("sensedMetalBottom", sensedMetalBottom);
+          } else {
+            // Proximity switch is not triggered
+            sensedMetalBottom = false;
+            SmartDashboard.putBoolean("sensedMetalBottom", sensedMetalBottom);
+        }
+
+        if (proximitySwitchTop.get()) {
+            // Proximity switch is triggered
+            sensedMetalTop = true;
+            System.out.println("YAY2");
+            SmartDashboard.putBoolean("sensedMetalTop", sensedMetalTop);
+          } else {
+            // Proximity switch is not triggered
+            sensedMetalTop = false;
+            SmartDashboard.putBoolean("sensedMetalTop", sensedMetalTop);
+        }
     }
 }
