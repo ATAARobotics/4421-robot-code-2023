@@ -26,6 +26,8 @@ public class RedLeader extends SequentialCommandGroup {
     double SPEEDLIMIT = Constants.SPEEDLIMIT;
     double ROTLIMIT = Constants.ROTLIMIT;
 
+    double outCommunityZone[] = {11.35, 2.36};
+
     public RedLeader(SwerveDriveSubsystem swerveDriveSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
 
@@ -36,7 +38,7 @@ public class RedLeader extends SequentialCommandGroup {
                 // score
                 
                 // Drive over charging station
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(11.35, 2.36, new Rotation2d(Math.PI)))
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(outCommunityZone[0], outCommunityZone[1], new Rotation2d(Math.PI)))
 
                 // Auto-Balance on charging station
 

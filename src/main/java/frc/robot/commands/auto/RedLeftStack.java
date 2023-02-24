@@ -25,6 +25,10 @@ public class RedLeftStack extends SequentialCommandGroup {
     double SPEEDLIMIT = Constants.SPEEDLIMIT;
     double ROTLIMIT = Constants.ROTLIMIT;
 
+    double leftMidPoint[] = {12.38, 0.86};
+    double leftGamePiece[] = {10.92, 0.86};
+    double leftLeftScoring[] = {15.17, 0.16};
+
     public RedLeftStack(SwerveDriveSubsystem swerveDriveSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
 
@@ -35,18 +39,18 @@ public class RedLeftStack extends SequentialCommandGroup {
                 // score
                 
                 // drive to midpoint + rotate parallel with (lower arm, run intake(run until finished))
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(12.84, 4.46, new Rotation2d(Math.PI))),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(leftMidPoint[0], leftMidPoint[1], new Rotation2d(Math.PI))),
                 
                 // drive to cone
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.46, new Rotation2d(0.0))),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(leftGamePiece[0], leftGamePiece[1], new Rotation2d(0.0))),
 
                 // drive back + rotate parallel with raising arm to scoring pos
                 
                 // mid point + rotate
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(12.84, 4.46, new Rotation2d(Math.PI))),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(leftMidPoint[0], leftMidPoint[1], new Rotation2d(Math.PI))),
                 
                 // scoring position
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(15.17, 4.80, new Rotation2d(Math.PI)))
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(leftLeftScoring[0], leftLeftScoring[1], new Rotation2d(Math.PI)))
                 
                 // place cone
 
