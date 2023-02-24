@@ -5,15 +5,27 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-
-
+import frc.robot.Constants;
 import frc.robot.commands.AutoDriveToWayPoint;
 import frc.robot.subsystems.*;
 
-public class RedLeft extends SequentialCommandGroup {
+/*  Description of this auto
+*   1. Score high cube
+*   2. Drives to pick up cone and score
+*/
+
+// default angle when beginning = Math.PI
+
+public class RedLeftStack extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
 
-    public RedLeft(SwerveDriveSubsystem swerveDriveSubsystem) {
+    // for tweaking with tolerances and speed for auto
+    double DTOLERANCE = Constants.DTOLERANCE;
+    double RTOLERANCE = Constants.RTOLERANCE;
+    double SPEEDLIMIT = Constants.SPEEDLIMIT;
+    double ROTLIMIT = Constants.ROTLIMIT;
+
+    public RedLeftStack(SwerveDriveSubsystem swerveDriveSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
 
         addRequirements(m_swerveDriveSubsystem);
@@ -22,23 +34,23 @@ public class RedLeft extends SequentialCommandGroup {
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
                 // score
                 
-                // drive to cone + rotate parallel with (lower arm, run intake(run until finished))
+                // drive to midpoint + rotate parallel with (lower arm, run intake(run until finished))
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(12.84, 4.46, new Rotation2d(Math.PI))),
-                // just rotating
+                
+                // drive to cone
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.46, new Rotation2d(0.0))),
 
                 // drive back + rotate parallel with raising arm to scoring pos
                 
                 // mid point + rotate
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(12.84, 4.46, new Rotation2d(Math.PI))),
+                
                 // scoring position
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(15.17, 4.80, new Rotation2d(Math.PI)))
+                
                 // place cone
 
-                // drive to cone
-                // new ParallelCommandGroup(new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.05, new Rotation2d(Math.PI)))),
-                // drive left
-                // new ParallelCommandGroup(new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(10.92, 4.05, new Rotation2d(Math.PI)))),
+
         );
 
     }
