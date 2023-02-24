@@ -38,6 +38,8 @@ public class RobotContainer {
     private final PivotSubsystem m_pivotSubsystem;
     private final ArmSubsystem m_armSubsystem;
     private final TelescopingArmSubsystem m_telescopingSubsystem;
+    private final LightingSubsystem m_lightingSubsystem;
+    private final MusicSubsystem m_musicSubsystem;
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -62,7 +64,9 @@ public class RobotContainer {
                         joysticks::getYVelocity,
                         joysticks::getRotationVelocity, () -> 1,
                         () -> 1));
-
+        m_lightingSubsystem = new LightingSubsystem();
+        m_musicSubsystem = new MusicSubsystem();
+        LightingCommand lightingCommand = new LightingCommand(m_lightingSubsystem, m_armSubsystem, OI.wantACone());
         // autoChooser
         autoChooser.setDefaultOption("RedLeft", new RedLeft(m_swerveDriveSubsystem));
 
@@ -112,6 +116,11 @@ public class RobotContainer {
         joysticks.AutoBalance.whileTrue(
                 new AutoBalance(m_swerveDriveSubsystem, true)
         );
+        joysticks.PlayMusic.onTrue(new ConditionalCommand(
+            new RunCommand(m_musicSubsystem::musicPause), 
+            new RunCommand(m_musicSubsystem::musicPlay), 
+            m_musicSubsystem.isPlaying()));
+
 
     }
 
