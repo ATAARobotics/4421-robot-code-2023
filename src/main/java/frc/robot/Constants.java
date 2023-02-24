@@ -113,6 +113,13 @@ public class Constants {
     // Set this to true if you want to log diagnostics to SmartDashboard
     public static final boolean REPORTING_DIAGNOSTICS = true;
 
+
+    //Swerve Odometry Constants
+    public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+            new Translation2d(WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
+            new Translation2d(WHEELBASE / 2.0, -TRACK_WIDTH / 2.0),
+            new Translation2d(-WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
+            new Translation2d(-WHEELBASE / 2.0, -TRACK_WIDTH / 2.0));
     //Auto Balence
     public static final double BEAM_BALANACED_DRIVE_KP = 0.020;
     public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
