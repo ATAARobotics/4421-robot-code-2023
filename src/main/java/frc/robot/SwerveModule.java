@@ -5,6 +5,8 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -341,5 +343,9 @@ public class SwerveModule {
 
     public double getRotationTemperature() {
         return rotationMotor.getTemperature();
+    }
+
+    public SwerveModulePosition getPosition(){
+        return new SwerveModulePosition(driveMotor.getSelectedSensorPosition()*ticksPerMeter, Rotation2d.fromRadians(getAngle()));
     }
 }
