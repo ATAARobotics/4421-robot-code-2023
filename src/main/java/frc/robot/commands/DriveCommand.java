@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDriveSubsystem;
@@ -37,28 +38,9 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double xSpeed = xSupplier.getAsDouble();
-        if (xSpeed > 0.0) {
-            xVelocity = Math.min(xSupplier.getAsDouble() * speedSupplier.getAsDouble(), Constants.MAXIMUM_SPEED);
-        } else {
-            xVelocity = Math.max(xSupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED);
-        }
-
-        double ySpeed = ySupplier.getAsDouble();
-        if (ySpeed > 0.0) {
-            yVelocity = Math.min(ySupplier.getAsDouble() * speedSupplier.getAsDouble(), Constants.MAXIMUM_SPEED);
-        } else {
-            yVelocity = Math.max(ySupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED);
-        }
-
-        double rotationSpeed = rotationSupplier.getAsDouble();
-        if (rotationSpeed > 0.0) {
-            rotationVelocity = Math.min(rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble(), Constants.MAXIMUM_ROTATIONAL_SPEED);
-        } else {
-            rotationVelocity = Math.max(rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble(), -Constants.MAXIMUM_ROTATIONAL_SPEED);
-        }
-
-
+        xVelocity = MathUtil.clamp(ySupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED, Constants.MAXIMUM_SPEED);
+        yVelocity = MathUtil.clamp(xSupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED, Constants.MAXIMUM_SPEED);
+        rotationVelocity = MathUtil.clamp(rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble(), -Constants.MAXIMUM_ROTATIONAL_SPEED, Constants.MAXIMUM_ROTATIONAL_SPEED);
         swerveSubsystem.setSwerveDrive(xVelocity, yVelocity, rotationVelocity, true);
     }
 

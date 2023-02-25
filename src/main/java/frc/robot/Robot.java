@@ -103,7 +103,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         robotContainer.getOI().checkInputs();
         if(robotContainer.getOI().getToggleFieldOriented()){
-            robotContainer.getSwerveDriveSubsystem().setFieldOriented(!robotContainer.getSwerveDriveSubsystem().getFieldOriented(), 0);
+            robotContainer.getSwerveDriveSubsystem().setFieldOriented(!robotContainer.getSwerveDriveSubsystem().getFieldOriented(), 180);
         }
         if (Constants.REPORTING_DIAGNOSTICS) {
 

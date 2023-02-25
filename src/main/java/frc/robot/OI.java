@@ -72,12 +72,12 @@ class OI {
     }
 
     public void checkInputs() {
-        xVelocity = driveStick.getAnalog("XVelocity");
-        yVelocity = driveStick.getAnalog("YVelocity");
+        speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
+        xVelocity = driveStick.getAnalog("XVelocity")*speed;
+        yVelocity = driveStick.getAnalog("YVelocity")*speed;
         //rotationVelocity = rotationStick.getAnalog("XVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
 
-        speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
 
         // Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < Constants.JOY_DEAD_ZONE) {

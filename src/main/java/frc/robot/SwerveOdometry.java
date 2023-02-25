@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class SwerveOdometry {
 
@@ -19,11 +20,13 @@ public class SwerveOdometry {
 
 
     public SwerveDriveOdometry swerveOdometry;
+    private SwerveDriveSubsystem m_SwerveDriveSubsystem;
 
-    public SwerveOdometry(Pose2d initialPose, Pigeon pigeon, SwerveModulePosition[] modulePostions) {
+    public SwerveOdometry(Pose2d initialPose, Pigeon pigeon, SwerveModulePosition[] modulePostions, SwerveDriveSubsystem m_SwerveDriveSubsystem) {
         this.pose = initialPose;
         this.pigeon = pigeon;
         this.modulePositions = modulePostions;
+        this.m_SwerveDriveSubsystem = m_SwerveDriveSubsystem;
         swerveOdometry = new SwerveDriveOdometry(Constants.swerveKinematics, Rotation2d.fromRadians(pigeon.getYaw()), modulePostions);
     }
 
@@ -66,7 +69,6 @@ public class SwerveOdometry {
         if (!isInitialized) {
             setPose(pose, modulePositions);
             // Robot is 180 degrees away from the pigeon
-            pigeon.setYaw(pose.getRotation().getDegrees() + 180);
             isInitialized = true;
             return;
         }

@@ -100,7 +100,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Set up odometry
         System.out.println(getModulePostions()[2].distanceMeters);
-        odometry = new SwerveOdometry(initialPose, pigeon, getModulePostions());
+        odometry = new SwerveOdometry(initialPose, pigeon, getModulePostions(), this);
 
         // Initialize the pose
         pose = initialPose;
@@ -110,9 +110,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * This function should be run during every teleop and auto periodic
      */
     public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
-        this.xVelocity = -xVelocity;
-        this.yVelocity = -yVelocity;
-        this.rotationVelocity = -rotationVelocity;
+        this.xVelocity = xVelocity;
+        this.yVelocity = yVelocity;
+        this.rotationVelocity = rotationVelocity;
         this.useOdometry = useOdometry;
     }
 
@@ -166,16 +166,16 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         d = this.yVelocity + rotationVelocity * trackWidth / 2;
 
         velocities = new double[] {
-            Math.sqrt(Math.pow(d, 2) + Math.pow(b, 2)),
+            Math.sqrt(Math.pow(c, 2) + Math.pow(a, 2)),
             Math.sqrt(Math.pow(c, 2) + Math.pow(b, 2)),
             Math.sqrt(Math.pow(d, 2) + Math.pow(a, 2)),
-            Math.sqrt(Math.pow(c, 2) + Math.pow(a, 2))
+            Math.sqrt(Math.pow(d, 2) + Math.pow(b, 2))
         };
         angles = new double[]{
-            Math.atan2(c, b),
+            Math.atan2(d, a),
             Math.atan2(d, b),
             Math.atan2(c, a),
-            Math.atan2(d, a)
+            Math.atan2(c, b)
         };
         if (!safetyDisable) {
             // if (Constants.REPORTING_DIAGNOSTICS) {
