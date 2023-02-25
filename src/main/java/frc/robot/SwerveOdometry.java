@@ -11,7 +11,7 @@ public class SwerveOdometry {
     //Stores the current position of the robot
     private Pose2d pose;
     private Pigeon pigeon;
-    private SwerveModulePosition[] modulePostions;
+    private SwerveModulePosition[] modulePositions;
     //The last time the odometry was updated
     private double lastUpdate = 0.0;
 
@@ -23,7 +23,7 @@ public class SwerveOdometry {
     public SwerveOdometry(Pose2d initialPose, Pigeon pigeon, SwerveModulePosition[] modulePostions) {
         this.pose = initialPose;
         this.pigeon = pigeon;
-        this.modulePostions = modulePostions;
+        this.modulePositions = modulePostions;
         swerveOdometry = new SwerveDriveOdometry(Constants.swerveKinematics, Rotation2d.fromRadians(pigeon.getYaw()), modulePostions);
     }
 
@@ -32,9 +32,9 @@ public class SwerveOdometry {
      * @param currentAngle The current angle given by the gyro from -Pi to Pi
      * @param timestamp The current timestamp
      */
-    public Pose2d update(SwerveModulePosition[] modulePostions) {
-        this.modulePostions = modulePostions;
-        pose = swerveOdometry.update(Rotation2d.fromRadians(pigeon.getYaw()), modulePostions);
+    public Pose2d update(SwerveModulePosition[] modulePositions) {
+        this.modulePositions = modulePositions;
+        pose = swerveOdometry.update(Rotation2d.fromRadians(pigeon.getYaw()), modulePositions);
 
         //Updates the position of the robot based on the distance traveled
         SmartDashboard.putNumber("Robot Pose X", pose.getX());
@@ -64,8 +64,9 @@ public class SwerveOdometry {
     public void addAprilTag(Pose2d pose) {
 
         if (!isInitialized) {
-            setPose(pose, modulePostions);
-            pigeon.setYaw(-Math.PI);
+            setPose(pose, modulePositions);
+            // Robot is 180 degrees away from the pigeon
+            pigeon.setYaw(pose.getRotation().getDegrees() + 180);
             isInitialized = true;
             return;
         }

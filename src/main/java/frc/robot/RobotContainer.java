@@ -64,7 +64,7 @@ public class RobotContainer {
                         () -> 1));
 
         // autoChooser
-        autoChooser.setDefaultOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem));
+        autoChooser.setDefaultOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_armSubsystem));
         autoChooser.addOption("Red Leader", new RedLeader(m_swerveDriveSubsystem));
         autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem));
         autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));

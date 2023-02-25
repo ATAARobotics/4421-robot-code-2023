@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.AutoDriveToWayPoint;
 import frc.robot.subsystems.*;
+import frc.robot.AutoConstants;
 
 /*  Description of this auto
 *   1. Score high cube
 *   2. Drives over charging station
+*    (maybe pick up a game piece)
 *   3. Park on driving station
 */
 
@@ -26,19 +28,20 @@ public class RedLeader extends SequentialCommandGroup {
     double SPEEDLIMIT = Constants.SPEEDLIMIT;
     double ROTLIMIT = Constants.ROTLIMIT;
 
-    double outCommunityZone[] = {11.35, 2.36};
+    
 
     public RedLeader(SwerveDriveSubsystem swerveDriveSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
 
         addRequirements(m_swerveDriveSubsystem);
 
-        addCommands(
-                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+        addCommands(                    
+                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0))
                 // score
                 
-                // Drive over charging station
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(outCommunityZone[0], outCommunityZone[1], new Rotation2d(Math.PI)))
+                // Drive over charging station with dead-reckoning (meteo)
+
+
 
                 // Auto-Balance on charging station
 

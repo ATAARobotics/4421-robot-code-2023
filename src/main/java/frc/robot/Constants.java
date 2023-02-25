@@ -199,5 +199,9 @@ public class Constants {
         // pigeon tip threshold to reset odometry in degrees
         public static final double tipThreshold = 5.0;
 
-    
+        // Intake time limit
+        public static final double INTAKE_TIME_LIMIT = 3.0;
+
+        // Outake Delay
+        public static final double OUTTAKE_DELAY = 0.35;
 }
