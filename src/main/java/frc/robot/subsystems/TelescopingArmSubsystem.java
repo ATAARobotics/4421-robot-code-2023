@@ -20,48 +20,33 @@ public class TelescopingArmSubsystem extends SubsystemBase {
     private CANCoder telescopingArmEncoder = new CANCoder(Constants.TELESCOPING_ARM_ENCODER_ID);
 
     private int direction = 0;
+    private double speed = 0.5;
 
     public TelescopingArmSubsystem() {
         telescopingArmMotor.setInverted(true);
         telescopingArmMotor.setIdleMode(IdleMode.kBrake);
-
     }
 
     @Override
     public void periodic() {
-        switch (direction) {
-
-            case 1:
-                if (telescopingArmEncoder.getPosition() > 500 ) {
-                    telescopingArmMotor.set(0);
-                } else {
-                    telescopingArmMotor.set(0.3);
-                }
-            case 2:
-                if (telescopingArmEncoder.getPosition() < 0 ) {
-                    telescopingArmMotor.set(0);
-                } else {
-                    telescopingArmMotor.set(-0.1);
-                }
-
-            default: 
-                telescopingArmMotor.set(0);
-                break;
-
-        }
-
+        SmartDashboard.putNumber("Telescoping arm position", telescopingArmEncoder.getPosition());
     }
 
     public void in() {
-        telescopingArmMotor.set(-0.2);
+        telescopingArmMotor.set(-speed);
     }
 
     public void out() {
-        telescopingArmMotor.set(0.2);
+        telescopingArmMotor.set(speed);
+        System.out.println(telescopingArmEncoder.getPosition());
     }
 
     public void stop() {
         telescopingArmMotor.set(0.0);
+    }
+
+    public void RestEncoder(){
+        telescopingArmEncoder.setPosition(0);
     }
 
 } 

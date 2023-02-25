@@ -23,6 +23,11 @@ public class PivotSubsystem extends SubsystemBase {
     private CANSparkMax pivotMotor = new CANSparkMax(Constants.PIVOT_MOTOR_ID, MotorType.kBrushless);
     private CANCoder pivotEncoder = new CANCoder(Constants.PIVOT_ENCODER_ID);
     private PIDController pivotPid = new PIDController(0, 0, 0);
+    private DigitalInput proximitySwitchBottom;
+    private DigitalInput proximitySwitchTop;
+    private boolean sensedMetalBottom = false;
+    private boolean sensedMetalTop = false;
+    private double speed = 0.2;
     private double climbMotorSpeed = 0.85;
 
     private double midElevatorEncoderTicks = 35;
@@ -33,7 +38,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     private double ropeLength = 1;
     private double winchCircumference = 0.0287 * Math.PI;
-
+    private int movementState = 0;
     double setpoint;
 
     public PivotSubsystem() {
@@ -41,52 +46,86 @@ public class PivotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot P", 0);
         SmartDashboard.putNumber("Pivot I", 0);
         SmartDashboard.putNumber("Pivot D", 0);
-
-    
-
+        this.proximitySwitchBottom = new DigitalInput(1);
+        this.proximitySwitchTop = new DigitalInput(2);
     }
 
     public void periodic() {
-        // SmartDashboard.putNumber("Pivot Speed", pivotPid.calculate(pivotEncoder.getPosition()));
-        
-        // pivotMotor.set(pivotPid.calculate(pivotEncoder.getPosition()));
+        checkMetal();
+        SmartDashboard.putNumber("Pivot Speed", pivotPid.calculate(pivotEncoder.getPosition()));
+        switch(movementState){
+            case 1:
+                if(!sensedMetalBottom){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    movementState = 0;
+                    pivotMotor.set(0);
 
-        // SmartDashboard.putNumber("Pivot Encoder", pivotEncoder.getPosition());
-        // SmartDashboard.putNumber("SetPoint", setpoint);
-    
+                }
+                break;
+            case 2:{
+                if(!sensedMetalTop){
+                    pivotMotor.set(speed);
+                }
+                else{
+                    movementState = 0;
+                    pivotMotor.set(0);
+
+                }
+                break;
+            }
+            case 3:{
+                if(!sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    movementState = 0;
+                    pivotMotor.set(0);
+
+                }
+                break;
+            }
+            default:
+                pivotMotor.set(0);
+                break;
+        }
     }
 
     public void up() {
-        //pivotMotor.set(-0.2);
-        setpoint = 0;
-        pivotPid.setSetpoint(setpoint);
-    
+        if(movementState != 2){
+            movementState = 2;
+        }else{
+            movementState = 0;
+            pivotMotor.set(0);
+        }
     }
-
 
     public void down() {
-        //pivotMotor.set(0.2);
-        pivotPid = new PIDController(SmartDashboard.getNumber("Pivot P", 0), SmartDashboard.getNumber("Pivot I", 0), 
-        SmartDashboard.getNumber("Pivot D", 0));
+        if(movementState != 1){
+            movementState = 1;
+        }else{
+            movementState = 0;
+            pivotMotor.set(0);
+        }
     }
 
-    public void midway(){
-        setpoint = 500;
-        pivotPid.setSetpoint(setpoint);
-
-    }
-
-    public void negmidway(){
-        setpoint = -500;
-        pivotPid.setSetpoint(setpoint);
-
-    }
     public void stop() {
-        pivotMotor.set(0.0);
+        pivotMotor.set(0);
+        movementState = 0;
     }
 
- 
-    public void preventAutoClimb() {
-        autoClimbEnabled = false;
+    public void checkMetal() {
+        if (!proximitySwitchBottom.get()) {
+            sensedMetalBottom = true;
+          } else {
+            sensedMetalBottom = false;
+        }
+
+        if (!proximitySwitchTop.get()) {
+            sensedMetalTop = true;
+          } else {
+            sensedMetalTop = false;
+        }
     }
 } 
