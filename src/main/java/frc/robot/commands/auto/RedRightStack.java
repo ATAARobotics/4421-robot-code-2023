@@ -40,22 +40,25 @@ public class RedRightStack extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, Math.PI))
                 // score
-                //new OuttakeCommand(m_armSubsystem),
-                // drive to midpoint + rotate parallel with (lower arm, run intake(run until finished))
-                //new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI))),
+                new OuttakeCommand(m_armSubsystem),
+                // drive to midpoint + rotate TODO: parallel with lower arm
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI))),
                 
-                // drive to cone
-                //new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0], AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(0.0))),
+                // drive to cone + parallel with intake
+                new ParallelCommandGroup(
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0], AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(0.0))),
+                    new IntakeCommand(armSubsystem)
+                ),
 
-                // drive back + rotate parallel with raising arm to scoring pos
-                
-                // mid point + rotate
-                //new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI))),
+                // mid point + rotate + TODO: parallel with raising arm to scoring pos + extending
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI))),
                 
                 // scoring position
-                //new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_RIGHT_SCORING[0], AutoConstants.RED_RIGHT_RIGHT_SCORING[1], new Rotation2d(Math.PI))),
-                //new IntakeCommand(m_armSubsystem)
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_RIGHT_SCORING[0], AutoConstants.RED_RIGHT_RIGHT_SCORING[1], new Rotation2d(Math.PI))),
+                
                 // place cone
+                new OuttakeCommand(m_armSubsystem)
+                
 
 
         );

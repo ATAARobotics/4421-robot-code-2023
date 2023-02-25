@@ -30,7 +30,6 @@ public class ArmSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        // TODO Auto-generated method stub
         super.periodic();
         SmartDashboard.putBoolean("runStarted", runStarted);
         SmartDashboard.putNumber("rate", intake_encoder.getRate());
