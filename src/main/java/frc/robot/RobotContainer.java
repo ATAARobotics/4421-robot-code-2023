@@ -36,7 +36,7 @@ public class RobotContainer {
 
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final PivotSubsystem m_pivotSubsystem;
-    private final ArmSubsystem m_armSubsystem;
+    private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingSubsystem;
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -51,7 +51,7 @@ public class RobotContainer {
         m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
         new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
        
-        m_armSubsystem = new ArmSubsystem();
+        m_intakeSubsystem = new IntakeSubsystem();
         m_pivotSubsystem = new PivotSubsystem();
         m_telescopingSubsystem = new TelescopingArmSubsystem();
 
@@ -80,25 +80,21 @@ public class RobotContainer {
 
 
     private void configureBindings() {
-        joysticks.IntakeIn.onTrue(new InstantCommand(m_armSubsystem::timerReset))
-        .whileTrue(new RunCommand(m_armSubsystem::runIntake))
-        .onFalse(new InstantCommand(m_armSubsystem::stopIntake));
+        joysticks.IntakeIn.onTrue(new InstantCommand(m_intakeSubsystem::timerReset))
+        .whileTrue(new RunCommand(m_intakeSubsystem::runIntake))
+        .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
 
-        joysticks.IntakeOut.whileTrue(new RunCommand(m_armSubsystem::runIntakeReversed))
-        .onFalse(new InstantCommand(m_armSubsystem::stopIntake));
+        joysticks.IntakeOut.whileTrue(new RunCommand(m_intakeSubsystem::runIntakeReversed))
+        .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
        
-        joysticks.PivotUp.whileTrue(new RunCommand(m_pivotSubsystem::up, m_pivotSubsystem))
-        .onFalse(new InstantCommand(m_pivotSubsystem::stop));
-        joysticks.PivotDown.whileTrue(new RunCommand(m_pivotSubsystem::down, m_pivotSubsystem))
-        .onFalse(new InstantCommand(m_pivotSubsystem::stop));
+        joysticks.PivotUp.onTrue(new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem));
+        joysticks.PivotDown.onTrue(new InstantCommand(m_pivotSubsystem::down, m_pivotSubsystem));
 
-        joysticks.TelescopingOut.onTrue(new InstantCommand(m_pivotSubsystem::midway));
-        joysticks.TelescopingIn.onTrue(new InstantCommand(m_pivotSubsystem::negmidway));
 
-        // joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
-        // .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
-        // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
-        // .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+        joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
+        .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+        joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
+        .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
 
 
         // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
