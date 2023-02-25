@@ -94,12 +94,12 @@ public class ArmSubsystem extends SubsystemBase{
     }
 
     public void checkMetal() {
-        System.out.println("BOT: " + proximitySwitchBottom.get());
-        System.out.println("TOP: " + proximitySwitchTop.get());
+        // System.out.println("BOT: " + proximitySwitchBottom.get());
+        // System.out.println("TOP: " + proximitySwitchTop.get());
         if (proximitySwitchBottom.get()) {
             // Proximity switch is triggered
             sensedMetalBottom = true;
-            System.out.println("YAY");
+            // System.out.println("YAY");
             SmartDashboard.putBoolean("sensedMetalBottom", sensedMetalBottom);
           } else {
             // Proximity switch is not triggered
@@ -110,7 +110,7 @@ public class ArmSubsystem extends SubsystemBase{
         if (proximitySwitchTop.get()) {
             // Proximity switch is triggered
             sensedMetalTop = true;
-            System.out.println("YAY2");
+            // System.out.println("YAY2");
             SmartDashboard.putBoolean("sensedMetalTop", sensedMetalTop);
           } else {
             // Proximity switch is not triggered

@@ -15,7 +15,7 @@ public class SwerveOdometry {
     //The last time the odometry was updated
     private double lastUpdate = 0.0;
 
-    private boolean isInitialized = false;
+    private boolean isInitialized = true;
 
 
     public SwerveDriveOdometry swerveOdometry;

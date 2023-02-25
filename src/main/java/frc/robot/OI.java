@@ -74,8 +74,8 @@ class OI {
     public void checkInputs() {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
-        //rotationVelocity = rotationStick.getAnalog("XVelocity");
-        rotationVelocity = driveStick.getAnalog("RotationVelocity");
+        rotationVelocity = rotationStick.getAnalog("XVelocity");
+        // rotationVelocity = driveStick.getAnalog("RotationVelocity");
 
         speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
 
