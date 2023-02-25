@@ -33,7 +33,7 @@ public class SwerveModule {
     // The right-hand modules have their wheels facing the other way, so we need to
     // invert their direction
     private double inversionConstant = 1.0;
-
+    private boolean invertDrive = false;
     // The ID number of the module
     private int id;
 
@@ -43,6 +43,7 @@ public class SwerveModule {
     // The velocity (-1 to 1) to run the motor
     private double driveVelocity = 0.0;
     private double reverseMultiplier = 1.0;
+
 
     // Create a PID for controlling the angle of the module
     private PIDController angleController = new PIDController(0.8, 0.0, 0.001);
@@ -70,6 +71,7 @@ public class SwerveModule {
 
     // Safety override
     private boolean cancelAllMotion = false;
+
 
     /**
      * Creates a swerve module with the given hardware
@@ -104,7 +106,7 @@ public class SwerveModule {
         if (invertDrive) {
             this.inversionConstant = -1.0;
         }
-
+        this.invertDrive = invertDrive;
         // Set up the encoder from the drive motor
         this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         this.driveMotor.setSelectedSensorPosition(0);
@@ -154,7 +156,7 @@ public class SwerveModule {
         double rotationVelocity = 0.0;
         if (driveVelocity != 0.0 && !cancelAllMotion) {
             // Get the rotation velocity
-            rotationVelocity = angleController.calculate(getAngle());
+            rotationVelocity = -angleController.calculate(getAngle());
             // Clamp the value (not scale because faster is okay, it's on a PID)
             rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
             if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
@@ -346,6 +348,10 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getPosition(){
-        return new SwerveModulePosition(driveMotor.getSelectedSensorPosition()*ticksPerMeter, Rotation2d.fromRadians(getAngle()));
+        if(!invertDrive){
+            return new SwerveModulePosition(driveMotor.getSelectedSensorPosition() * ((0.1016*Math.PI / (6.75 * 2048.0))), Rotation2d.fromRadians(getAngle()));
+        }else{
+            return new SwerveModulePosition(driveMotor.getSelectedSensorPosition() * ((0.1016*Math.PI / (6.75 * 2048.0))), Rotation2d.fromRadians(getAngle()+Math.PI) );
+        }
     }
 }

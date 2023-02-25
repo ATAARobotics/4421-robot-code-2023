@@ -110,7 +110,7 @@ public class AutoDriveToWayPoint extends CommandBase {
       }
 
       SmartDashboard.putBoolean("ROT-ACH", false);
-      rotSpeed = MathUtil.clamp(-rotController.calculate(rotTemp), -rotLimit, rotLimit);
+      rotSpeed = MathUtil.clamp(rotController.calculate(rotTemp), -rotLimit, rotLimit);
       if (rotController.atSetpoint()) {
         SmartDashboard.putBoolean("ROT-ACH", true);
         rotSpeed = 0;
@@ -121,7 +121,7 @@ public class AutoDriveToWayPoint extends CommandBase {
       SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
       // Drive // x and y is flipped
-      m_swerveDriveSubsystem.setSwerveDrive(-ySpeed, -xSpeed, rotSpeed, true);
+      m_swerveDriveSubsystem.setSwerveDrive(xSpeed, ySpeed, rotSpeed, true);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package frc.robot.commands.auto;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,7 +38,7 @@ public class RedRightStack extends SequentialCommandGroup {
         addRequirements(m_swerveDriveSubsystem, m_armSubsystem);
 
         addCommands(
-                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, Math.PI))
                 // score
                 new OuttakeCommand(m_armSubsystem),
                 // drive to midpoint + rotate TODO: parallel with lower arm
