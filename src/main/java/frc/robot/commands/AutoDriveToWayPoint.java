@@ -50,6 +50,8 @@ public class AutoDriveToWayPoint extends CommandBase {
       this(swerveDriveSubsystem, targetPose, Constants.DTOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT);
     }
 
+    // TODO: Create a new constructor for if it is the final destination or not. Higher tolerances for not final distanation
+
     @Override
     public void initialize() {
         m_swerveDriveSubsystem.setBrakes(true);
