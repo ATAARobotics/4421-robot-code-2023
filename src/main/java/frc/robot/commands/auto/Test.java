@@ -18,7 +18,7 @@ public class Test extends SequentialCommandGroup {
 
         addCommands(
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(14.6, 6.7, new Rotation2d(0)))
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(14.6, 6.7, new Rotation2d(0)), true)
         );
 
     }

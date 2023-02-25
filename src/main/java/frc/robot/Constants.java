@@ -190,8 +190,13 @@ public class Constants {
         
         };
 
-        public static final double DTOLERANCE = 0.03; // meters
-        public static final double RTOLERANCE = 3.0; // degrees
+        public static final double E_DTOLERANCE = 0.03; // meters
+        public static final double E_RTOLERANCE = 3.0; // degrees
+
+        // not endpoint tolerances
+        public static final double DTOLERANCE = 0.09; // meters
+        public static final double RTOLERANCE = 5.0; // degrees
+
         public static final double SPEEDLIMIT = 1.0; // meters per second
         public static final double ROTLIMIT = Math.PI;
 

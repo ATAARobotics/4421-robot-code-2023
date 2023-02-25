@@ -48,13 +48,13 @@ public class RedLeaderWGP extends SequentialCommandGroup {
 
                 // drive to pick up game piece
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_RIGHT_GAME_PIECE[0], AutoConstants.RED_MID_RIGHT_GAME_PIECE[1], new Rotation2d(0))),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_RIGHT_GAME_PIECE[0], AutoConstants.RED_MID_RIGHT_GAME_PIECE[1], new Rotation2d(0)), true),
                     new IntakeCommand(m_armSubsystem)
                 ),
                 
 
                 // drive close to the charging station
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_RIGHT_CHARGING_STATION[0], AutoConstants.RED_MID_RIGHT_CHARGING_STATION[1], new Rotation2d(Math.PI)))
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_RIGHT_CHARGING_STATION[0], AutoConstants.RED_MID_RIGHT_CHARGING_STATION[1], new Rotation2d(Math.PI)), false)
 
                 // TODO: Auto-Balance on charging station
 

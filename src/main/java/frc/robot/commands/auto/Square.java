@@ -18,10 +18,10 @@ public class Square extends SequentialCommandGroup {
 
         addCommands(
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(2, 0, new Rotation2d(0))),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(2, 2, new Rotation2d(0))),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(0, 2, new Rotation2d(0))),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(0, 0, new Rotation2d(0)))
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(2, 0, new Rotation2d(0)), false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(2, 2, new Rotation2d(0)), false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(0, 2, new Rotation2d(0)), false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(0, 0, new Rotation2d(0)), true)
         );
 
     }

@@ -28,34 +28,46 @@ public class AutoDriveToWayPoint extends CommandBase {
     private double speedLimit;
     private double rotLimit;
 
+    private boolean isEndPoint;
+
     // PID
     private final PIDController xController = new PIDController(1.0, 0.1, 0);
     private final PIDController yController = new PIDController(1.0, 0.1, 0);
     private final PIDController rotController = new PIDController(2.0, 0, 0);
 
-    public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, double driveTolerance, double rotTolerance, double speedLimit, double rotLimit) {
+    public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, double driveTolerance, double rotTolerance, double speedLimit, double rotLimit, boolean isEndPoint) {
         this.m_swerveDriveSubsystem = swerveDriveSubsystem;
         this.targetPose = targetPose;
         this.odometry = swerveDriveSubsystem.getOdometry();
-        xController.setTolerance(driveTolerance);
-        yController.setTolerance(driveTolerance);
-        rotController.setTolerance(Units.degreesToRadians(rotTolerance));
+        // xController.setTolerance(driveTolerance);
+        // yController.setTolerance(driveTolerance);
+        // rotController.setTolerance(Units.degreesToRadians(rotTolerance));
         rotController.enableContinuousInput(-Math.PI, Math.PI);
         this.speedLimit = speedLimit;
         this.rotLimit = rotLimit;
+        this.isEndPoint = isEndPoint;
         addRequirements(this.m_swerveDriveSubsystem);
     }
 
-    public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose) {
-      this(swerveDriveSubsystem, targetPose, Constants.DTOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT);
+    public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, boolean isEndPoint) {
+      this(swerveDriveSubsystem, targetPose, Constants.DTOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT, isEndPoint);
     }
-
-    // TODO: Create a new constructor for if it is the final destination or not. Higher tolerances for not final distanation
 
     @Override
     public void initialize() {
         m_swerveDriveSubsystem.setBrakes(true);
         goalPose = targetPose;
+
+        if (isEndPoint) {
+          xController.setTolerance(Constants.E_DTOLERANCE);
+          yController.setTolerance(Constants.E_DTOLERANCE);
+          rotController.setTolerance(Units.degreesToRadians(Constants.E_RTOLERANCE));
+        } else {
+          xController.setTolerance(Constants.DTOLERANCE);
+          yController.setTolerance(Constants.DTOLERANCE);
+          rotController.setTolerance(Units.degreesToRadians(Constants.RTOLERANCE));
+        }
+
         xController.setSetpoint(goalPose.getX());
         yController.setSetpoint(goalPose.getY());
         rotController.setSetpoint(goalPose.getRotation().getRadians());
