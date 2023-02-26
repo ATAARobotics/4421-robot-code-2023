@@ -61,8 +61,7 @@ public class PivotSubsystem extends SubsystemBase {
                     pivotMotor.set(-speed);
                 }
                 else{
-                    movementState = 0;
-                    pivotMotor.set(0);
+                    stop();
 
                 }
                 break;
@@ -71,9 +70,7 @@ public class PivotSubsystem extends SubsystemBase {
                     pivotMotor.set(speed);
                 }
                 else{
-                    movementState = 0;
-                    pivotMotor.set(0);
-
+                    stop();
                 }
                 break;
             }
@@ -94,45 +91,27 @@ public class PivotSubsystem extends SubsystemBase {
                 }
             
             default:
-                pivotMotor.set(0);
-                break;
+            stop();
         }
+        movementState = 0;
     
         
     }
 
     public void up() {
-        if (movementState == 4){
-            return;
-        }
-        else if(movementState != 2){
             movementState = 2;
             System.out.println("movement state up");
-        }else{
-            movementState = 0;
-            pivotMotor.set(0);
-        }
-        
 
     }
 
     public void overrideUp(){
-        if (movementState != 4){
             movementState = 4;
-            //pivotMotor.set(speed);
-        }
-        else {
-            movementState = 0;
-        }
+
     }
     public void down() {
         System.out.println("movement state down");
-        if(movementState != 1){
-            movementState = 1;
-        }else{
-            movementState = 0;
-            pivotMotor.set(0);
-        }
+        movementState = 1;
+
     }
 
     public void stop() {
