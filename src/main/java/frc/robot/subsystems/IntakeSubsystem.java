@@ -60,7 +60,7 @@ public class IntakeSubsystem extends SubsystemBase{
                 timer.start();
             }
 
-            if (timer.hasElapsed(intakeDelay)) {
+            if (isIntakeTimerDone()) {
                 intake_motor.set(0.0);
                 this.hasGamePiece = true;
             }
@@ -84,5 +84,9 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public boolean hasGamePiece() {
         return hasGamePiece;
+    }
+
+    public boolean isIntakeTimerDone() {
+        return timer.hasElapsed(intakeDelay);
     }
 }

@@ -63,9 +63,10 @@ public class RobotContainer {
                         joysticks::getRotationVelocity, () -> 1,
                         () -> 1));
         // autoChooser
-        autoChooser.setDefaultOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem));
-        autoChooser.addOption("Red Leader", new RedLeader(m_swerveDriveSubsystem));
-        autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem));
+        autoChooser.setDefaultOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("Red Leader", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("RedLeaderWGP", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem, m_intakeSubsystem));
         autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
         autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem));
         autoChooser.addOption("Do Nothing", null);

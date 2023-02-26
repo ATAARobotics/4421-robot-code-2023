@@ -63,8 +63,7 @@ public class SwerveOdometry {
 
         if (!isInitialized) {
             setPose(pose);
-            // either pose or pose + 180
-            pigeon.setYaw(pose.getRotation().getDegrees());
+            pigeon.setYaw(pose.getRotation().getDegrees() + 180);
             isInitialized = true;
             return;
         }

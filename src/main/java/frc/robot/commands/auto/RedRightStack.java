@@ -1,12 +1,17 @@
 package frc.robot.commands.auto;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.AutoConstants;
 import frc.robot.Constants;
 import frc.robot.commands.AutoDriveToWayPoint;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.subsystems.*;
 
 /*  Description of this auto
@@ -18,6 +23,7 @@ import frc.robot.subsystems.*;
 
 public class RedRightStack extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
+    private final IntakeSubsystem m_intakeSubsystem;
 
     // for tweaking with tolerances and speed for auto
     double DTOLERANCE = Constants.DTOLERANCE;
@@ -25,34 +31,34 @@ public class RedRightStack extends SequentialCommandGroup {
     double SPEEDLIMIT = Constants.SPEEDLIMIT;
     double ROTLIMIT = Constants.ROTLIMIT;
 
-    double rightMidPoint[] = {13.84, 4.56};
-    double rightGamePiece[] = {10.92, 4.56};
-    double rightRightScoring[] = {15.17, 4.90};
-
-    public RedRightStack(SwerveDriveSubsystem swerveDriveSubsystem) {
+    public RedRightStack(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
+        m_intakeSubsystem = intakeSubsystem;
 
-        addRequirements(m_swerveDriveSubsystem);
+        addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem);
 
         addCommands(
-                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, Math.PI)),
                 // score
+                new OuttakeCommand(m_intakeSubsystem),
+                // drive to midpoint + rotate TODO: parallel with lower arm
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI)), false),
                 
-                // drive to midpoint + rotate parallel with (lower arm, run intake(run until finished))
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(rightMidPoint[0], rightMidPoint[1], new Rotation2d(Math.PI))),
-                
-                // drive to cone
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(rightGamePiece[0], rightGamePiece[1], new Rotation2d(0.0))),
+                // drive to cone + parallel with intake
+                new ParallelCommandGroup(
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0], AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(0.0)), true),
+                    new IntakeCommand(intakeSubsystem)
+                ),
 
-                // drive back + rotate parallel with raising arm to scoring pos
-                
-                // mid point + rotate
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(rightMidPoint[0], rightMidPoint[1], new Rotation2d(Math.PI))),
+                // mid point + rotate + TODO: parallel with raising arm to scoring pos + extending
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI)), false),
                 
                 // scoring position
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(rightRightScoring[0], rightRightScoring[1], new Rotation2d(Math.PI)))
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_RIGHT_SCORING[0], AutoConstants.RED_RIGHT_RIGHT_SCORING[1], new Rotation2d(Math.PI)), true),
                 
                 // place cone
+                new OuttakeCommand(m_intakeSubsystem)
+                
 
 
         );

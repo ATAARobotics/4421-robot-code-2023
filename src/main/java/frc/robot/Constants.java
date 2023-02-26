@@ -204,8 +204,13 @@ public class Constants {
         
         };
 
-        public static final double DTOLERANCE = 0.03; // meters
-        public static final double RTOLERANCE = 3.0; // degrees
+        public static final double E_DTOLERANCE = 0.03; // meters
+        public static final double E_RTOLERANCE = 3.0; // degrees
+
+        // not endpoint tolerances
+        public static final double DTOLERANCE = 0.09; // meters
+        public static final double RTOLERANCE = 5.0; // degrees
+        
         public static final double SPEEDLIMIT = 1.0; // meters per second
         public static final double ROTLIMIT = Math.PI;
 
@@ -213,5 +218,9 @@ public class Constants {
         // pigeon tip threshold to reset odometry in degrees
         public static final double tipThreshold = 5.0;
 
-    
+        // Intake time limit
+        public static final double INTAKE_TIME_LIMIT = 3.0;
+
+        // Outake Delay
+        public static final double OUTTAKE_DELAY = 0.35;
 }

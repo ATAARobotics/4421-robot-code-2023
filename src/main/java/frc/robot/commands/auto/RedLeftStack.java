@@ -5,8 +5,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.AutoConstants;
 import frc.robot.Constants;
 import frc.robot.commands.AutoDriveToWayPoint;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.subsystems.*;
 
 /*  Description of this auto
@@ -18,6 +21,7 @@ import frc.robot.subsystems.*;
 
 public class RedLeftStack extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
+    private final IntakeSubsystem m_intakeSubsystem;
 
     // for tweaking with tolerances and speed for auto
     double DTOLERANCE = Constants.DTOLERANCE;
@@ -25,35 +29,33 @@ public class RedLeftStack extends SequentialCommandGroup {
     double SPEEDLIMIT = Constants.SPEEDLIMIT;
     double ROTLIMIT = Constants.ROTLIMIT;
 
-    double leftMidPoint[] = {12.38, 0.86};
-    double leftGamePiece[] = {10.92, 0.86};
-    double leftLeftScoring[] = {15.17, 0.16};
-
-    public RedLeftStack(SwerveDriveSubsystem swerveDriveSubsystem) {
+    public RedLeftStack(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
+        m_intakeSubsystem = intakeSubsystem;
 
         addRequirements(m_swerveDriveSubsystem);
 
         addCommands(
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
                 // score
+                new OuttakeCommand(m_intakeSubsystem),
+                // drive to midpoint + rotate TODO: parallel with lower arm
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_LEFT_MID_POINT[0], AutoConstants.RED_LEFT_MID_POINT[1], new Rotation2d(Math.PI)), false),
                 
-                // drive to midpoint + rotate parallel with (lower arm, run intake(run until finished))
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(leftMidPoint[0], leftMidPoint[1], new Rotation2d(Math.PI))),
+                // drive to cone + parallel with intake
+                new ParallelCommandGroup(
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_LEFT_GAME_PIECE[0], AutoConstants.RED_LEFT_GAME_PIECE[1], new Rotation2d(0.0)), true),
+                    new IntakeCommand(intakeSubsystem)
+                ),
                 
-                // drive to cone
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(leftGamePiece[0], leftGamePiece[1], new Rotation2d(0.0))),
-
-                // drive back + rotate parallel with raising arm to scoring pos
-                
-                // mid point + rotate
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(leftMidPoint[0], leftMidPoint[1], new Rotation2d(Math.PI))),
+                // mid point + rotate TODO: parallel with raising arm to scoring pos
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_LEFT_MID_POINT[0], AutoConstants.RED_LEFT_MID_POINT[1], new Rotation2d(Math.PI)), false),
                 
                 // scoring position
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(leftLeftScoring[0], leftLeftScoring[1], new Rotation2d(Math.PI)))
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_LEFT_LEFT_SCORING[0], AutoConstants.RED_LEFT_LEFT_SCORING[1], new Rotation2d(Math.PI)), true),
                 
                 // place cone
-
+                new OuttakeCommand(m_intakeSubsystem)
 
         );
 
