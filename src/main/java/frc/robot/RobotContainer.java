@@ -89,7 +89,7 @@ public class RobotContainer {
        
         joysticks.PivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::up, m_pivotSubsystem::stop, m_pivotSubsystem));
         joysticks.OverridePivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::overrideUp, m_pivotSubsystem::stop, m_pivotSubsystem));
-        joysticks.PivotDown.whileTrue(new StartEndCommand(m_pivotSubsystem::down, m_pivotSubsystem::stop, m_pivotSubsystem));
+        joysticks.PivotDown.whileTrue(new StartEndCommand(m_pivotSubsystem::firstdown, m_pivotSubsystem::stop, m_pivotSubsystem));
 
 
         joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))

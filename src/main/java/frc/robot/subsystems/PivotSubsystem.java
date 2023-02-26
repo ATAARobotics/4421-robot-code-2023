@@ -74,13 +74,22 @@ public class PivotSubsystem extends SubsystemBase {
                     pivotMotor.set(-speed);
                 }
                 else{
+                    movementState = 4;
+                }
+                break;
+            }
+            case 4:{
+                if(sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
                     movementState = 0;
                     pivotMotor.set(0);
 
                 }
                 break;
             }
-            case 4:{
+            case 5:{
                     pivotMotor.set(speed);
                     break;
                 }
@@ -100,7 +109,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void overrideUp(){
-            movementState = 4;
+            movementState = 5;
 
     }
     public void down() {
@@ -108,7 +117,11 @@ public class PivotSubsystem extends SubsystemBase {
         movementState = 1;
 
     }
+    public void firstdown() {
+        System.out.println("movement state down");
+        movementState = 3;
 
+    }
     public void stop() {
         pivotMotor.set(0);
         movementState = 0;
@@ -126,5 +139,8 @@ public class PivotSubsystem extends SubsystemBase {
           } else {
             sensedMetalTop = false;
         }
+    }
+    public int getMovementState(){
+        return movementState;
     }
 } 
