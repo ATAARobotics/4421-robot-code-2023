@@ -25,9 +25,9 @@ public class RedRightStack extends SequentialCommandGroup {
     double SPEEDLIMIT = Constants.SPEEDLIMIT;
     double ROTLIMIT = Constants.ROTLIMIT;
 
-    double rightMidPoint[] = {12.84, 4.46};
-    double rightGamePiece[] = {10.92, 4.46};
-    double rightRightScoring[] = {15.17, 4.80};
+    double rightMidPoint[] = {13.84, 4.56};
+    double rightGamePiece[] = {10.92, 4.56};
+    double rightRightScoring[] = {15.17, 4.90};
 
     public RedRightStack(SwerveDriveSubsystem swerveDriveSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;

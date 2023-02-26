@@ -99,8 +99,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         };
 
         // Set up odometry
-        System.out.println(getModulePostions()[2].distanceMeters);
-        odometry = new SwerveOdometry(initialPose, pigeon, getModulePostions());
+        odometry = new SwerveOdometry(initialPose, pigeon);
 
         // Initialize the pose
         pose = initialPose;
@@ -201,8 +200,25 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
 
             // Update the current pose with the latest velocities, angle, and a timestamp
+            double totalx = 0.0;
+            double totaly = 0.0;
+            for (SwerveModule module : swerveModules) {
+                totalx += module.getxvelocity();
+                totaly += module.getyvelocity();
 
-            pose = odometry.update(getModulePostions());
+            }
+            double averagex = totalx / 4;
+            double averagey = totaly / 4;
+
+            double angle = Math.atan2(averagex, averagey);
+            double finalAngle = pigeon.getYaw() + angle;
+
+            // convert coordinates to field-centric
+            double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
+            averagex = velocity * Math.cos(finalAngle);
+            averagey = velocity * Math.sin(finalAngle);
+
+            pose = odometry.update(averagex, averagey, pigeon.getYaw(), Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Pose X", pose.getX());
             SmartDashboard.putNumber("Pose Y", pose.getY());
 
@@ -270,7 +286,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void resetPosition() {
         pose = initialPose;
-        odometry.setPose(pose, getModulePostions());
+        odometry.setPose(pose);
     }
 
     public void resetHeading() {
@@ -282,7 +298,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setInitialPose(Pose2d pose) {
         initialPose = pose;
-        odometry.setPose(pose, getModulePostions());
+        odometry.setPose(pose);
         initialPoseX = pose.getX();
         initialPoseY = pose.getY();
     }
@@ -362,15 +378,5 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public Pigeon getPigeon(){
         return pigeon;
-    }
-
-    public SwerveModulePosition[] getModulePostions(){
-        SwerveModulePosition[] postions = new SwerveModulePosition[4];
-        int i = 0;
-        for (SwerveModule module : swerveModules) {
-            postions[i] = module.getPosition();
-            i++;
-        }
-        return postions;
     }
 }

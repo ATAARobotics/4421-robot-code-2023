@@ -105,8 +105,10 @@ class OI {
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
-        if(gunnerStick.getAnalog("LeftTrigger") <= -0.3){
+
+        if(gunnerStick.getAnalog("Override") >= 0.2){
             override = true;
+
         }else{
             override = false;
         }
@@ -134,6 +136,10 @@ class OI {
     }
 
     public boolean getOverride(){
+        System.out.println(override);
+        return !override;
+    }
+    public boolean notgetOverride(){
         return override;
     }
 }

@@ -86,7 +86,10 @@ public class RobotContainer {
         joysticks.IntakeOut.whileTrue(new RunCommand(m_intakeSubsystem::runIntakeReversed))
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
        
-        joysticks.PivotUp.onTrue(new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem));
+        joysticks.PivotUp.and(joysticks::getOverride).onTrue(new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem));
+        joysticks.PivotUp.and(joysticks::notgetOverride).whileTrue(new RunCommand(m_pivotSubsystem::overrideUp, m_pivotSubsystem))
+        .onFalse(new InstantCommand(m_pivotSubsystem::stop, m_pivotSubsystem));
+
         joysticks.PivotDown.onTrue(new InstantCommand(m_pivotSubsystem::down, m_pivotSubsystem));
 
 

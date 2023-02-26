@@ -67,12 +67,12 @@ public class TelescopingArmSubsystem extends SubsystemBase {
 
 
     public void in() {
-        movementState = 1;
+        telescopingArmMotor.set(-speed);
 
     }
 
     public void out() {
-        movementState = 2;
+        telescopingArmMotor.set(speed);
 
     }
 

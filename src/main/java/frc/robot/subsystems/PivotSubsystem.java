@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import org.ejml.dense.row.SpecializedOps_DDRM;
 
 import com.ctre.phoenix.sensors.CANCoder;
@@ -18,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
 public class PivotSubsystem extends SubsystemBase {
     private CANSparkMax pivotMotor = new CANSparkMax(Constants.PIVOT_MOTOR_ID, MotorType.kBrushless);
     private CANCoder pivotEncoder = new CANCoder(Constants.PIVOT_ENCODER_ID);
@@ -27,7 +28,7 @@ public class PivotSubsystem extends SubsystemBase {
     private DigitalInput proximitySwitchTop;
     private boolean sensedMetalBottom = false;
     private boolean sensedMetalTop = false;
-    private double speed = 1;
+    private double speed = 0.2;
     private double climbMotorSpeed = 0.85;
 
     private double midElevatorEncoderTicks = 35;
@@ -40,7 +41,6 @@ public class PivotSubsystem extends SubsystemBase {
     private double winchCircumference = 0.0287 * Math.PI;
     private int movementState = 0;
     double setpoint;
-
     public PivotSubsystem() {
         pivotMotor.setIdleMode(IdleMode.kBrake);
         SmartDashboard.putNumber("Pivot P", 0);
@@ -48,6 +48,7 @@ public class PivotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot D", 0);
         this.proximitySwitchBottom = new DigitalInput(1);
         this.proximitySwitchTop = new DigitalInput(2);
+        
     }
 
     public void periodic() {
@@ -86,10 +87,15 @@ public class PivotSubsystem extends SubsystemBase {
                 }
                 break;
             }
+            case 4:{
+                break;
+            }
             default:
                 pivotMotor.set(0);
                 break;
         }
+    
+        
     }
 
     public void up() {
@@ -100,9 +106,17 @@ public class PivotSubsystem extends SubsystemBase {
             movementState = 0;
             pivotMotor.set(0);
         }
+        
+
     }
 
+    public void overrideUp(){
+        movementState = 4;
+        pivotMotor.set(speed);
+
+    }
     public void down() {
+        System.out.println("movement state down");
         if(movementState != 1){
             movementState = 1;
         }else{
