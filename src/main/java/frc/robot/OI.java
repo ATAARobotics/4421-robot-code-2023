@@ -24,6 +24,7 @@ class OI {
     private double rotationVelocity;
     private boolean toggleFieldOriented;
     private double speed;
+    private boolean override = false;
     public JoystickButton Forward;
     public JoystickButton AutoBalance;
 
@@ -34,6 +35,10 @@ class OI {
     public JoystickButton IntakeOut;
     public JoystickButton TelescopingOut;
     public JoystickButton TelescopingIn;
+    public Trigger SlideLeft;
+    public Trigger SlideRight;
+    public Trigger RotateLeft;
+    public Trigger RotateRight;
 
     public OI() {
         // Configure the button bindings
@@ -63,6 +68,10 @@ class OI {
         IntakeOut = gunnerStick.getWPIJoystickButton("IntakeOut");
         TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
         TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
+        SlideLeft = gunnerStick.getDPadTrigger("SlideLeft");
+        SlideRight = gunnerStick.getDPadTrigger("SlideRight");
+        RotateLeft = gunnerStick.getDPadTrigger("RotateLeft");
+        RotateRight = gunnerStick.getDPadTrigger("RotateRight");
     }
 
     public void rumbleGunnerOn() {
@@ -76,8 +85,8 @@ class OI {
     public void checkInputs() {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
-        // rotationVelocity = rotationStick.getAnalog("XVelocity");
-        rotationVelocity = driveStick.getAnalog("RotationVelocity");
+        rotationVelocity = rotationStick.getAnalog("XVelocity");
+        //rotationVelocity = driveStick.getAnalog("RotationVelocity");
 
         speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
 
@@ -96,6 +105,11 @@ class OI {
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
+        if(gunnerStick.getAnalog("LeftTrigger") <= -0.3){
+            override = true;
+        }else{
+            override = false;
+        }
     }
 
     // Getter functions for controls
@@ -117,5 +131,9 @@ class OI {
 
     public boolean getToggleFieldOriented() {
         return toggleFieldOriented;
+    }
+
+    public boolean getOverride(){
+        return override;
     }
 }
