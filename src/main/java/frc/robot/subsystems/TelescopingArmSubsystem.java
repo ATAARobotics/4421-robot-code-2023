@@ -23,7 +23,7 @@ public class TelescopingArmSubsystem extends SubsystemBase {
     private boolean isTopLimit = false;
     private boolean isBottomLimit = false;
     private int movementState = 0;
-    private double speed = 0.3;
+    private double speed = 0.5;
 
 
     public TelescopingArmSubsystem() {

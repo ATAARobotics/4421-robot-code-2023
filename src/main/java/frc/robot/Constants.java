@@ -38,11 +38,11 @@ public class Constants {
     public static final double TRACK_WIDTH = COMP_BOT ? 0.476: 0.476;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 2.4;
+    public static final double MAXIMUM_SPEED = 2.6;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
-    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI/2;
+    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI;
     // Maximum rotational speed is in radians/second Auto
     public static final double MAXIMUM_ROTATIONAL_SPEED_AUTO = Math.PI;
     // USED ONLY IN AUTO - Maximum rotational acceleration is in

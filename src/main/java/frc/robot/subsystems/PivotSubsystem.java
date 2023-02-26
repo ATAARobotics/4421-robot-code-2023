@@ -29,14 +29,9 @@ public class PivotSubsystem extends SubsystemBase {
     private boolean sensedMetalBottom = false;
     private boolean sensedMetalTop = false;
     
-    private double speed = 0.45;
-    private double climbMotorSpeed = 0.85;
-
-    private double midElevatorEncoderTicks = 35;
-    private double maxElevatorEncoderTicks = 150;
-
+    private double speed = 0.6;
+    
     private int direction = 0;
-    private boolean autoClimbEnabled = true;
 
     private double ropeLength = 1;
     private double winchCircumference = 0.0287 * Math.PI;
@@ -93,7 +88,7 @@ public class PivotSubsystem extends SubsystemBase {
             default:
             stop();
         }
-        movementState = 0;
+
     
         
     }
