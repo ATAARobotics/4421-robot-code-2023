@@ -1,63 +1,150 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.*;
+import frc.robot.commands.auto.*;
+import frc.robot.subsystems.*;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.photonvision.PhotonCamera;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    // The initial position of the robot relative to the field. This is measured
+    // from the left-hand corner of the field closest to the driver, from the
+    // driver's perspective
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
-  }
+    public Translation2d initialPosition = new Translation2d(0, 0);
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // Create hardware objects
+    private Pigeon pigeon;
+    private final OI joysticks = new OI();
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-  }
+    private final SwerveDriveSubsystem m_swerveDriveSubsystem;
+    private final PivotSubsystem m_pivotSubsystem;
+    private final IntakeSubsystem m_intakeSubsystem;
+    private final TelescopingArmSubsystem m_telescopingSubsystem;
+    // Auto Stuff
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
-  }
+
+
+    public RobotContainer() {
+        // Hardware-based objects
+        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        pigeon = new Pigeon();
+
+        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
+        new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
+       
+        m_intakeSubsystem = new IntakeSubsystem();
+        m_pivotSubsystem = new PivotSubsystem();
+        m_telescopingSubsystem = new TelescopingArmSubsystem();
+
+        m_swerveDriveSubsystem.setBrakes(true);
+
+        m_swerveDriveSubsystem.setDefaultCommand(
+                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                        joysticks::getYVelocity,
+                        joysticks::getRotationVelocity, () -> 1,
+                        () -> 1));
+        // autoChooser
+        autoChooser.setDefaultOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("Red Leader", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("RedLeaderWGP", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem));
+        autoChooser.addOption("Do Nothing", null);
+
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        LiveWindow.disableAllTelemetry();
+
+        configureBindings();
+    }
+
+
+    private void configureBindings() {
+        joysticks.IntakeIn.onTrue(new InstantCommand(m_intakeSubsystem::timerReset))
+        .whileTrue(new RunCommand(m_intakeSubsystem::runIntake))
+        .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
+
+        joysticks.IntakeOut.whileTrue(new RunCommand(m_intakeSubsystem::runIntakeReversed))
+        .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
+       
+        joysticks.PivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::up, m_pivotSubsystem::stop, m_pivotSubsystem));
+        joysticks.OverridePivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::overrideUp, m_pivotSubsystem::stop, m_pivotSubsystem));
+        joysticks.PivotDown.whileTrue(new StartEndCommand(m_pivotSubsystem::down, m_pivotSubsystem::stop, m_pivotSubsystem));
+
+
+        joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
+        .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+        joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
+        .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+
+
+        // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
+        // .onFalse(new InstantCommand(m_telescopingSubsystem::stop));
+
+        joysticks.SlideLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0.1,
+                        () -> 0,
+                        () -> 0, () -> 1,
+                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                                        joysticks::getYVelocity,
+                                        joysticks::getRotationVelocity, () -> 1,
+                                        () -> 1));
+        joysticks.SlideRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> -0.1,
+                        () -> 0,
+                        () -> 0, () -> 1,
+                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                                        joysticks::getYVelocity,
+                                        joysticks::getRotationVelocity, () -> 1,
+                                        () -> 1));
+        joysticks.RotateLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
+                        () -> 0,
+                        () -> 0.1, () -> 1,
+                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                                        joysticks::getYVelocity,
+                                        joysticks::getRotationVelocity, () -> 1,
+                                        () -> 1));
+        joysticks.RotateRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
+                        () -> 0,
+                        joysticks::getRotationVelocity, () -> 1,
+                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                                        joysticks::getYVelocity,
+                                        joysticks::getRotationVelocity, () -> 1,
+                                        () -> 1));   
+        joysticks.AutoBalance.whileTrue(
+                new AutoBalance(m_swerveDriveSubsystem, true)
+        );
+    }
+
+    public OI getOI() {
+        return joysticks;
+    }
+
+    public SwerveDriveSubsystem getSwerveDriveSubsystem() {
+        return m_swerveDriveSubsystem;
+    }
+
+   
+
+    public SendableChooser<Command> getAutonomousChooser() {
+        return autoChooser;
+    }
 }
