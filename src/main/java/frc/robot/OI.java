@@ -18,7 +18,7 @@ class OI {
     private BetterJoystick rotationStick = new BetterJoystick(1, 1);
     private BetterJoystick gunnerStick = new BetterJoystick(2, 0);
 
-    // Driver Values
+    //Driver Values
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
@@ -27,13 +27,15 @@ class OI {
     public JoystickButton Forward;
     public JoystickButton AutoBalance;
 
-    // Gunner Values
+    //Gunner Values
     public JoystickButton PivotUp;
     public JoystickButton PivotDown;
     public JoystickButton IntakeIn;
     public JoystickButton IntakeOut;
     public JoystickButton TelescopingOut;
     public JoystickButton TelescopingIn;
+    public JoystickButton ChangeLEDs;
+    public JoystickButton PlayMusic;
 
     public OI() {
         // Configure the button bindings
@@ -56,13 +58,16 @@ class OI {
         // Set up command-based stuff
         Forward = driveStick.getWPIJoystickButton("Forward");
         AutoBalance = driveStick.getWPIJoystickButton("AutoBalance");
-
+        
         PivotUp = gunnerStick.getWPIJoystickButton("PivotUp");
         PivotDown = gunnerStick.getWPIJoystickButton("PivotDown");
         IntakeIn = gunnerStick.getWPIJoystickButton("IntakeIn");
         IntakeOut = gunnerStick.getWPIJoystickButton("IntakeOut");
         TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
         TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
+        ChangeLEDs = gunnerStick.getWPIJoystickButton("ChangeLEDs");
+        PlayMusic = gunnerStick.getWPIJoystickButton("PlayMusic");
+
     }
 
     public void rumbleGunnerOn() {
@@ -76,7 +81,7 @@ class OI {
     public void checkInputs() {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
-        // rotationVelocity = rotationStick.getAnalog("XVelocity");
+        //rotationVelocity = rotationStick.getAnalog("XVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
 
         speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
@@ -89,12 +94,12 @@ class OI {
         if (Math.abs(rotationVelocity) < Constants.JOY_DEAD_ZONE) {
             rotationVelocity = 0;
         }
-        // kinda crimnal
+        //kinda crimnal 
         xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, Constants.JOYSTICK_SENSITIVITY));
         yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, Constants.JOYSTICK_SENSITIVITY));
         rotationVelocity = Math.signum(rotationVelocity)
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
-
+        
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
     }
 

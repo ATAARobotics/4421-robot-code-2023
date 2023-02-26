@@ -38,6 +38,7 @@ public class RobotContainer {
     private final PivotSubsystem m_pivotSubsystem;
     private final ArmSubsystem m_armSubsystem;
     private final TelescopingArmSubsystem m_telescopingSubsystem;
+    private final LightingSubsystem m_lightingSubsystem;
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -62,6 +63,7 @@ public class RobotContainer {
                         joysticks::getYVelocity,
                         joysticks::getRotationVelocity, () -> 1,
                         () -> 1));
+        m_lightingSubsystem = new LightingSubsystem();
         // autoChooser
         autoChooser.setDefaultOption("RedLeft", new RedLeft(m_swerveDriveSubsystem));
 
@@ -71,7 +73,6 @@ public class RobotContainer {
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
         LiveWindow.disableAllTelemetry();
-
         configureBindings();
     }
 
@@ -111,6 +112,18 @@ public class RobotContainer {
         joysticks.AutoBalance.whileTrue(
                 new AutoBalance(m_swerveDriveSubsystem, true)
         );
+        joysticks.ChangeLEDs.whenActive(
+                new ConditionalCommand(
+                        new ConditionalCommand(
+                                new RunCommand(m_lightingSubsystem::lightRed), 
+                                new RunCommand(m_lightingSubsystem::lightBlue),
+                                m_lightingSubsystem.getAliance()), 
+                        new ConditionalCommand(
+                                new RunCommand(m_lightingSubsystem::lightYellow), 
+                                new RunCommand(m_lightingSubsystem::lightPurple), 
+                                m_lightingSubsystem.wantCone()),
+                        m_armSubsystem.hasGamePiece()));
+
     }
 
     public OI getOI() {

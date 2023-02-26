@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -79,7 +82,7 @@ public class ArmSubsystem extends SubsystemBase{
 
     }
 
-    public boolean hasGamePiece() {
-        return hasGamePiece;
+    public BooleanSupplier hasGamePiece() {
+        return () -> hasGamePiece;
     }
 }
