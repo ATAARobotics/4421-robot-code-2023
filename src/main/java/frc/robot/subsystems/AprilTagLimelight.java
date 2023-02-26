@@ -80,8 +80,8 @@ public class AprilTagLimelight extends SubsystemBase {
 
       robotPose = odometry.getPose();
 
-        // rotation should from pigeon. X pos Y neg.
-        Transform3d cameraToRobot = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+        // rotation should from pigeon. X neg Y neg.   25 X 11.5 Y to center of the robot
+        Transform3d cameraToRobot = new Transform3d(new Translation3d(-0.25, -0.115, -0.46), new Rotation3d(0, 0, 0));
         Transform3d cameraToTarget = target.getBestCameraToTarget();
 
         // red or blue side calculation
