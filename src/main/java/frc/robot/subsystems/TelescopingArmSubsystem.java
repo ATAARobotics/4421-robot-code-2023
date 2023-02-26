@@ -98,4 +98,8 @@ public class TelescopingArmSubsystem extends SubsystemBase {
         }
     }
 
+    public double getEncoder() {
+        return telescopingArmEncoder.getPosition();
+    }
+
 } 

@@ -63,12 +63,27 @@ public class RobotContainer {
                         joysticks::getRotationVelocity, () -> 1,
                         () -> 1));
         // autoChooser
-        autoChooser.setDefaultOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
-        autoChooser.addOption("Red Leader", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem));
-        autoChooser.addOption("RedLeaderWGP", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem));
+        
+        // Red Autos
+        autoChooser.setDefaultOption("RedLeader", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedLeftDeadReckoning", new RedLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedRightReckoning", new RedRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        
+        // Red + Odometry Autos
         autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("RedLeaderWGP", new RedLeaderWGP(m_swerveDriveSubsystem, m_intakeSubsystem));
+        
+        // Blue Autos
+        autoChooser.addOption("BlueLeader", new BlueLeader(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueLeftDeadReckoning", new BlueLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueRightDeadReckoning", new BlueRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+
+        // Testing Autos
         autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
         autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem));
+
+        // Do Nothing Auto
         autoChooser.addOption("Do Nothing", null);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
