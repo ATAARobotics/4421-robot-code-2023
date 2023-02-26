@@ -28,7 +28,8 @@ public class PivotSubsystem extends SubsystemBase {
     private DigitalInput proximitySwitchTop;
     private boolean sensedMetalBottom = false;
     private boolean sensedMetalTop = false;
-    private double speed = 0.2;
+    
+    private double speed = 0.45;
     private double climbMotorSpeed = 0.85;
 
     private double midElevatorEncoderTicks = 35;
@@ -88,8 +89,10 @@ public class PivotSubsystem extends SubsystemBase {
                 break;
             }
             case 4:{
-                break;
-            }
+                    pivotMotor.set(speed);
+                    break;
+                }
+            
             default:
                 pivotMotor.set(0);
                 break;
@@ -99,7 +102,10 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void up() {
-        if(movementState != 2){
+        if (movementState == 4){
+            return;
+        }
+        else if(movementState != 2){
             movementState = 2;
             System.out.println("movement state up");
         }else{
@@ -111,9 +117,13 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void overrideUp(){
-        movementState = 4;
-        pivotMotor.set(speed);
-
+        if (movementState != 4){
+            movementState = 4;
+            //pivotMotor.set(speed);
+        }
+        else {
+            movementState = 0;
+        }
     }
     public void down() {
         System.out.println("movement state down");

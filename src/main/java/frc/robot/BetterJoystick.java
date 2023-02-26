@@ -209,7 +209,7 @@ public class BetterJoystick extends GenericHID {
             return new JoystickButton(this, 100);
         }
 
-        String button = bindings.getProperty(action);
+        String button = bindings.getProperty(action, "None");
 
         int buttonID;
         if (joyType == 0) {

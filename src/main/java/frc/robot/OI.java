@@ -39,6 +39,7 @@ class OI {
     public Trigger SlideRight;
     public Trigger RotateLeft;
     public Trigger RotateRight;
+    public Trigger OverridePivotUp;
 
     public OI() {
         // Configure the button bindings
@@ -68,6 +69,7 @@ class OI {
         IntakeOut = gunnerStick.getWPIJoystickButton("IntakeOut");
         TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
         TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
+        OverridePivotUp = gunnerStick.getWPIJoystickButton("OverridePivotUp");
         SlideLeft = gunnerStick.getDPadTrigger("SlideLeft");
         SlideRight = gunnerStick.getDPadTrigger("SlideRight");
         RotateLeft = gunnerStick.getDPadTrigger("RotateLeft");
