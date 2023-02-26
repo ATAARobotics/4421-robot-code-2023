@@ -130,7 +130,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("IS FIELD ORIENTED", this.fieldOriented);
 
         // check if robot is tipped
-        checkTipped();
+        //checkTipped();
         SmartDashboard.putBoolean("Odometry Initialized", odometry.getIsInitialized());
 
         // Smart Dashboard PID

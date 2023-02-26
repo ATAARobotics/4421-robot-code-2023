@@ -14,7 +14,7 @@ public class IntakeSubsystem extends SubsystemBase{
     private Counter intake_encoder;
 
 
-    private double intake_speed = 0.5;
+    private double intake_speed = 0.75;
     private double outtake_speed = 1;
     private boolean hasGamePiece = false;
     private double intakeDelay = 0.35;
