@@ -6,7 +6,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriveToWayPoint;
+import frc.robot.commands.DeadReckoning;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.AutoConstants;
@@ -39,12 +41,13 @@ public class RedLeader extends SequentialCommandGroup {
         addCommands(                    
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
                 // score
-                new OuttakeCommand(m_intakeSubsystem)
+                new OuttakeCommand(m_intakeSubsystem),
 
-                // TODO: Drive over charging station with dead-reckoning (meteo)
+                // Drive over charging station with dead-reckoning
+                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 5.0),
 
-                // TODO: Auto-Balance on charging station
-
+                // Auto-Balance on charging station
+                new AutoBalance(m_swerveDriveSubsystem, false)
 
         );
 

@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
-public class deadReckoning extends CommandBase{
+public class DeadReckoning extends CommandBase{
 
     SwerveDriveSubsystem m_SwerveDriveSubsystem;
     Timer timer;
@@ -13,7 +13,7 @@ public class deadReckoning extends CommandBase{
     double R_Vel;
     double timeRunning;
 
-    deadReckoning(SwerveDriveSubsystem swerveDriveSubsystem, double X_Vel, double Y_Vel, double timeRunning) {
+    public DeadReckoning(SwerveDriveSubsystem swerveDriveSubsystem, double X_Vel, double Y_Vel, double timeRunning) {
         this.m_SwerveDriveSubsystem = swerveDriveSubsystem;
         this.X_Vel = X_Vel;
         this.Y_Vel = Y_Vel;
