@@ -344,4 +344,8 @@ public class SwerveModule {
     public double getRotationTemperature() {
         return rotationMotor.getTemperature();
     }
+
+    public SwerveModulePosition getPosition(){
+        return new SwerveModulePosition(driveMotor.getSelectedSensorPosition()*ticksPerMeter, Rotation2d.fromRadians(getAngle()));
+    }
 }

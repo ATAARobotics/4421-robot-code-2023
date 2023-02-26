@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveOdometry {
@@ -9,14 +11,20 @@ public class SwerveOdometry {
     //Stores the current position of the robot
     private Pose2d pose;
     private Pigeon pigeon;
+    private SwerveModulePosition[] modulePostions;
     //The last time the odometry was updated
     private double lastUpdate = 0.0;
 
     private boolean isInitialized = false;
 
-    public SwerveOdometry(Pose2d initialPose, Pigeon pigeon) {
+
+    public SwerveDriveOdometry swerveOdometry;
+
+    public SwerveOdometry(Pose2d initialPose, Pigeon pigeon, SwerveModulePosition[] modulePostions) {
         this.pose = initialPose;
         this.pigeon = pigeon;
+        this.modulePostions = modulePostions;
+        swerveOdometry = new SwerveDriveOdometry(Constants.swerveKinematics, Rotation2d.fromRadians(pigeon.getYaw()), modulePostions);
     }
 
     /**
@@ -24,24 +32,17 @@ public class SwerveOdometry {
      * @param currentAngle The current angle given by the gyro from -Pi to Pi
      * @param timestamp The current timestamp
      */
-    public Pose2d update(double xVelocity, double yVelocity, double currentAngle, double timestamp) {
-        
-         
-        //Get the amount of time since the last update
-        double period = timestamp - lastUpdate;
-
-        //Stores the current timestamp as the most recent update
-        lastUpdate = timestamp;
-
-        //Get the distance traveled since the last update based on the current velocity
-        double distanceX = xVelocity * period;
-        double distanceY = yVelocity * period;
+    public Pose2d update(SwerveModulePosition[] modulePostions) {
+        this.modulePostions = modulePostions;
+        pose = swerveOdometry.update(Rotation2d.fromRadians(pigeon.getYaw()), modulePostions);
 
         //Updates the position of the robot based on the distance traveled
-        pose = new Pose2d(pose.getX() + distanceX, pose.getY() + distanceY, new Rotation2d(currentAngle));
         SmartDashboard.putNumber("Robot Pose X", pose.getX());
         SmartDashboard.putNumber("Robot Pose Y", pose.getY());
+        SmartDashboard.putNumber("Robot Pose Angle", pose.getRotation().getDegrees());
+
         return pose;
+        
     }
 
     /**
@@ -54,15 +55,16 @@ public class SwerveOdometry {
     /**
      * Sets a new pose manually
      */
-    public void setPose(Pose2d pose) {
-        this.pose = pose;
+    public void setPose(Pose2d pose, SwerveModulePosition[] modulePostions) {
+        this.swerveOdometry.resetPosition(Rotation2d.fromRadians(pigeon.getYaw()), modulePostions, pose);
+
     }
 
     // take the average of the 2 poses
     public void addAprilTag(Pose2d pose) {
 
         if (!isInitialized) {
-            setPose(pose);
+            setPose(pose, modulePostions);
             pigeon.setYaw(-Math.PI);
             isInitialized = true;
             return;
