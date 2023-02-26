@@ -137,7 +137,7 @@ public class Constants {
     public static final double TELESCOPING_STOWAGE_POINT = 452.0;
     public static final double TELESCOPING_INTAKE_POINT = 47.724609375;
     //TODO:need double edge detection for arm lifting
-    public static final double TELESCOPING_SCORING_POINT = 0.0;
+    public static final double TELESCOPING_SCORING_POINT = -4809;
 
     public static class VisionConstants {
         /**
