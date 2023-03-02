@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        robotContainer.getPivotSubsystem().RestEncoder();
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
 
         m_autonomousCommand.schedule();
@@ -96,6 +97,8 @@ public class Robot extends TimedRobot {
             m_autonomousCommand = null;
         }
         robotContainer.getSwerveDriveSubsystem().setBrakes(true);
+        robotContainer.getPivotSubsystem().setBrakes(true);
+        robotContainer.getTelescopingArmSubsystem().setBrakes(true);
 
     }
 

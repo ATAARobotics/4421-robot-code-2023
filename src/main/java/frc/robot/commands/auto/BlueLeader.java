@@ -47,18 +47,18 @@ public class BlueLeader extends SequentialCommandGroup {
 
         addCommands(                    
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
-                
+               //new TelescopingArmCommand(m_telescopingArmSubsystem, -10),
                 // extend arm to shooting pos + moves down pivot
                 new ParallelCommandGroup(
-                    new TelescopingArmCommand(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
+                    new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
                     new PivotCommand(m_pivotSubsystem, "firstdown")
                 ),
                 // score
                 new OuttakeCommand(m_intakeSubsystem),
 
                 // Drive over charging station with dead-reckoning
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 5.0),
-
+                //new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 5.0),
+                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(false, 0)),
                 // Auto-Balance on charging station
                 new AutoBalance(m_swerveDriveSubsystem, true)
 

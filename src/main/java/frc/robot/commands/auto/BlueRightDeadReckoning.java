@@ -50,7 +50,8 @@ public class BlueRightDeadReckoning extends SequentialCommandGroup {
                 
                 // extend arm to shooting pos + moves down pivot
                 new ParallelCommandGroup(
-                    new TelescopingArmCommand(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
+                   //new TelescopingArmCommandd(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
+                   new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
                     new PivotCommand(m_pivotSubsystem, "firstdown")
                 ),
                 // score

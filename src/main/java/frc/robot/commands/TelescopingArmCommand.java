@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import javax.print.DocFlavor.STRING;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.TelescopingArmSubsystem;
 
@@ -8,24 +10,26 @@ public class TelescopingArmCommand extends CommandBase{
     TelescopingArmSubsystem m_telescopingArmSubsystem;
     double setPoint;
     double TelescopingTolerance = 5.0;
-
-    public TelescopingArmCommand(TelescopingArmSubsystem telescopingArmSubsystem, double setPoint) {
+    String state;
+    boolean firstrun = true;
+    public TelescopingArmCommand(TelescopingArmSubsystem telescopingArmSubsystem, String state) {
         this.m_telescopingArmSubsystem = telescopingArmSubsystem;
-        this.setPoint = setPoint;
+        this.state = state;
     }
 
     @Override
-    public void execute() {
-        m_telescopingArmSubsystem.out();
+    public void initialize() {
+        switch(state){
+            case "cube":
+                firstrun = false;
+                m_telescopingArmSubsystem.scoreCube();
+                break;
+        }
+      
     }
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(m_telescopingArmSubsystem.getEncoder() - setPoint) < TelescopingTolerance);
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        m_telescopingArmSubsystem.stop();
+        return m_telescopingArmSubsystem.getMovementState() == 0 && firstrun == false;
     }
 }

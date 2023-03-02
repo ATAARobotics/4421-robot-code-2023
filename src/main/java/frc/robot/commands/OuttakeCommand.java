@@ -28,6 +28,17 @@ public class OuttakeCommand extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return timer.get() > Constants.OUTTAKE_DELAY;
+        if (timerStarted){
+            return timer.get() > Constants.OUTTAKE_DELAY;
+        }else{
+            return false;
+        }
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_intakeSubsystem.stopIntake();
+    }
+
+    
 }

@@ -32,7 +32,8 @@ public class AutoBalance extends CommandBase {
         // controller joystick
         // Double currentAngle = -1 *
         // Robot.controller.getRawAxis(Constants.LEFT_VERTICAL_JOYSTICK_AXIS) * 45;
-        if (isOn == true){
+        if (isOn){
+            System.out.println("balancing");
             this.currentAngle = swerveSubsystem.getPigeon().getPitch();
 
             error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
@@ -46,7 +47,7 @@ public class AutoBalance extends CommandBase {
                 drivePower = Math.copySign(0.5, drivePower);
             }
     
-            swerveSubsystem.setSwerveDrive(0, -drivePower, 0, false);
+            swerveSubsystem.setSwerveDrive(0, drivePower, 0, false);
     
             // Debugging Print Statments
             SmartDashboard.putNumber("Current Angle", currentAngle);
@@ -54,13 +55,14 @@ public class AutoBalance extends CommandBase {
             SmartDashboard.putNumber("Drive Power", drivePower);
         }
         else{
+            System.out.println(Math.abs(swerveSubsystem.getPigeon().getPitch()));
             if(isForward){
                 swerveSubsystem.setSwerveDrive(0, 0.5, 0, false);
             }
             else{
                 swerveSubsystem.setSwerveDrive(0, -0.5, 0, false);
             }
-            if (Math.abs(swerveSubsystem.getPigeon().getPitch()) > 30){
+            if (Math.abs(swerveSubsystem.getPigeon().getPitch()) > 10){
                 isOn = true;
             }
 

@@ -50,14 +50,15 @@ public class BlueLeftDeadReckoning extends SequentialCommandGroup {
                 
                 // extend arm to shooting pos + moves down pivot
                 new ParallelCommandGroup(
-                    new TelescopingArmCommand(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
+                    //new TelescopingArmCommand(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
+                    new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
                     new PivotCommand(m_pivotSubsystem, "firstdown")
                 ),
                 // score
                 new OuttakeCommand(m_intakeSubsystem),
 
                 // Drive over charging station with dead-reckoning
-                new DeadReckoning(m_swerveDriveSubsystem, 0, 1.0, 0.25),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 1.0, 0.25),
                 new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 5.0)
 
         );

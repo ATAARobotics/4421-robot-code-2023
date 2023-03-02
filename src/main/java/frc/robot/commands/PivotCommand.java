@@ -9,7 +9,7 @@ public class PivotCommand extends CommandBase{
 
     PivotSubsystem m_pivotSubsystem;
     String state;
-
+    boolean firstrun = true;
     public PivotCommand(PivotSubsystem intakeSubsystem, String state) {
         this.m_pivotSubsystem = intakeSubsystem;
         this.state = state;
@@ -25,14 +25,14 @@ public class PivotCommand extends CommandBase{
                 break;
             case "firstdown":
                 m_pivotSubsystem.firstdown();
+                firstrun = false;
                 break;
         }
-      m_pivotSubsystem.up();
       
     }
 
     @Override
     public boolean isFinished() {
-        return m_pivotSubsystem.getMovementState() == 0;
+        return m_pivotSubsystem.getMovementState() == 0 && firstrun == false;
     }
 }

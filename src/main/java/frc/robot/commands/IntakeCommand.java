@@ -29,4 +29,9 @@ public class IntakeCommand extends CommandBase{
     public boolean isFinished() {
         return m_intakeSubsystem.isIntakeTimerDone() || timer.get() > Constants.INTAKE_TIME_LIMIT;
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_intakeSubsystem.stopIntake();
+    }
 }
