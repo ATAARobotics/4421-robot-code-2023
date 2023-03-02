@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriveToWayPoint;
@@ -54,14 +55,18 @@ public class RedLeader extends SequentialCommandGroup {
                    new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
                     new PivotCommand(m_pivotSubsystem, "firstdown")
                 ),
+                new WaitCommand(0.25),
                 // score
                 new OuttakeCommand(m_intakeSubsystem),
 
                 // Drive over charging station with dead-reckoning
                 new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 5.0),
 
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 3),
                 // Auto-Balance on charging station
-                new AutoBalance(m_swerveDriveSubsystem, false)
+                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(false, 0)),
+                new WaitCommand(0.25),
+                new AutoBalance(m_swerveDriveSubsystem, true)
 
         );
 

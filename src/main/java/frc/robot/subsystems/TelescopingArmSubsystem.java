@@ -23,7 +23,7 @@ public class TelescopingArmSubsystem extends SubsystemBase {
     public TelescopingArmSubsystem() {
         telescopingArmMotor.setInverted(true);
         telescopingArmMotor.setIdleMode(IdleMode.kBrake);
-        this.bottomLimit = new DigitalInput(4);
+        this.bottomLimit = new DigitalInput(3);
     }
 
     @Override
@@ -33,9 +33,13 @@ public class TelescopingArmSubsystem extends SubsystemBase {
         switch(movementState){
             case 1:
                 if(!isBottomLimit){
-                    telescopingArmMotor.set(-speed);
-                }
-                else{
+                    if( telescopingArmEncoder.getPosition() > 450){
+                        telescopingArmMotor.set(-speed);
+                    }
+                    else{
+                        telescopingArmMotor.set(-speed/4);
+                    }
+                }else{
                     movementState = 0;
                     telescopingArmMotor.set(0);
                     telescopingArmEncoder.setPosition(0);

@@ -13,6 +13,7 @@ public class AutoBalance extends CommandBase {
     private double drivePower;
     private SwerveDriveSubsystem swerveSubsystem;
     private Boolean isForward;
+    private Boolean firstisOn = false;
     private Boolean isOn = false;
     public AutoBalance(SwerveDriveSubsystem swerve, Boolean isForward) {
         this.isForward = isForward;
@@ -32,49 +33,34 @@ public class AutoBalance extends CommandBase {
         // controller joystick
         // Double currentAngle = -1 *
         // Robot.controller.getRawAxis(Constants.LEFT_VERTICAL_JOYSTICK_AXIS) * 45;
-        if (isOn){
-            System.out.println("balancing");
-            this.currentAngle = swerveSubsystem.getPigeon().getPitch();
-
-            error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
-            drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
-    
-            // Our robot needed an extra push to drive up in reverse, probably due to weight
-            // imbalances
-    
-            // Limit the max power
-            if (Math.abs(drivePower) > 0.5) {
-                drivePower = Math.copySign(0.5, drivePower);
-            }
-    
-            swerveSubsystem.setSwerveDrive(0, drivePower, 0, false);
-    
-            // Debugging Print Statments
-            SmartDashboard.putNumber("Current Angle", currentAngle);
-            SmartDashboard.putNumber("Error", error);
-            SmartDashboard.putNumber("Drive Power", drivePower);
-        }
-        else{
-            System.out.println(Math.abs(swerveSubsystem.getPigeon().getPitch()));
-            if(isForward){
-                swerveSubsystem.setSwerveDrive(0, 0.5, 0, false);
-            }
-            else{
-                swerveSubsystem.setSwerveDrive(0, -0.5, 0, false);
-            }
-            if (Math.abs(swerveSubsystem.getPigeon().getPitch()) > 10){
-                isOn = true;
-            }
-
-        }
         
+        this.currentAngle = swerveSubsystem.getPigeon().getPitch();
+
+        error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
+        drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
+
+        // Our robot needed an extra push to drive up in reverse, probably due to weight
+        // imbalances
+
+        // Limit the max power
+        if (Math.abs(drivePower) > 1) {
+            drivePower = Math.copySign(1, drivePower);
+        }
+
+        swerveSubsystem.setSwerveDrive(0, -drivePower, 0, false);
+
+        // Debugging Print Statments
+        SmartDashboard.putNumber("Current Angle", currentAngle);
+        SmartDashboard.putNumber("Error", error);
+        SmartDashboard.putNumber("Drive Power", drivePower);
+    
     }
 
 
     // Returns true when the command should end.
-    //@Override
-    //public boolean isFinished() {
-        //return Math.abs(error) < Constants.BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES;
-    //}
+    @Override
+    public boolean isFinished() {
+       return false;
+    }
 
 }

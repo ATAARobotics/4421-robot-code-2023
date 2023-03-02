@@ -129,7 +129,7 @@ public class Constants {
             new Translation2d(-WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
             new Translation2d(-WHEELBASE / 2.0, -TRACK_WIDTH / 2.0));
     //Auto Balence
-    public static final double BEAM_BALANACED_DRIVE_KP = 0.020;
+    public static final double BEAM_BALANACED_DRIVE_KP = 0.02;
     public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
     public static final double BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES = 1;
 

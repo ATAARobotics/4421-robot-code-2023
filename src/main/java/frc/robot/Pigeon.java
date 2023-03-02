@@ -39,7 +39,7 @@ public class Pigeon {
     }
 
     public void resetPitch() {
-        initPitch = pigeon.getRoll();
+        initPitch = pigeon.getPitch();
     }
 
     public void setYaw(double yaw) {
@@ -47,7 +47,7 @@ public class Pigeon {
     }
     public double getPitch() {
         // Subtract inital pitch due to angle of field and orientation
-        return pigeon.getRoll() - initPitch; //- initPitch;
+        return pigeon.getPitch() - initPitch; //- initPitch;
     }
     public double getRoll() {
         return pigeon.getRoll() - initPitch;
