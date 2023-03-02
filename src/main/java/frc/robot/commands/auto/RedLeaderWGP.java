@@ -5,7 +5,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriveToWayPoint;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
@@ -46,29 +48,11 @@ public class RedLeaderWGP extends SequentialCommandGroup {
         addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingArmSubsystem, m_pivotSubsystem);
 
         addCommands(                    
-                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
-                // move down to scoring pos
-                new ParallelCommandGroup(
-                   //new TelescopingArmCommand(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
-                    new PivotCommand(m_pivotSubsystem, "firstdown")
-                ),
-                // score
-                new OuttakeCommand(m_intakeSubsystem),
+            new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
 
-                // TODO: Drive over charging station with dead-reckoning (meteo)
-
-                // drive to pick up game piece
-                new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_RIGHT_GAME_PIECE[0], AutoConstants.RED_MID_RIGHT_GAME_PIECE[1], new Rotation2d(0)), true),
-                    new IntakeCommand(m_intakeSubsystem)
-                ),
-                
-
-                // drive close to the charging station
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_RIGHT_CHARGING_STATION[0], AutoConstants.RED_MID_RIGHT_CHARGING_STATION[1], new Rotation2d(Math.PI)), false)
-
-                // TODO: Auto-Balance on charging station
-
+            // Auto-Balance on charging station
+            new WaitCommand(0.25),
+            new AutoBalance(m_swerveDriveSubsystem, true)
 
         );
 

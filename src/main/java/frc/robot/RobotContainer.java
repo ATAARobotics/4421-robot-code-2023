@@ -99,7 +99,7 @@ public class RobotContainer {
         .whileTrue(new RunCommand(m_intakeSubsystem::runIntake))
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
 
-        joysticks.IntakeOut.whileTrue(new RunCommand(m_intakeSubsystem::runIntakeReversed))
+        joysticks.IntakeOut.whileTrue(new RunCommand(() -> m_intakeSubsystem.runIntakeReversed(joysticks.getOuttake())))
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
        
         joysticks.PivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::up, m_pivotSubsystem::stop, m_pivotSubsystem));

@@ -107,13 +107,6 @@ class OI {
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
-
-        if(gunnerStick.getAnalog("Override") >= 0.2){
-            override = true;
-
-        }else{
-            override = false;
-        }
     }
 
     // Getter functions for controls
@@ -143,5 +136,8 @@ class OI {
     }
     public boolean notgetOverride(){
         return override;
+    }
+    public double getOuttake(){
+        return gunnerStick.getAnalog("Override");
     }
 }

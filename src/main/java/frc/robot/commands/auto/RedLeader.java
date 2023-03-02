@@ -51,8 +51,7 @@ public class RedLeader extends SequentialCommandGroup {
                 
                 // extend arm to shooting pos + moves down pivot
                 new ParallelCommandGroup(
-                   //new TelescopingArmCommand(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
-                   new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
+                    new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
                     new PivotCommand(m_pivotSubsystem, "firstdown")
                 ),
                 new WaitCommand(0.25),
@@ -60,11 +59,11 @@ public class RedLeader extends SequentialCommandGroup {
                 new OuttakeCommand(m_intakeSubsystem),
 
                 // Drive over charging station with dead-reckoning
-                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 5.0),
+                
+                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 1.5),
+                
 
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 3),
                 // Auto-Balance on charging station
-                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(false, 0)),
                 new WaitCommand(0.25),
                 new AutoBalance(m_swerveDriveSubsystem, true)
 

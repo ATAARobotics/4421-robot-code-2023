@@ -24,6 +24,10 @@ public class TelescopingArmCommand extends CommandBase{
                 firstrun = false;
                 m_telescopingArmSubsystem.scoreCube();
                 break;
+            case "in":
+                firstrun = false;
+                m_telescopingArmSubsystem.in();
+                break;
         }
       
     }
