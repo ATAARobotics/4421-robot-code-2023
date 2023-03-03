@@ -109,7 +109,26 @@ public class PivotSubsystem extends SubsystemBase {
                     }
                     break;
                 }
-            
+            //top switch go down
+            case 6:{
+                if(!sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    movementState = 7;
+                }
+                break;
+            }
+            case 7:{
+                if(sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    movementState = 2;
+
+                }
+                break;
+            }            
             default:
                 stop();
         }
@@ -132,7 +151,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
     public void firstdown() {
         System.out.println("movement state down");
-        movementState = 3;
+        movementState = 6;
 
     }
     public void stop() {

@@ -22,7 +22,7 @@ public class OuttakeCommand extends CommandBase{
             timerStarted = true;
             timer.start();
         }
-        m_intakeSubsystem.runIntakeReversed(1);
+        m_intakeSubsystem.OuttakeAuto();
             
     }
 
