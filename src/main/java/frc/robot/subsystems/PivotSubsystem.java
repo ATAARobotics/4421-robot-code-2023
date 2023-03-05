@@ -55,7 +55,11 @@ public class PivotSubsystem extends SubsystemBase {
             //down switch always detect
             case 1:
                 if(!sensedMetalBottom){
-                    pivotMotor.set(-speed);
+                    if(pivotEncoder.getPosition() >= -1700){
+                        pivotMotor.set(-speed);
+                    }else{
+                        pivotMotor.set(-speed/3);
+                    }
                 }
                 else{
                     aboveTop = false;

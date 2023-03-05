@@ -59,13 +59,7 @@ public class Teammate extends SequentialCommandGroup {
                 new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 4.0),
                 new TelescopingArmCommand(m_telescopingArmSubsystem, "in")
             ),
-
-            // rotate towards gamepiece
-            new ParallelCommandGroup(
-                new RotateCommand(m_swerveDriveSubsystem, Math.PI, 10.0).withTimeout(2),
-                new PivotCommand(m_pivotSubsystem, "down")
-
-            )
+            new PivotCommand(m_pivotSubsystem, "down")
 
         );
 
