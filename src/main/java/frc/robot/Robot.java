@@ -59,6 +59,8 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         // Cancel all commands
         CommandScheduler.getInstance().cancelAll();
+        robotContainer.getPivotSubsystem().stop();
+        robotContainer.getTelescopingArmSubsystem().stop();
         // Write remaining blackbox data to file
         // Start brake timer
         brakesOffTimer.reset();
@@ -76,6 +78,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        robotContainer.getPivotSubsystem().stop();
+        robotContainer.getTelescopingArmSubsystem().stop();
+        robotContainer.getPivotSubsystem().RestEncoder();
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
 
         m_autonomousCommand.schedule();
@@ -90,12 +95,16 @@ public class Robot extends TimedRobot {
         if(!Constants.FIELD_ORIENTED){
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
         }
-
+        robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 180);
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;
         }
+        robotContainer.getPivotSubsystem().stop();
+        robotContainer.getTelescopingArmSubsystem().stop();
         robotContainer.getSwerveDriveSubsystem().setBrakes(true);
+        robotContainer.getPivotSubsystem().setBrakes(true);
+        robotContainer.getTelescopingArmSubsystem().setBrakes(true);
 
     }
 

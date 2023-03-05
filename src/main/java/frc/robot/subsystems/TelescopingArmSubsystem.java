@@ -1,16 +1,10 @@
 package frc.robot.subsystems;
-
-import org.ejml.dense.row.SpecializedOps_DDRM;
-
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -23,14 +17,13 @@ public class TelescopingArmSubsystem extends SubsystemBase {
     private boolean isTopLimit = false;
     private boolean isBottomLimit = false;
     private int movementState = 0;
-    private double speed = 0.5;
+    private double speed = 1.0;
 
 
     public TelescopingArmSubsystem() {
         telescopingArmMotor.setInverted(true);
         telescopingArmMotor.setIdleMode(IdleMode.kBrake);
         this.bottomLimit = new DigitalInput(3);
-        this.topLimit = new DigitalInput(4);
     }
 
     @Override
@@ -40,16 +33,21 @@ public class TelescopingArmSubsystem extends SubsystemBase {
         switch(movementState){
             case 1:
                 if(!isBottomLimit){
-                    telescopingArmMotor.set(-speed);
-                }
-                else{
+                    if( telescopingArmEncoder.getPosition() > 450){
+                        telescopingArmMotor.set(-speed);
+                    }
+                    else{
+                        telescopingArmMotor.set(-speed/4);
+                    }
+                }else{
                     movementState = 0;
                     telescopingArmMotor.set(0);
+                    telescopingArmEncoder.setPosition(0);
 
                 }
                 break;
-            case 2:{
-                if(!isTopLimit){
+            case 2:
+                if(telescopingArmEncoder.getPosition() <= 1000){
                     telescopingArmMotor.set(speed);
                 }
                 else{
@@ -58,7 +56,6 @@ public class TelescopingArmSubsystem extends SubsystemBase {
 
                 }
                 break;
-            }
             default:
                 telescopingArmMotor.set(0);
                 break;
@@ -67,15 +64,16 @@ public class TelescopingArmSubsystem extends SubsystemBase {
 
 
     public void in() {
-        telescopingArmMotor.set(-speed);
-
+        movementState = 1;
     }
 
     public void out() {
         telescopingArmMotor.set(speed);
 
     }
-
+    public void scoreCube(){
+        movementState = 2;
+    }
     public void stop() {
         telescopingArmMotor.set(0.0);
     }
@@ -90,12 +88,20 @@ public class TelescopingArmSubsystem extends SubsystemBase {
           } else {
             isBottomLimit = false;
         }
-
-        if (!topLimit.get()) {
-            isTopLimit = true;
-          } else {
-            isTopLimit = false;
-        }
     }
 
+    public double getEncoder() {
+        return telescopingArmEncoder.getPosition();
+    }
+    public void setBrakes(boolean toggle){
+        if(toggle){
+            telescopingArmMotor.setIdleMode(IdleMode.kBrake);
+        }else{
+            telescopingArmMotor.setIdleMode(IdleMode.kCoast);
+
+        }
+    }
+    public int getMovementState(){
+        return movementState;
+    }
 } 

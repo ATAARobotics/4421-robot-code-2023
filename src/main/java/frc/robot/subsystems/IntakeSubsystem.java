@@ -11,11 +11,13 @@ import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase{
     private PWMSparkMax intake_motor;
+    private PWMSparkMax intake_motor2;
+
     private Counter intake_encoder;
 
 
-    private double intake_speed = 0.75;
-    private double outtake_speed = 1;
+    private double intake_speed = 0.55;
+    private double outtake_speed = 0.25;
     private boolean hasGamePiece = false;
     private double intakeDelay = 0.35;
     private double rateCutoff = 0;
@@ -27,6 +29,8 @@ public class IntakeSubsystem extends SubsystemBase{
     
     public IntakeSubsystem () {
         this.intake_motor = new PWMSparkMax(Constants.INTAKE_MOTOR_PORT);
+        this.intake_motor2 = new PWMSparkMax(9);
+
         this.intake_encoder = new Counter(0);
         this.intake_encoder.setDistancePerPulse(1.0);
         this.timer = new Timer();
@@ -47,38 +51,31 @@ public class IntakeSubsystem extends SubsystemBase{
         timer.reset();
     }
     public void runIntake() {
-        
-        if (intake_encoder.getRate() > rateCutoff) {
-            runStarted = true;
-        }
-
-        if (!hasGamePiece) {
-            // turns motor on
-            intake_motor.set(intake_speed);
-            // if has gamepiece, turns motor off
-            if (runStarted && intake_encoder.getRate() < rateCutoff) {
-                timer.start();
-            }
-
-            if (isIntakeTimerDone()) {
-                intake_motor.set(0.0);
-                this.hasGamePiece = true;
-            }
-        }else{
-            intake_motor.set(0.0);
-            runStarted = false;
-            timer.stop();
-            timer.reset();
-        };
+        intake_motor.set(intake_speed);
+        intake_motor2.set(intake_speed);
     }
 
-    public void runIntakeReversed() {
-        intake_motor.set(-outtake_speed);
+    public void runIntakeReversed(double speedMultiplyer) {
+        if(speedMultiplyer >= 0.5){
+            intake_motor.set(-outtake_speed*0.85);
+            intake_motor2.set(-outtake_speed*0.85);
+        }else if(speedMultiplyer <= -0.5){
+            intake_motor.set(-outtake_speed*2);
+            intake_motor2.set(-outtake_speed*2);
+        }else{
+            intake_motor.set(-outtake_speed);
+            intake_motor2.set(-outtake_speed);
+        }
         hasGamePiece = false;
+    }
+
+    public void OuttakeAuto(){
+        intake_motor.set(-0.32);
     }
 
     public void stopIntake(){
         intake_motor.set(0);
+        intake_motor2.set(0);
 
     }
 

@@ -94,7 +94,7 @@ public class AprilTagLimelight extends SubsystemBase {
           Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, aprilTagPos.aprilTagPose, cameraToRobot);
           redSide = (aprilTagPos.aprilTagPose.getRotation().getQuaternion().getZ() > 0.5);
           // Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d(), redSide);
-          odometry.addAprilTag(robotPose.toPose2d());
+          odometry.addAprilTag(robotPose.toPose2d(), redSide);
         }
     }
     }

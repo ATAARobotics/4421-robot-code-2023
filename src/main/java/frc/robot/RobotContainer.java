@@ -38,10 +38,11 @@ public class RobotContainer {
     private final PivotSubsystem m_pivotSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingSubsystem;
+    private final LightingSubsystem mLightingSubsystem;
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-
+    private double swerveSpeed = 0.4412;
 
     public RobotContainer() {
         // Hardware-based objects
@@ -49,26 +50,43 @@ public class RobotContainer {
         pigeon = new Pigeon();
 
         m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
-        new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
+        //new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
        
         m_intakeSubsystem = new IntakeSubsystem();
         m_pivotSubsystem = new PivotSubsystem();
         m_telescopingSubsystem = new TelescopingArmSubsystem();
+        mLightingSubsystem = new LightingSubsystem();
 
         m_swerveDriveSubsystem.setBrakes(true);
 
         m_swerveDriveSubsystem.setDefaultCommand(
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                         joysticks::getYVelocity,
-                        joysticks::getRotationVelocity, () -> 1,
+                        joysticks::getRotationVelocity, this::getSwerveSpeed,
                         () -> 1));
         // autoChooser
-        autoChooser.setDefaultOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
-        autoChooser.addOption("Red Leader", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem));
-        autoChooser.addOption("RedLeaderWGP", new RedLeader(m_swerveDriveSubsystem, m_intakeSubsystem));
-        autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem, m_intakeSubsystem));
-        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
-        autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem));
+        
+        // Red Autos
+        autoChooser.setDefaultOption("RedLeaderOverBack", new RedLeaderOverBack(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedLeaderBalance", new RedLeaderBalance(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        // autoChooser.addOption("RedLeftDeadReckoning", new RedLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        // autoChooser.addOption("RedRightReckoning", new RedRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        
+        // Red + Odometry Autos
+        // autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem, m_intakeSubsystem));
+        // autoChooser.addOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
+        // autoChooser.addOption("RedLeaderWGP", new RedLeaderWGP(m_swerveDriveSubsystem, m_intakeSubsystem));
+        
+        // Blue Autos
+        autoChooser.addOption("Teammate", new Teammate(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        // autoChooser.addOption("BlueLeftDeadReckoning", new BlueLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        // autoChooser.addOption("BlueRightDeadReckoning", new BlueRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+
+        // Testing Autos
+        // autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        // autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem));
+
+        // Do Nothing Auto
         autoChooser.addOption("Do Nothing", null);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -80,15 +98,14 @@ public class RobotContainer {
 
 
     private void configureBindings() {
-        joysticks.IntakeIn.onTrue(new InstantCommand(m_intakeSubsystem::timerReset))
-        .whileTrue(new RunCommand(m_intakeSubsystem::runIntake))
+        joysticks.IntakeIn.or(new Trigger(() -> joysticks.RotIntake.getAsBoolean())).whileTrue(new RunCommand(m_intakeSubsystem::runIntake))
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
 
-        joysticks.IntakeOut.whileTrue(new RunCommand(m_intakeSubsystem::runIntakeReversed))
+        joysticks.IntakeOut.whileTrue(new RunCommand(() -> m_intakeSubsystem.runIntakeReversed(joysticks.getOuttake() - joysticks.getOuttakeInversed())))
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
        
         joysticks.PivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::up, m_pivotSubsystem::stop, m_pivotSubsystem));
-        joysticks.OverridePivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::overrideUp, m_pivotSubsystem::stop, m_pivotSubsystem));
+        joysticks.OverridePivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem::stop, m_pivotSubsystem));
         joysticks.PivotDown.whileTrue(new StartEndCommand(m_pivotSubsystem::down, m_pivotSubsystem::stop, m_pivotSubsystem));
 
 
@@ -116,15 +133,15 @@ public class RobotContainer {
                                         joysticks::getRotationVelocity, () -> 1,
                                         () -> 1));
         joysticks.RotateLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
-                        () -> 0,
-                        () -> 0.1, () -> 1,
+                        () -> 0.1,
+                        () -> 0, () -> 1,
                         () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                         joysticks::getYVelocity,
                                         joysticks::getRotationVelocity, () -> 1,
                                         () -> 1));
         joysticks.RotateRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
-                        () -> 0,
-                        joysticks::getRotationVelocity, () -> 1,
+                        () -> -0.1,
+                        () -> 0, () -> 1,
                         () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                         joysticks::getYVelocity,
                                         joysticks::getRotationVelocity, () -> 1,
@@ -132,6 +149,11 @@ public class RobotContainer {
         joysticks.AutoBalance.whileTrue(
                 new AutoBalance(m_swerveDriveSubsystem, true)
         );
+        joysticks.Forward.onTrue(new InstantCommand(() -> swerveSpeed=1))
+        .onFalse(new InstantCommand(() -> swerveSpeed=0.4412));
+
+        joysticks.LightSwitch.onTrue(new InstantCommand(mLightingSubsystem::FlipLights));
+
     }
 
     public OI getOI() {
@@ -146,5 +168,17 @@ public class RobotContainer {
 
     public SendableChooser<Command> getAutonomousChooser() {
         return autoChooser;
+    }
+
+    public PivotSubsystem getPivotSubsystem(){
+        return m_pivotSubsystem;
+    }
+
+    public TelescopingArmSubsystem getTelescopingArmSubsystem(){
+        return m_telescopingSubsystem;
+    }
+
+    public double getSwerveSpeed(){
+        return swerveSpeed;
     }
 }

@@ -5,28 +5,25 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriveToWayPoint;
-import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.DeadReckoning;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.TelescopingArmCommand;
 import frc.robot.subsystems.*;
 import frc.robot.AutoConstants;
 
-/*  Description of this auto (WGP = With Game Piece)
+/*  Description of this auto
 *   1. Score high cube
 *   2. Drives over charging station
-*   3. Drive and pick up game piece
-*   4. Drive near charging station
-*   5. Park on driving station
+*   3. Park on driving station
 */
 
 // TODO: Test (based on PathPlanner coordinates)
 
-public class RedLeaderWGP extends SequentialCommandGroup {
+public class BlueRightDeadReckoning extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
@@ -40,19 +37,29 @@ public class RedLeaderWGP extends SequentialCommandGroup {
 
     
 
-    public RedLeaderWGP(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
+    public BlueRightDeadReckoning(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
         m_pivotSubsystem = pivotSubsystem;
+
         addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingArmSubsystem, m_pivotSubsystem);
 
         addCommands(                    
-            new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+                new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+                
+                // extend arm to shooting pos + moves down pivot
+                new ParallelCommandGroup(
+                   //new TelescopingArmCommandd(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
+                   new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
+                    new PivotCommand(m_pivotSubsystem, "firstdown")
+                ),
+                // score
+                new OuttakeCommand(m_intakeSubsystem),
 
-            // Auto-Balance on charging station
-            new WaitCommand(0.25),
-            new AutoBalance(m_swerveDriveSubsystem, true)
+                // Drive over charging station with dead-reckoning
+                new DeadReckoning(m_swerveDriveSubsystem, 0, -1.0, 0.25),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 5.0)
 
         );
 

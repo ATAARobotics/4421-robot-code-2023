@@ -38,7 +38,7 @@ public class Constants {
     public static final double TRACK_WIDTH = COMP_BOT ? 0.476: 0.476;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 2.6;
+    public static final double MAXIMUM_SPEED = 3.4;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
@@ -129,15 +129,15 @@ public class Constants {
             new Translation2d(-WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
             new Translation2d(-WHEELBASE / 2.0, -TRACK_WIDTH / 2.0));
     //Auto Balence
-    public static final double BEAM_BALANACED_DRIVE_KP = 0.020;
+    public static final double BEAM_BALANACED_DRIVE_KP = 0.02;
     public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
     public static final double BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES = 1;
 
     //telescoping arm setpoints
     public static final double TELESCOPING_STOWAGE_POINT = 452.0;
     public static final double TELESCOPING_INTAKE_POINT = 47.724609375;
-    //TODO:need double edge detection for arm lifting
-    public static final double TELESCOPING_SCORING_POINT = 0.0;
+    public static final double TELESCOPING_SCORING_POINT_CONE = -4809.0;
+    public static final double TELESCOPING_SCORING_POINT_CUBE = 0.0;
 
     public static class VisionConstants {
         /**

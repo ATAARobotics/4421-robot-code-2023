@@ -13,7 +13,11 @@ public class AutoBalance extends CommandBase {
     private double drivePower;
     private SwerveDriveSubsystem swerveSubsystem;
     private Boolean isForward;
+    private Boolean firstisOn = false;
     private Boolean isOn = false;
+    private Boolean flipedState = false;
+    private int flipcount = 0;
+    private boolean notSlow = true;
     public AutoBalance(SwerveDriveSubsystem swerve, Boolean isForward) {
         this.isForward = isForward;
         this.swerveSubsystem = swerve;
@@ -23,6 +27,11 @@ public class AutoBalance extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        if(swerveSubsystem.getPigeon().getPitch() > 0){
+            flipedState = true;
+        }else{
+            flipedState = false;
+        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -32,47 +41,43 @@ public class AutoBalance extends CommandBase {
         // controller joystick
         // Double currentAngle = -1 *
         // Robot.controller.getRawAxis(Constants.LEFT_VERTICAL_JOYSTICK_AXIS) * 45;
-        if (isOn == true){
-            this.currentAngle = swerveSubsystem.getPigeon().getPitch();
-
-            error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
+        // System.out.println(flipcount);
+        this.currentAngle = swerveSubsystem.getPigeon().getPitch();
+        if(flipedState && currentAngle <= 10){
+            notSlow = false;
+        }else{
+            if(flipedState ==  false && currentAngle >= -10 ){
+                notSlow = false;
+            }
+        }
+        error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
+        if(notSlow){
             drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
-    
-            // Our robot needed an extra push to drive up in reverse, probably due to weight
-            // imbalances
-    
-            // Limit the max power
-            if (Math.abs(drivePower) > 0.5) {
-                drivePower = Math.copySign(0.5, drivePower);
-            }
-    
-            swerveSubsystem.setSwerveDrive(0, -drivePower, 0, false);
-    
-            // Debugging Print Statments
-            SmartDashboard.putNumber("Current Angle", currentAngle);
-            SmartDashboard.putNumber("Error", error);
-            SmartDashboard.putNumber("Drive Power", drivePower);
+        }else{
+            drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1) * 0.60;
         }
-        else{
-            if(isForward){
-                swerveSubsystem.setSwerveDrive(0, 0.5, 0, false);
-            }
-            else{
-                swerveSubsystem.setSwerveDrive(0, -0.5, 0, false);
-            }
-            if (Math.abs(swerveSubsystem.getPigeon().getPitch()) > 30){
-                isOn = true;
-            }
+        System.out.println(drivePower);
+        // Our robot needed an extra push to drive up in reverse, probably due to weight
+        // imbalances
 
+        // Limit the max power
+        if (Math.abs(drivePower) > 1) {
+            drivePower = Math.copySign(1, drivePower);
         }
-        
+
+        swerveSubsystem.setSwerveDrive(0, -drivePower, 0, false);
+        // Debugging Print Statments
+        SmartDashboard.putNumber("Current Angle", currentAngle);
+        SmartDashboard.putNumber("Error", error);
+        SmartDashboard.putNumber("Drive Power", drivePower);
+    
     }
 
 
     // Returns true when the command should end.
-    //@Override
-    //public boolean isFinished() {
-        //return Math.abs(error) < Constants.BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES;
-    //}
+    @Override
+    public boolean isFinished() {
+       return false;
+    }
 
 }

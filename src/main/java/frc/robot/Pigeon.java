@@ -47,10 +47,10 @@ public class Pigeon {
     }
     public double getPitch() {
         // Subtract inital pitch due to angle of field and orientation
-        return pigeon.getPitch(); //- initPitch;
+        return pigeon.getPitch() - initPitch; //- initPitch;
     }
     public double getRoll() {
-        return pigeon.getRoll();
+        return pigeon.getRoll() - initPitch;
     }
     public double getYaw() {
         double yaw = pigeon.getYaw();

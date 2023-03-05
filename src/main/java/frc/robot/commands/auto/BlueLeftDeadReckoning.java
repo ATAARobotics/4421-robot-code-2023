@@ -10,6 +10,8 @@ import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriveToWayPoint;
 import frc.robot.commands.DeadReckoning;
 import frc.robot.commands.OuttakeCommand;
+import frc.robot.commands.PivotCommand;
+import frc.robot.commands.TelescopingArmCommand;
 import frc.robot.subsystems.*;
 import frc.robot.AutoConstants;
 
@@ -21,9 +23,11 @@ import frc.robot.AutoConstants;
 
 // TODO: Test (based on PathPlanner coordinates)
 
-public class RedLeader extends SequentialCommandGroup {
+public class BlueLeftDeadReckoning extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
+    private final TelescopingArmSubsystem m_telescopingArmSubsystem;
+    private final PivotSubsystem m_pivotSubsystem;
 
     // for tweaking with tolerances and speed for auto
     double DTOLERANCE = Constants.DTOLERANCE;
@@ -33,21 +37,29 @@ public class RedLeader extends SequentialCommandGroup {
 
     
 
-    public RedLeader(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem) {
+    public BlueLeftDeadReckoning(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
-        addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem);
+        m_telescopingArmSubsystem = telescopingArmSubsystem;
+        m_pivotSubsystem = pivotSubsystem;
+
+        addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingArmSubsystem, m_pivotSubsystem);
 
         addCommands(                    
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+                
+                // extend arm to shooting pos + moves down pivot
+                new ParallelCommandGroup(
+                    //new TelescopingArmCommand(m_telescopingArmSubsystem, Constants.TELESCOPING_SCORING_POINT_CUBE),
+                    new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
+                    new PivotCommand(m_pivotSubsystem, "firstdown")
+                ),
                 // score
                 new OuttakeCommand(m_intakeSubsystem),
 
                 // Drive over charging station with dead-reckoning
-                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 5.0),
-
-                // Auto-Balance on charging station
-                new AutoBalance(m_swerveDriveSubsystem, false)
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 1.0, 0.25),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 5.0)
 
         );
 

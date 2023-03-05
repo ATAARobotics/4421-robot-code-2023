@@ -59,11 +59,15 @@ public class SwerveOdometry {
     }
 
     // take the average of the 2 poses
-    public void addAprilTag(Pose2d pose) {
+    public void addAprilTag(Pose2d pose, boolean redSide) {
 
         if (!isInitialized) {
             setPose(pose);
-            pigeon.setYaw(pose.getRotation().getDegrees() + 180);
+            if (redSide) {
+                pigeon.setYaw(pose.getRotation().getDegrees() + 180);
+            } else {
+                pigeon.setYaw(pose.getRotation().getDegrees());
+            }
             isInitialized = true;
             return;
         }

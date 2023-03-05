@@ -29,13 +29,14 @@ public class PivotSubsystem extends SubsystemBase {
     private boolean sensedMetalBottom = false;
     private boolean sensedMetalTop = false;
     
-    private double speed = 0.6;
+    private double speed = 0.85;
     
     private int direction = 0;
 
     private double ropeLength = 1;
     private double winchCircumference = 0.0287 * Math.PI;
     private int movementState = 0;
+    private boolean aboveTop = true;
     double setpoint;
     public PivotSubsystem() {
         pivotMotor.setIdleMode(IdleMode.kBrake);
@@ -44,49 +45,96 @@ public class PivotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot D", 0);
         this.proximitySwitchBottom = new DigitalInput(1);
         this.proximitySwitchTop = new DigitalInput(2);
-        
+        pivotEncoder.setPosition(0);
     }
 
     public void periodic() {
         checkMetal();
-        SmartDashboard.putNumber("Pivot Speed", pivotPid.calculate(pivotEncoder.getPosition()));
+        SmartDashboard.putNumber("Pivot Speed", pivotEncoder.getPosition());
         switch(movementState){
+            //down switch always detect
             case 1:
                 if(!sensedMetalBottom){
-                    pivotMotor.set(-speed);
+                    if(pivotEncoder.getPosition() >= -1700){
+                        pivotMotor.set(-speed);
+                    }else{
+                        pivotMotor.set(-speed/3);
+                    }
                 }
                 else{
+                    aboveTop = false;
                     stop();
 
                 }
                 break;
+            //top switch go up
             case 2:{
                 if(!sensedMetalTop){
                     pivotMotor.set(speed);
                 }
                 else{
+                    aboveTop = false;
                     stop();
                 }
                 break;
             }
+            //top switch go down
             case 3:{
                 if(!sensedMetalTop){
                     pivotMotor.set(-speed);
                 }
                 else{
-                    movementState = 0;
-                    pivotMotor.set(0);
+                    movementState = 4;
+                }
+                break;
+            }
+            //double edge detection to align 
+            case 4:{
+                if(sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    stop();
+                    aboveTop = false;
 
                 }
                 break;
             }
-            case 4:{
-                    pivotMotor.set(speed);
+            //store the arm near the start position 
+            case 5:{
+                    if(sensedMetalTop){
+                        aboveTop = true;
+                    }
+                    if (pivotEncoder.getPosition() <= 0){
+                        pivotMotor.set(speed);
+                    }
+                    else{
+                        stop();
+                    }
                     break;
                 }
-            
+            //top switch go down
+            case 6:{
+                if(!sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    movementState = 7;
+                }
+                break;
+            }
+            case 7:{
+                if(sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    movementState = 2;
+
+                }
+                break;
+            }            
             default:
-            stop();
+                stop();
         }
 
     
@@ -94,21 +142,22 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void up() {
-            movementState = 2;
-            System.out.println("movement state up");
-
+        movementState = 5;
     }
 
-    public void overrideUp(){
-            movementState = 4;
-
+    public void storedPosition(){
+            movementState = 3;
     }
     public void down() {
         System.out.println("movement state down");
         movementState = 1;
 
     }
+    public void firstdown() {
+        System.out.println("movement state down");
+        movementState = 6;
 
+    }
     public void stop() {
         pivotMotor.set(0);
         movementState = 0;
@@ -125,6 +174,20 @@ public class PivotSubsystem extends SubsystemBase {
             sensedMetalTop = true;
           } else {
             sensedMetalTop = false;
+        }
+    }
+    public int getMovementState(){
+        return movementState;
+    }
+    public void RestEncoder(){
+        pivotEncoder.setPosition(0);
+    }
+    public void setBrakes(boolean toggle){
+        if(toggle){
+            pivotMotor.setIdleMode(IdleMode.kBrake);
+        }else{
+            pivotMotor.setIdleMode(IdleMode.kCoast);
+
         }
     }
 } 

@@ -26,6 +26,7 @@ class OI {
     private double speed;
     private boolean override = false;
     public JoystickButton Forward;
+    public JoystickButton RotIntake;
     public JoystickButton AutoBalance;
 
     // Gunner Values
@@ -39,7 +40,9 @@ class OI {
     public Trigger SlideRight;
     public Trigger RotateLeft;
     public Trigger RotateRight;
-    public Trigger OverridePivotUp;
+    public JoystickButton OverridePivotUp;
+    public JoystickButton LightSwitch;
+
 
     public OI() {
         // Configure the button bindings
@@ -60,6 +63,7 @@ class OI {
         }
 
         // Set up command-based stuff
+        RotIntake = rotationStick.getWPIJoystickButton("RotIntake");
         Forward = driveStick.getWPIJoystickButton("Forward");
         AutoBalance = driveStick.getWPIJoystickButton("AutoBalance");
 
@@ -70,6 +74,7 @@ class OI {
         TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
         TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
         OverridePivotUp = gunnerStick.getWPIJoystickButton("OverridePivotUp");
+        LightSwitch = gunnerStick.getWPIJoystickButton("LightSwitch");
         SlideLeft = gunnerStick.getDPadTrigger("SlideLeft");
         SlideRight = gunnerStick.getDPadTrigger("SlideRight");
         RotateLeft = gunnerStick.getDPadTrigger("RotateLeft");
@@ -107,13 +112,6 @@ class OI {
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
-
-        if(gunnerStick.getAnalog("Override") >= 0.2){
-            override = true;
-
-        }else{
-            override = false;
-        }
     }
 
     // Getter functions for controls
@@ -143,5 +141,11 @@ class OI {
     }
     public boolean notgetOverride(){
         return override;
+    }
+    public double getOuttake(){
+        return gunnerStick.getAnalog("Override");
+    }
+    public double getOuttakeInversed(){
+        return gunnerStick.getAnalog("Quick");
     }
 }

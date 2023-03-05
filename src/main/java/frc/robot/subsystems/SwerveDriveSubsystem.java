@@ -129,7 +129,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("IS FIELD ORIENTED", this.fieldOriented);
 
         // check if robot is tipped
-        //checkTipped();
+        // checkTipped();
         SmartDashboard.putBoolean("Odometry Initialized", odometry.getIsInitialized());
 
         // Smart Dashboard PID
@@ -210,7 +210,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             double averagex = totalx / 4;
             double averagey = totaly / 4;
 
-            double angle = Math.atan2(averagex, averagey);
+            double angle = Math.atan2(averagey, averagex);
             double finalAngle = pigeon.getYaw() + angle;
 
             // convert coordinates to field-centric
@@ -248,6 +248,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void setFieldOriented(boolean fieldOriented, double currentYaw) {
         this.fieldOriented = fieldOriented;
         pigeon.setYaw(currentYaw);
+        pigeon.resetPitch();
     }
 
     /**
