@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.LoggedRobot;
+
 // import com.pathplanner.lib.PathConstraints;
 // import com.pathplanner.lib.PathPlanner;
 // import com.pathplanner.lib.PathPlannerTrajectory;
@@ -12,7 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class Robot extends TimedRobot {
+// LoggedRobot when simulating. TimedRobot when actual
+
+public class Robot extends LoggedRobot {
 
     // Timer for keeping track of when to disable brakes after being disabled so
     // that the robot stops safely - DO NOT USE COMMANDS-DOES NOT WORK WHEN DISABLED

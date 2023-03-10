@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveOdometry {
@@ -41,6 +42,7 @@ public class SwerveOdometry {
         pose = new Pose2d(pose.getX() + distanceX, pose.getY() + distanceY, new Rotation2d(currentAngle));
         SmartDashboard.putNumber("Robot Pose X", pose.getX());
         SmartDashboard.putNumber("Robot Pose Y", pose.getY());
+        // SmartDashboard.putData(pose);
         return pose;
     }
 
