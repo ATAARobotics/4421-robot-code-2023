@@ -22,7 +22,7 @@ public class IntakeCommand extends CommandBase{
             timerStarted = true;
             timer.start();
         }
-        m_intakeSubsystem.runIntake();
+        m_intakeSubsystem.runIntake(0);
     }
 
     @Override
