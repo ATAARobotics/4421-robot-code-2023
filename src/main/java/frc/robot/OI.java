@@ -28,6 +28,7 @@ class OI {
     public JoystickButton Forward;
     public JoystickButton RotIntake;
     public JoystickButton AutoBalance;
+    public JoystickButton OverridePivotUp;
 
     // Gunner Values
     public JoystickButton PivotUp;
@@ -40,7 +41,7 @@ class OI {
     public Trigger SlideRight;
     public Trigger RotateLeft;
     public Trigger RotateRight;
-    public JoystickButton OverridePivotUp;
+    public JoystickButton DownToStop;
     public JoystickButton LightSwitch;
 
 
@@ -66,6 +67,7 @@ class OI {
         RotIntake = rotationStick.getWPIJoystickButton("RotIntake");
         Forward = driveStick.getWPIJoystickButton("Forward");
         AutoBalance = driveStick.getWPIJoystickButton("AutoBalance");
+        OverridePivotUp = driveStick.getWPIJoystickButton("OverridePivotUp");
 
         PivotUp = gunnerStick.getWPIJoystickButton("PivotUp");
         PivotDown = gunnerStick.getWPIJoystickButton("PivotDown");
@@ -73,12 +75,13 @@ class OI {
         IntakeOut = gunnerStick.getWPIJoystickButton("IntakeOut");
         TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
         TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
-        OverridePivotUp = gunnerStick.getWPIJoystickButton("OverridePivotUp");
+        DownToStop = gunnerStick.getWPIJoystickButton("DownToStop");
         LightSwitch = gunnerStick.getWPIJoystickButton("LightSwitch");
         SlideLeft = gunnerStick.getDPadTrigger("SlideLeft");
         SlideRight = gunnerStick.getDPadTrigger("SlideRight");
         RotateLeft = gunnerStick.getDPadTrigger("RotateLeft");
         RotateRight = gunnerStick.getDPadTrigger("RotateRight");
+
     }
 
     public void rumbleGunnerOn() {

@@ -51,7 +51,7 @@ public class DriveCommand extends CommandBase {
             yVelocity = Math.max(ySupplier.getAsDouble() * speedSupplier.getAsDouble() * Constants.MAXIMUM_SPEED, -Constants.MAXIMUM_SPEED);
         }
 
-        double rotationSpeed = rotationSupplier.getAsDouble();
+        double rotationSpeed = rotationSupplier.getAsDouble()/4;
         if (rotationSpeed > 0.0) {
             rotationVelocity = Math.min(rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble() * Constants.MAXIMUM_ROTATIONAL_SPEED, Constants.MAXIMUM_ROTATIONAL_SPEED);
         } else {

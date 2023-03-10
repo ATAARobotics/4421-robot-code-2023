@@ -132,7 +132,12 @@ public class PivotSubsystem extends SubsystemBase {
 
                 }
                 break;
-            }            
+            }
+            // override for arm to go up 
+            case 8:{ 
+                pivotMotor.set(speed/2);
+                break;
+            }         
             default:
                 stop();
         }
@@ -162,6 +167,15 @@ public class PivotSubsystem extends SubsystemBase {
         pivotMotor.set(0);
         movementState = 0;
     }
+
+    public void overridestop() {
+        pivotEncoder.setPosition(0);
+        pivotMotor.set(0);
+        movementState = 0;   
+    }
+     public void forceup() {
+        movementState = 8;   
+     }
 
     public void checkMetal() {
         if (!proximitySwitchBottom.get()) {

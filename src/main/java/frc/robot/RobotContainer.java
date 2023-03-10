@@ -105,9 +105,10 @@ public class RobotContainer {
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
        
         joysticks.PivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::up, m_pivotSubsystem::stop, m_pivotSubsystem));
-        joysticks.OverridePivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem::stop, m_pivotSubsystem));
+        joysticks.DownToStop.whileTrue(new StartEndCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem::stop, m_pivotSubsystem));
         joysticks.PivotDown.whileTrue(new StartEndCommand(m_pivotSubsystem::down, m_pivotSubsystem::stop, m_pivotSubsystem));
-
+        joysticks.OverridePivotUp.whileTrue(new RunCommand(m_pivotSubsystem::forceup, m_pivotSubsystem))
+        .onFalse(new InstantCommand(m_pivotSubsystem::overridestop, m_pivotSubsystem));
 
         joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
         .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
@@ -123,28 +124,28 @@ public class RobotContainer {
                         () -> 0, () -> 1,
                         () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                         joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, () -> 1,
+                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
                                         () -> 1));
         joysticks.SlideRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> -0.1,
                         () -> 0,
                         () -> 0, () -> 1,
                         () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                         joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, () -> 1,
+                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
                                         () -> 1));
         joysticks.RotateLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
                         () -> 0.1,
                         () -> 0, () -> 1,
                         () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                         joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, () -> 1,
+                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
                                         () -> 1));
         joysticks.RotateRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
                         () -> -0.1,
                         () -> 0, () -> 1,
                         () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                         joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, () -> 1,
+                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
                                         () -> 1));   
         joysticks.AutoBalance.whileTrue(
                 new AutoBalance(m_swerveDriveSubsystem, true)

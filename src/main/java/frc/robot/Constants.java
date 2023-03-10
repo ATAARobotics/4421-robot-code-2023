@@ -38,7 +38,7 @@ public class Constants {
     public static final double TRACK_WIDTH = COMP_BOT ? 0.476: 0.476;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 3.4;
+    public static final double MAXIMUM_SPEED = 1.7;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
