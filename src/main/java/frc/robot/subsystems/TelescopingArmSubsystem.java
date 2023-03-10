@@ -57,15 +57,15 @@ public class TelescopingArmSubsystem extends SubsystemBase {
                 }
                 break;
             case 3:
-            if(telescopingArmEncoder.getPosition() < 3100){
-                telescopingArmMotor.set(speed);
-            }
-            else{
-                movementState = 0;
-                telescopingArmMotor.set(0);
+                if(telescopingArmEncoder.getPosition() < 3100){
+                    telescopingArmMotor.set(speed);
+                }
+                else{
+                    movementState = 0;
+                    telescopingArmMotor.set(0);
 
-            }
-            break;
+                }
+                break;
             default:
                 telescopingArmMotor.set(0);
                 break;
@@ -78,7 +78,7 @@ public class TelescopingArmSubsystem extends SubsystemBase {
     }
 
     public void out() {
-        movementState = 2;
+        movementState = 3;
 
     }
     public void scoreCube(){
