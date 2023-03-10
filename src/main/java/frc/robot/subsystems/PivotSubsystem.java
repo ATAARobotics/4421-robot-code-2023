@@ -154,12 +154,10 @@ public class PivotSubsystem extends SubsystemBase {
             movementState = 3;
     }
     public void down() {
-        System.out.println("movement state down");
         movementState = 1;
 
     }
     public void firstdown() {
-        System.out.println("movement state down");
         movementState = 6;
 
     }
