@@ -123,7 +123,7 @@ class OI {
     }
 
     public double getYVelocity() {
-        return yVelocity;
+        return -yVelocity;
     }
 
     public double getSpeed() {

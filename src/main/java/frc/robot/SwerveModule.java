@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -55,6 +56,7 @@ public class SwerveModule {
     double newP = 0.65;
     double newI = 0.65;
     double newD = 0.005;
+    private Rotation2d lastAngle = new Rotation2d();
     private double curP = 0;
     private double curI = 0;
     private double curD = 0;
@@ -118,104 +120,75 @@ public class SwerveModule {
         angleController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
-    /**
-     * This function should run every teleopPeriodic
-     */
-    public boolean periodic(double timestamp) {
-        newP = SmartDashboard.getNumber("Drive-P", newP);
-        newI = SmartDashboard.getNumber("Drive-I", newI);
-        newD = SmartDashboard.getNumber("Drive-D", newD);
-        if (Math.abs(curP - newP) > epsilon) {
-            curP = newP;
-            velocityController.setP(curP);
-            velocityController.reset();
-        }
-        if (Math.abs(curI - newI) > epsilon) {
-            curI = newI;
-            velocityController.setI(curI);
-            velocityController.reset();
-        }
-        if (Math.abs(curD - newD) > epsilon) {
-            curD = newD;
-            velocityController.setD(curD);
-            velocityController.reset();
-        }
-
-        //Get the amount of time since the last update
-        double period = timestamp - lastUpdate;
-        double velocityChange = getVelocity() - lastVelocity;
-
-        //Stores the current timestamp as the most recent update
-        lastUpdate = timestamp;
-
-        // Set the drive velocity
-        double calculated = 0.0;
-        double velocity = 0.0;
-        double rotationVelocity = 0.0;
-        if (driveVelocity != 0.0 && !cancelAllMotion) {
-            // Get the rotation velocity
-            rotationVelocity = angleController.calculate(getAngle());
-            // Clamp the value (not scale because faster is okay, it's on a PID)
-            rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
-            if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
-                rotationVelocity = 0.0;
+    public void setState(SwerveModuleState state){
+        double speed = state.speedMetersPerSecond;
+        double angle = state.angle.getRadians();
+        if (Math.abs(Math.atan2(Math.sin(angle - getAngle()), Math.cos(angle - getAngle()))) > Math.PI / 2.0) {
+            angle += Math.PI;
+            angle %= 2.0 * Math.PI;
+            // Ensure the value is not negative
+            if (angle < 0) {
+                angle += 2.0 * Math.PI;
             }
-            // Set the rotation motor velocity based on the next value from the angle PID,
-            // clamped to not exceed the maximum speed
-            rotationMotor.set(ControlMode.PercentOutput, rotationVelocity);
-
-            calculated = velocityController.calculate(getVelocity());
-            // divide feed forward by battery voltage (about 12.5?) to convert to percent output
-            // maybe get the actual battery voltage instead?
-            voltage = (calculated * inversionConstant) + ((feedforwardValue * inversionConstant) / 12.5);
-            double percentVoltage = voltage;
-            driveMotor.set(ControlMode.PercentOutput, percentVoltage);
-            SmartDashboard.putNumber(name + " Percent Output", percentVoltage);
-        } else {
-            driveMotor.set(ControlMode.PercentOutput, 0.0);
-            velocityController.reset();
-            rotationMotor.set(ControlMode.PercentOutput, 0.0);
-            angleController.reset();
+            speed *= -1.0;
         }
+        SwerveModuleState finalSwerveState = new SwerveModuleState(speed,Rotation2d.fromRadians(angle));
 
-        // change feedforward
-        feedforwardValue = feedforward.calculate(getVelocity(), velocityChange / period);
-
-        if (Constants.REPORTING_DIAGNOSTICS) {
-            SmartDashboard.putNumber(name + " Speed Setpoint", driveVelocity);
-            SmartDashboard.putNumber(name + " PID Output", rotationVelocity);
-            SmartDashboard.putNumber(name + " PID Error", angleController.getPositionError());
-            SmartDashboard.putNumber(name + " Raw Speed", velocity);
-            SmartDashboard.putNumber(name + " Speed (m per s)", getVelocity());
-            SmartDashboard.putNumber(name + " Angle", getAngle());
-            SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
-            SmartDashboard.putNumber(name + " Distance", getDistance(false));
-            SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
-            SmartDashboard.putNumber(name + " Calculated", calculated);
-            SmartDashboard.putNumber(name + " FeedForward", feedforwardValue);
-        }
-
-        return false;
+        setTargetAngle(finalSwerveState.angle.getRadians());
+        setSpeed(finalSwerveState);
+        setAngle();
     }
 
+    private void setAngle(){
+        double rotationVelocity = angleController.calculate(getAngle());
+        // Clamp the value (not scale because faster is okay, it's on a PID)
+        rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
+        if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
+            rotationVelocity = 0.0;
+        }
+        // Set the rotation motor velocity based on the next value from the angle PID,
+        // clamped to not exceed the maximum speed
+        rotationMotor.set(ControlMode.PercentOutput, rotationVelocity);
+    }
+
+    private void setSpeed(SwerveModuleState state){
+        double percentOutput = inversionConstant*reverseMultiplier*state.speedMetersPerSecond / 4.5;
+        driveMotor.set(ControlMode.PercentOutput, percentOutput);
+    }
     /**
      * Sets the velocity to drive the module in meters/second.
      * This can exceed the maximum velocity specified in RobotMap.
      * 
      * @param velocity The velocity to drive the module.
      */
-    public void setDriveVelocity(double velocity) {
-        driveVelocity = velocity * reverseMultiplier;
-        velocityController.setSetpoint(driveVelocity);
-    }
+
 
     /**
-     * Sets the target in radians for the angle PID
+     * Get the distance that the drive wheel has turned
      * 
-     * @param angle The angle to try to reach. This value should be between -Pi and
-     *              Pi
+     * @param rawTicks Whether the output should be in raw encoder ticks instead of
+     *                 meters
      */
+
+
+    /**
+     * Gets the current velocity in meters/second that the drive wheel is moving
+     */
+
+    /**
+     * Gets the angle in radians of the module from -Pi to Pi
+     */
+    public double getAngle() {
+        double angle = (rotationEncoder.getAbsolutePosition() / 360 * 2.0 * Math.PI) + rotationOffset;
+        angle %= 2.0 * Math.PI;
+        if (angle < 0.0) {
+            angle += 2.0 * Math.PI;
+        }
+        angle -= Math.PI;
+
+        return angle;
+    }
+
     public void setTargetAngle(double angle) {
         double currentAngle = getAngle();
 
@@ -236,73 +209,11 @@ public class SwerveModule {
 
         angleController.setSetpoint(angle);
     }
-
-    /**
-     * Get the distance that the drive wheel has turned
-     * 
-     * @param rawTicks Whether the output should be in raw encoder ticks instead of
-     *                 meters
-     */
-    public double getDistance(boolean rawTicks) {
-        // Raw encoder ticks
-        double distance = driveMotor.getSelectedSensorPosition();
-
-        if (!rawTicks) {
-            // Meters
-            distance /= ticksPerMeter;
-        }
-
-        return distance;
-    }
-
-    /**
-     * Gets the current velocity in meters/second that the drive wheel is moving
-     */
-    public double getVelocity() {
-        // Raw encoder ticks per 100 ms???? maybe 1s?
-        double velocity = driveMotor.getSelectedSensorVelocity();
-
-        // Raw encoder ticks per 1 s
-        velocity *= 10;
-
-        // Meters per second
-        velocity /= ticksPerMeter;
-
-        velocity = velocity * inversionConstant;
-        return velocity;
-    }
-
-    /**
-     * Gets the angle in radians of the module from -Pi to Pi
-     */
-    public double getAngle() {
-        double angle = (rotationEncoder.getAbsolutePosition() / 360 * 2.0 * Math.PI) + rotationOffset;
-        angle %= 2.0 * Math.PI;
-        if (angle < 0.0) {
-            angle += 2.0 * Math.PI;
-        }
-        angle -= Math.PI;
-
-        return angle;
-    }
-
     /**
      * Gets the target angle in radians from the angle PID
      */
     public double getTargetAngle() {
         return angleController.getSetpoint();
-    }
-
-    public double getxvelocity() {
-        double x = 0.0;
-        x = getVelocity() * Math.cos(getAngle());
-        return x;
-    }
-
-    public double getyvelocity() {
-        double y = 0.0;
-        y = getVelocity() * Math.sin(getAngle());
-        return y;
     }
                 
 
