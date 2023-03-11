@@ -42,7 +42,7 @@ public class RobotContainer {
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    private double swerveSpeed = 0.4412;
+    private double swerveSpeed = 0.4421;
 
     public RobotContainer() {
         // Hardware-based objects
@@ -151,7 +151,7 @@ public class RobotContainer {
                 new AutoBalance(m_swerveDriveSubsystem, true)
         );
         joysticks.Forward.onTrue(new InstantCommand(() -> swerveSpeed=1))
-        .onFalse(new InstantCommand(() -> swerveSpeed=0.4412));
+        .onFalse(new InstantCommand(() -> swerveSpeed=0.4421));
 
         joysticks.LightSwitch.onTrue(new InstantCommand(mLightingSubsystem::FlipLights));
 
