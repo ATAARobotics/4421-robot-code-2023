@@ -27,7 +27,9 @@ class OI {
     private boolean override = false;
     public JoystickButton Forward;
     public JoystickButton RotIntake;
+    public JoystickButton RotIntake;
     public JoystickButton AutoBalance;
+    public JoystickButton OverridePivotUp;
     public JoystickButton OverridePivotUp;
 
     // Gunner Values
@@ -41,6 +43,9 @@ class OI {
     public Trigger SlideRight;
     public Trigger RotateLeft;
     public Trigger RotateRight;
+    public JoystickButton DownToStop;
+    public JoystickButton LightSwitch;
+
     public JoystickButton DownToStop;
     public JoystickButton LightSwitch;
 
@@ -65,8 +70,10 @@ class OI {
 
         // Set up command-based stuff
         RotIntake = rotationStick.getWPIJoystickButton("RotIntake");
+        RotIntake = rotationStick.getWPIJoystickButton("RotIntake");
         Forward = driveStick.getWPIJoystickButton("Forward");
         AutoBalance = driveStick.getWPIJoystickButton("AutoBalance");
+        OverridePivotUp = driveStick.getWPIJoystickButton("OverridePivotUp");
         OverridePivotUp = driveStick.getWPIJoystickButton("OverridePivotUp");
 
         PivotUp = gunnerStick.getWPIJoystickButton("PivotUp");
@@ -75,6 +82,8 @@ class OI {
         IntakeOut = gunnerStick.getWPIJoystickButton("IntakeOut");
         TelescopingOut = gunnerStick.getWPIJoystickButton("TelecopingOut");
         TelescopingIn = gunnerStick.getWPIJoystickButton("TelecopingIn");
+        DownToStop = gunnerStick.getWPIJoystickButton("DownToStop");
+        LightSwitch = gunnerStick.getWPIJoystickButton("LightSwitch");
         DownToStop = gunnerStick.getWPIJoystickButton("DownToStop");
         LightSwitch = gunnerStick.getWPIJoystickButton("LightSwitch");
         SlideLeft = gunnerStick.getDPadTrigger("SlideLeft");
@@ -147,6 +156,9 @@ class OI {
     }
     public double getOuttake(){
         return gunnerStick.getAnalog("Override");
+    }
+    public double getOuttakeInversed(){
+        return gunnerStick.getAnalog("Quick");
     }
     public double getOuttakeInversed(){
         return gunnerStick.getAnalog("Quick");

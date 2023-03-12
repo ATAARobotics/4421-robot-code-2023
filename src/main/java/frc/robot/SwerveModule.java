@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -157,7 +158,19 @@ public class SwerveModule {
 
     /**
      * Get the distance that the drive wheel has turned
+     * Get the distance that the drive wheel has turned
      * 
+     * @param rawTicks Whether the output should be in raw encoder ticks instead of
+     *                 meters
+     */
+
+
+    /**
+     * Gets the current velocity in meters/second that the drive wheel is moving
+     */
+
+    /**
+     * Gets the angle in radians of the module from -Pi to Pi
      * @param rawTicks Whether the output should be in raw encoder ticks instead of
      *                 meters
      */
