@@ -157,24 +157,25 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         }
 
          // Calculate wheel velocities and angles
-        double a, b, c, d;
+        double a, b, c, d, r;
 
-        a = this.xVelocity - rotationVelocity * wheelbase / 2;
-        b = this.xVelocity + rotationVelocity * wheelbase / 2;
-        c = this.yVelocity - rotationVelocity * trackWidth / 2;
-        d = this.yVelocity + rotationVelocity * trackWidth / 2;
+        r = Math.sqrt((wheelbase * wheelbase + trackWidth * trackWidth));
+        a = this.xVelocity - rotationVelocity * wheelbase / r;
+        b = this.xVelocity + rotationVelocity * wheelbase / r;
+        c = this.yVelocity - rotationVelocity * trackWidth / r;
+        d = this.yVelocity + rotationVelocity * trackWidth / r;
 
         velocities = new double[] {
-            Math.sqrt(Math.pow(d, 2) + Math.pow(b, 2)),
-            Math.sqrt(Math.pow(c, 2) + Math.pow(b, 2)),
-            Math.sqrt(Math.pow(d, 2) + Math.pow(a, 2)),
-            Math.sqrt(Math.pow(c, 2) + Math.pow(a, 2))
+            Math.sqrt(Math.pow(c, 2) + Math.pow(b, 2)), // Front Left
+            Math.sqrt(Math.pow(d, 2) + Math.pow(b, 2)), // Front Right
+            Math.sqrt(Math.pow(c, 2) + Math.pow(a, 2)), // Back Left
+            Math.sqrt(Math.pow(d, 2) + Math.pow(a, 2))  // Back Right
         };
         angles = new double[]{
-            Math.atan2(c, b),
-            Math.atan2(d, b),
-            Math.atan2(c, a),
-            Math.atan2(d, a)
+            Math.atan2(b, c), // Front Left
+            Math.atan2(b, d), // Front Right
+            Math.atan2(a, c), // Back Left
+            Math.atan2(a, d)  // Back Right
         };
         if (!safetyDisable) {
             // if (Constants.REPORTING_DIAGNOSTICS) {
