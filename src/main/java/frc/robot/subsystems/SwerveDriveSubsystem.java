@@ -118,9 +118,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
         if (fieldOriented) {
-            this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, rotationVelocity, Rotation2d.fromDegrees(-pigeon.getYaw()));
+            this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, -yVelocity, rotationVelocity, Rotation2d.fromDegrees(-pigeon.getYaw()));
         }else{
-            this.moduleSpeeds = new ChassisSpeeds(xVelocity, yVelocity, rotationVelocity);
+            this.moduleSpeeds = new ChassisSpeeds(-xVelocity, yVelocity, rotationVelocity);
         }
         this.useOdometry = useOdometry;
     }

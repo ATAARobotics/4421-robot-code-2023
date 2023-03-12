@@ -27,10 +27,9 @@ class OI {
     private boolean override = false;
     public JoystickButton Forward;
     public JoystickButton RotIntake;
-    public JoystickButton RotIntake;
     public JoystickButton AutoBalance;
     public JoystickButton OverridePivotUp;
-    public JoystickButton OverridePivotUp;
+  
 
     // Gunner Values
     public JoystickButton PivotUp;
@@ -43,9 +42,6 @@ class OI {
     public Trigger SlideRight;
     public Trigger RotateLeft;
     public Trigger RotateRight;
-    public JoystickButton DownToStop;
-    public JoystickButton LightSwitch;
-
     public JoystickButton DownToStop;
     public JoystickButton LightSwitch;
 
@@ -140,7 +136,7 @@ class OI {
     }
 
     public double getRotationVelocity() {
-        return rotationVelocity;
+        return -rotationVelocity;
     }
 
     public boolean getToggleFieldOriented() {
@@ -160,7 +156,5 @@ class OI {
     public double getOuttakeInversed(){
         return gunnerStick.getAnalog("Quick");
     }
-    public double getOuttakeInversed(){
-        return gunnerStick.getAnalog("Quick");
-    }
+
 }
