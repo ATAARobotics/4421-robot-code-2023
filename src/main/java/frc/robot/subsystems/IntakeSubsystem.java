@@ -20,18 +20,19 @@ public class IntakeSubsystem extends SubsystemBase{
     private double outtake_speed = 0.25;
     private boolean hasGamePiece = false;
     private double intakeDelay = 0.35;
-    private double rateCutoff = 2500;
+    private double rateCutoff = 1000;
     private boolean runStarted = false;
     private Timer timer;
 
     
-    public IntakeSubsystem () {
+    public IntakeSubsystem (LightingSubsystem lightingSubsystem) {
         this.intake_motor = new PWMSparkMax(Constants.INTAKE_MOTOR_PORT);
         this.intake_motor2 = new PWMSparkMax(9);
 
         this.intake_encoder = new Counter(0);
         this.intake_encoder.setDistancePerPulse(1.0);
         this.timer = new Timer();
+        this.m_lightingSubsystem = lightingSubsystem;
     }
 
     @Override
@@ -48,6 +49,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
     public void runIntake(double speedMultiplier) {
         // intake_motor.set(intake_speed);
+        
         intake_motor2.set(intake_speed);
         
         if (intake_encoder.getRate() > rateCutoff) {
@@ -116,5 +118,9 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public boolean isIntakeTimerDone() {
         return timer.hasElapsed(intakeDelay);
+    }
+
+    public void resetRunStarted() {
+        runStarted = false;
     }
 }
