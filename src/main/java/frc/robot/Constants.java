@@ -34,11 +34,11 @@ public class Constants {
     public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
 
 // Measurements are in meters
-    public static final double WHEELBASE = COMP_BOT ? 0.584: 0.584; 
-    public static final double TRACK_WIDTH = COMP_BOT ? 0.476: 0.476;
+    public static final double WHEELBASE = COMP_BOT ? 0.476: 0.476; 
+    public static final double TRACK_WIDTH = COMP_BOT ? 0.584: 0.584;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 3;
+    public static final double MAXIMUM_SPEED = 1.7;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
@@ -51,7 +51,7 @@ public class Constants {
 
     // Swerve offset
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-        0, 0, 0, 0
+        -24.0820313+90, 147.919922-90, 82.96875+90, 139.6582-90
     }
             : new double[] {
                     0, 0, 0, 0
@@ -110,7 +110,7 @@ public class Constants {
     // least 0.1.
     public static final double JOY_DEAD_ZONE = 0.3;
     // Whether teleop should start in field oriented mode
-    public static final boolean FIELD_ORIENTED = true;
+    public static final boolean FIELD_ORIENTED = false;
     // The sensitivity value for the joysticks - the values are exponentiated to
     // this value, so higher numbers result in a lower sensitivity, 1 results in
     // normal sensitivity, and decimals increase sensitivity

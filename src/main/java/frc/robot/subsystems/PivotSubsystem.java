@@ -55,7 +55,11 @@ public class PivotSubsystem extends SubsystemBase {
             //down switch always detect
             case 1:
                 if(!sensedMetalBottom){
-                    pivotMotor.set(-speed);
+                    if(pivotEncoder.getPosition() >= -1700){
+                        pivotMotor.set(-speed);
+                    }else{
+                        pivotMotor.set(-speed/3);
+                    }
                 }
                 else{
                     aboveTop = false;
@@ -109,7 +113,31 @@ public class PivotSubsystem extends SubsystemBase {
                     }
                     break;
                 }
-            
+            //top switch go down
+            case 6:{
+                if(!sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    movementState = 7;
+                }
+                break;
+            }
+            case 7:{
+                if(sensedMetalTop){
+                    pivotMotor.set(-speed);
+                }
+                else{
+                    movementState = 2;
+
+                }
+                break;
+            }
+            // override for arm to go up 
+            case 8:{ 
+                pivotMotor.set(speed/2);
+                break;
+            }         
             default:
                 stop();
         }
@@ -126,19 +154,26 @@ public class PivotSubsystem extends SubsystemBase {
             movementState = 3;
     }
     public void down() {
-        System.out.println("movement state down");
         movementState = 1;
 
     }
     public void firstdown() {
-        System.out.println("movement state down");
-        movementState = 3;
+        movementState = 6;
 
     }
     public void stop() {
         pivotMotor.set(0);
         movementState = 0;
     }
+
+    public void overridestop() {
+        pivotEncoder.setPosition(0);
+        pivotMotor.set(0);
+        movementState = 0;   
+    }
+     public void forceup() {
+        movementState = 8;   
+     }
 
     public void checkMetal() {
         if (!proximitySwitchBottom.get()) {

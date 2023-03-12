@@ -15,6 +15,9 @@ public class AutoBalance extends CommandBase {
     private Boolean isForward;
     private Boolean firstisOn = false;
     private Boolean isOn = false;
+    private Boolean flipedState = false;
+    private int flipcount = 0;
+    private boolean notSlow = true;
     public AutoBalance(SwerveDriveSubsystem swerve, Boolean isForward) {
         this.isForward = isForward;
         this.swerveSubsystem = swerve;
@@ -24,6 +27,11 @@ public class AutoBalance extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        if(swerveSubsystem.getPigeon().getPitch() > 0){
+            flipedState = true;
+        }else{
+            flipedState = false;
+        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -33,12 +41,22 @@ public class AutoBalance extends CommandBase {
         // controller joystick
         // Double currentAngle = -1 *
         // Robot.controller.getRawAxis(Constants.LEFT_VERTICAL_JOYSTICK_AXIS) * 45;
-        
+        // System.out.println(flipcount);
         this.currentAngle = swerveSubsystem.getPigeon().getPitch();
-
+        if(flipedState && currentAngle <= 10){
+            notSlow = false;
+        }else{
+            if(flipedState ==  false && currentAngle >= -10 ){
+                notSlow = false;
+            }
+        }
         error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
-        drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
-
+        if(notSlow){
+            drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
+        }else{
+            drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1) * 0.60;
+        }
+        System.out.println(drivePower);
         // Our robot needed an extra push to drive up in reverse, probably due to weight
         // imbalances
 
@@ -48,7 +66,6 @@ public class AutoBalance extends CommandBase {
         }
 
         swerveSubsystem.setSwerveDrive(0, -drivePower, 0, false);
-
         // Debugging Print Statments
         SmartDashboard.putNumber("Current Angle", currentAngle);
         SmartDashboard.putNumber("Error", error);
