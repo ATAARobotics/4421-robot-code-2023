@@ -1,82 +1,47 @@
 package frc.robot;
 
+import javax.swing.text.Position;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class SwerveOdometry {
-
-    //Stores the current position of the robot
-    private Pose2d pose;
-    private Pigeon pigeon;
-    //The last time the odometry was updated
-    private double lastUpdate = 0.0;
+public class SwerveOdometry extends SwerveDriveOdometry{
 
     private boolean isInitialized = false;
+    Pigeon pigeon;  
+    Alliance alliance;
 
-    public SwerveOdometry(Pose2d initialPose, Pigeon pigeon) {
-        this.pose = initialPose;
+    public SwerveOdometry(SwerveDriveKinematics kinematics, Rotation2d angle, SwerveModulePosition[] swerveModules, Pigeon pigeon, Alliance alliance) {
+        super(kinematics, angle, swerveModules);
         this.pigeon = pigeon;
-    }
-
-    /**
-     * Updates the current location of the robot
-     * @param currentAngle The current angle given by the gyro from -Pi to Pi
-     * @param timestamp The current timestamp
-     */
-    public Pose2d update(double xVelocity, double yVelocity, double currentAngle, double timestamp) {
-        
-         
-        //Get the amount of time since the last update
-        double period = timestamp - lastUpdate;
-
-        //Stores the current timestamp as the most recent update
-        lastUpdate = timestamp;
-
-        //Get the distance traveled since the last update based on the current velocity
-        double distanceX = xVelocity * period;
-        double distanceY = yVelocity * period;
-
-        //Updates the position of the robot based on the distance traveled
-        pose = new Pose2d(pose.getX() + distanceX, pose.getY() + distanceY, new Rotation2d(currentAngle));
-        SmartDashboard.putNumber("Robot Pose X", pose.getX());
-        SmartDashboard.putNumber("Robot Pose Y", pose.getY());
-        return pose;
-    }
-
-    /**
-     * Gets the current pose of the robot as a Pose2d object
-     */
-    public Pose2d getPose() {
-        return pose;
-    }
-
-    /**
-     * Sets a new pose manually
-     */
-    public void setPose(Pose2d pose) {
-        this.pose = pose;
+        this.alliance = alliance;
     }
 
     // take the average of the 2 poses
-    public void addAprilTag(Pose2d pose, boolean redSide) {
-
+    public void addAprilTag(Pose2d pose, boolean redSide,SwerveModulePosition[] positions) {
+        
         if (!isInitialized) {
-            setPose(pose);
-            if (redSide) {
+            
+            if (alliance == Alliance.Red) {
                 pigeon.setYaw(pose.getRotation().getDegrees() + 180);
             } else {
                 pigeon.setYaw(pose.getRotation().getDegrees());
             }
+            resetPosition(new Rotation2d(pigeon.getYaw()), positions, pose);
             isInitialized = true;
             return;
         }
-        if (AprilTagError(this.pose, pose)){
+        if (AprilTagError(this.getPoseMeters(), pose)){
             double x, y;
         
-            x = (this.pose.getX() + pose.getX()) / 2.0;
-            y = (this.pose.getY() + pose.getY()) / 2.0;
-            this.pose = new Pose2d(x, y, this.pose.getRotation());
+            x = (this.getPoseMeters().getX() + pose.getX()) / 2.0;
+            y = (this.getPoseMeters().getY() + pose.getY()) / 2.0;
+            resetPosition(new Rotation2d(pigeon.getYaw()), positions, new Pose2d(x, y, this.getPoseMeters().getRotation())); 
         }
     }
     public boolean AprilTagError(Pose2d currentPose, Pose2d newPose){
@@ -95,5 +60,12 @@ public class SwerveOdometry {
 
     public boolean getIsInitialized() {
         return isInitialized;
+    }
+    @Override
+    public Pose2d update(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
+        SmartDashboard.putNumber("Pose X", getPoseMeters().getX());
+        SmartDashboard.putNumber("pose Y", getPoseMeters().getY());
+        SmartDashboard.putNumber("Pose Rot", getPoseMeters().getRotation().getRadians());
+        return super.update(gyroAngle, modulePositions);
     }
 }

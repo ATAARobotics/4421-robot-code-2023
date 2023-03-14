@@ -29,6 +29,7 @@ class OI {
     public JoystickButton RotIntake;
     public JoystickButton AutoBalance;
     public JoystickButton OverridePivotUp;
+    public JoystickButton ResetOdo;
   
 
     // Gunner Values
@@ -71,6 +72,7 @@ class OI {
         AutoBalance = driveStick.getWPIJoystickButton("AutoBalance");
         OverridePivotUp = driveStick.getWPIJoystickButton("OverridePivotUp");
         OverridePivotUp = driveStick.getWPIJoystickButton("OverridePivotUp");
+        ResetOdo = driveStick.getWPIJoystickButton("ResetOdo");
 
         PivotUp = gunnerStick.getWPIJoystickButton("PivotUp");
         PivotDown = gunnerStick.getWPIJoystickButton("PivotDown");

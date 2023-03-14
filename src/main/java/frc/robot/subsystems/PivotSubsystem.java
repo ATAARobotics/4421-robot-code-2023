@@ -29,7 +29,7 @@ public class PivotSubsystem extends SubsystemBase {
     private boolean sensedMetalBottom = false;
     private boolean sensedMetalTop = false;
     
-    private double speed = 0.85;
+    private double speed = 1.00;
     
     private int direction = 0;
 
@@ -58,7 +58,7 @@ public class PivotSubsystem extends SubsystemBase {
                     if(pivotEncoder.getPosition() >= -1700){
                         pivotMotor.set(-speed);
                     }else{
-                        pivotMotor.set(-speed/3);
+                        pivotMotor.set(-speed/5);
                     }
                 }
                 else{

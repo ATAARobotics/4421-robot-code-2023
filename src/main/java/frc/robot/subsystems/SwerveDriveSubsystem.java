@@ -8,11 +8,13 @@ import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -66,13 +68,18 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         new Translation2d(Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0),
         new Translation2d(-Constants.WHEELBASE / 2.0, -Constants.TRACK_WIDTH / 2.0),
         new Translation2d(-Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0));
+    public final SwerveDriveKinematics swerveOdometryKinematics = new SwerveDriveKinematics(
+        new Translation2d(Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0),
+        new Translation2d(Constants.WHEELBASE / 2.0, -Constants.TRACK_WIDTH / 2.0),
+        new Translation2d(-Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0),
+        new Translation2d(-Constants.WHEELBASE / 2.0, -Constants.TRACK_WIDTH / 2.0));
             /**
      * Set up the swerve drive
      * 
      * @param gyro        The gyro object running on the robot
      * @param initialPose The initial pose that the robot is in
      */
-    public SwerveDriveSubsystem(Pigeon pigeon, Translation2d initialPosition, String bus) {
+    public SwerveDriveSubsystem(Pigeon pigeon, Translation2d initialPosition, String bus, Alliance alliance) {
         this.pigeon = pigeon;
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
         TalonFX[] driveMotors = { new TalonFX(Constants.DRIVE_MOTORS_ID[0], bus),
@@ -107,22 +114,32 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
 
         // Set up odometry
-        odometry = new SwerveOdometry(initialPose, pigeon);
+        odometry = new SwerveOdometry(swerveOdometryKinematics, new Rotation2d(pigeon.getYaw()), getModulePositions(), pigeon, alliance);
 
         // Initialize the pose
         pose = initialPose;
     }
 
+    public SwerveModulePosition[] getModulePositions() {
+                SwerveModulePosition[] positions = new SwerveModulePosition[4];
+                for (SwerveModule mod: swerveModules){
+                    positions[mod.getId()] = mod.getPosition();
+                }
+                return positions;
+            }
+
     /**
      * This function should be run during every teleop and auto periodic
      */
     public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
+        this.useOdometry = useOdometry;
+        
         if (fieldOriented) {
-            this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, -yVelocity, rotationVelocity, Rotation2d.fromDegrees(-pigeon.getYaw()));
+            this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, -yVelocity, rotationVelocity, Rotation2d.fromDegrees(pigeon.getYaw()));
         }else{
             this.moduleSpeeds = new ChassisSpeeds(-xVelocity, yVelocity, rotationVelocity);
         }
-        this.useOdometry = useOdometry;
+        
     }
 
     public SwerveOdometry getOdometry() {
@@ -131,11 +148,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        odometry.update(new Rotation2d(pigeon.getYaw()), getModulePositions());
         SmartDashboard.putBoolean("Field Oriented", fieldOriented);
         double gyroAngle = getHeading();
         SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
         SmartDashboard.putNumber("Gyro Value RAW", pigeon.getYawRaw());
-
+        
         SmartDashboard.putBoolean("IS FIELD ORIENTED", this.fieldOriented);
 
         // check if robot is tipped
@@ -163,6 +181,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             // Execute functions on each swerve module
             for (SwerveModule module : swerveModules) {
                 module.setState(moduleStates[module.getId()]);
+                SmartDashboard.putNumber(module.getName() + "postion angle", module.getPosition().angle.getDegrees());
+                SmartDashboard.putNumber(module.getName() + "postion distance", module.getPosition().distanceMeters);
                 // Run periodic tasks on the module (running motors)
             }
         } else {
@@ -216,8 +236,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * Gets the current pose of the robot
      */
     public Pose2d getPose() {
-        System.out.println("Diff X: " + Math.abs(pose.getX() - initialPoseX));
-        System.out.println("Diff Y: " + Math.abs(pose.getY() - initialPoseY));
         return pose;
     }
 
@@ -230,7 +248,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void resetPosition() {
         pose = initialPose;
-        odometry.setPose(pose);
+        odometry.resetPosition(new Rotation2d(0), getModulePositions(), pose);
     }
 
     public void resetHeading() {
@@ -242,7 +260,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setInitialPose(Pose2d pose) {
         initialPose = pose;
-        odometry.setPose(pose);
+        odometry.resetPosition(new Rotation2d(pigeon.getYaw()), getModulePositions(), pose);
         initialPoseX = pose.getX();
         initialPoseY = pose.getY();
     }

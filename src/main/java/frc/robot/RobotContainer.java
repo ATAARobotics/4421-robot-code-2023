@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,15 +44,15 @@ public class RobotContainer {
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    private double swerveSpeed = 0.4412;
+    private double swerveSpeed = 0.4421;
 
-    public RobotContainer() {
+    public RobotContainer(Alliance alliance) {
         // Hardware-based objects
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
         pigeon = new Pigeon();
-
-        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
-        //new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
+        
+        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore", alliance);
+        // new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry(), m_swerveDriveSubsystem);
        
         m_intakeSubsystem = new IntakeSubsystem();
         m_pivotSubsystem = new PivotSubsystem();
@@ -115,7 +117,7 @@ public class RobotContainer {
         joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
         .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
 
-
+        joysticks.ResetOdo.onTrue(new InstantCommand(m_swerveDriveSubsystem::resetPosition));
         // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
         // .onFalse(new InstantCommand(m_telescopingSubsystem::stop));
 
@@ -151,7 +153,7 @@ public class RobotContainer {
                 new AutoBalance(m_swerveDriveSubsystem, true)
         );
         joysticks.Forward.onTrue(new InstantCommand(() -> swerveSpeed=1))
-        .onFalse(new InstantCommand(() -> swerveSpeed=0.4412));
+        .onFalse(new InstantCommand(() -> swerveSpeed=0.5));
 
         joysticks.LightSwitch.onTrue(new InstantCommand(mLightingSubsystem::FlipLights));
 

@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
@@ -262,6 +263,6 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getPosition(){
-        return new SwerveModulePosition(driveMotor.getSelectedSensorPosition()*ticksPerMeter, Rotation2d.fromRadians(getAngle()));
+        return new SwerveModulePosition(inversionConstant*driveMotor.getSelectedSensorPosition() * (Units.inchesToMeters(4.0)*Math.PI) / (6.75 * 2048.0), Rotation2d.fromDegrees(rotationEncoder.getAbsolutePosition()+rotationOffset));
     }
 }

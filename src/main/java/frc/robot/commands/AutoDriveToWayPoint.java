@@ -73,7 +73,7 @@ public class AutoDriveToWayPoint extends CommandBase {
     @Override
     public void execute() {
 
-      robotPose = odometry.getPose();
+      robotPose = odometry.getPoseMeters();
 
       SmartDashboard.putNumber("X-Goal", goalPose.getX());
       SmartDashboard.putNumber("Y-Goal", goalPose.getY());

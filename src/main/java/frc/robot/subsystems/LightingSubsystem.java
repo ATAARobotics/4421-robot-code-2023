@@ -30,13 +30,13 @@ public class LightingSubsystem extends SubsystemBase{
 
     public void FlipLights(){
         if(lightsFlip == 1 ){
-            lights.setLEDs(255, 255, 0, 0, 8, 128);
+            lights.setLEDs(255, 255, 0, 0, 18, 256);
             lightsFlip = 2 ;
         } else if(lightsFlip == 2){
-            lights.setLEDs(255, 0, 255, 0, 8, 128);
+            lights.setLEDs(255, 0, 255, 0, 18, 256);
             lightsFlip = 3 ;
         }else {
-            lights.setLEDs(0, 0, 0, 0, 8, 128);
+            lights.setLEDs(0, 0, 0, 0, 0, 256);
             lightsFlip = 1;       
         }
     
