@@ -67,7 +67,7 @@ public class AutoDriveToWayPoint extends CommandBase {
 
         xController.setSetpoint(goalPose.getX());
         yController.setSetpoint(goalPose.getY());
-        rotController.setSetpoint(goalPose.getRotation().getRadians());
+        //rotController.setSetpoint(goalPose.getRotation().getRadians());
     }
 
     @Override
@@ -85,14 +85,14 @@ public class AutoDriveToWayPoint extends CommandBase {
 
       // var xSpeed = Math.clamp(xController.calculate(robotPose.getX()), speedLimit);
       SmartDashboard.putBoolean("X-ACH", false);
-      xSpeed = MathUtil.clamp(xController.calculate(robotPose.getX()), -speedLimit, speedLimit);
+      xSpeed = -MathUtil.clamp(xController.calculate(robotPose.getX()), -speedLimit, speedLimit);
       if (xController.atSetpoint()) {
         SmartDashboard.putBoolean("X-ACH", true);
         xSpeed = 0;
       }
 
       SmartDashboard.putBoolean("Y-ACH", false);
-      ySpeed = MathUtil.clamp(yController.calculate(robotPose.getY()), -speedLimit, speedLimit);
+      ySpeed = -MathUtil.clamp(yController.calculate(robotPose.getY()), -speedLimit, speedLimit);
       if (yController.atSetpoint()) {
         SmartDashboard.putBoolean("Y-ACH", true);
         ySpeed = 0;
@@ -118,11 +118,12 @@ public class AutoDriveToWayPoint extends CommandBase {
       SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
       // Drive // x and y is flipped
-      m_swerveDriveSubsystem.setSwerveDrive(-ySpeed, -xSpeed, rotSpeed, true);
+      m_swerveDriveSubsystem.setSwerveDrive(xSpeed, -ySpeed, 0, true);
     }
 
     @Override
     public boolean isFinished() {
-        return (xController.atSetpoint() && yController.atSetpoint() && rotController.atSetpoint());
+        //return (xController.atSetpoint() && yController.atSetpoint() && rotController.atSetpoint());
+        return (xController.atSetpoint() && yController.atSetpoint());
     }
 }

@@ -85,7 +85,7 @@ public class RobotContainer {
         // autoChooser.addOption("BlueRightDeadReckoning", new BlueRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
 
         // Testing Autos
-        // autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
         // autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem));
 
         // Do Nothing Auto
