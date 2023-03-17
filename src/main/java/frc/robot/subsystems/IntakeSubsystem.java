@@ -20,7 +20,7 @@ public class IntakeSubsystem extends SubsystemBase{
     private double outtake_speed = 0.25;
     private boolean hasGamePiece = false;
     private double intakeDelay = 0.35;
-    private double rateCutoff = 1000;
+    private double rateCutoff = 2500;
     private boolean runStarted = false;
     private Timer timer;
 
@@ -56,35 +56,31 @@ public class IntakeSubsystem extends SubsystemBase{
             runStarted = true;
         }
 
-        if (!hasGamePiece) {
-            // turns motor on
-            if(speedMultiplier >= 0.5){
-                intake_motor.set(intake_speed*0.5);
-                intake_motor2.set(intake_speed*0.5);
-            }else if(speedMultiplier <= -0.5){
-                intake_motor.set(1);
-                intake_motor2.set(1);
-            }else{
-                intake_motor.set(intake_speed);
-                intake_motor2.set(intake_speed);
-            }
-            // if has gamepiece, turns motor off
-            if (runStarted && intake_encoder.getRate() < rateCutoff) {
-                timer.start();
-            }
-
-            if (isIntakeTimerDone()) {
-                intake_motor.set(0.0);
-                this.hasGamePiece = true;
-                m_lightingSubsystem.hasGamePieceLights();
-            }
-
+        // turns motor on
+        if(speedMultiplier >= 0.5){
+            intake_motor.set(intake_speed*0.5);
+            intake_motor2.set(intake_speed*0.5);
+        }else if(speedMultiplier <= -0.5){
+            intake_motor.set(1);
+            intake_motor2.set(1);
         }else{
+            intake_motor.set(intake_speed);
+            intake_motor2.set(intake_speed);
+        }
+        // if has gamepiece, turns motor off
+        if (runStarted && intake_encoder.getRate() < rateCutoff) {
+            timer.start();
+        }
+
+        if (isIntakeTimerDone()) {
             intake_motor.set(0.0);
-            runStarted = false;
+            this.hasGamePiece = true;
+            m_lightingSubsystem.hasGamePieceLights();
             timer.stop();
             timer.reset();
-        };
+            runStarted = false;
+        }
+        System.out.println(intake_encoder.getRate());
     }
 
     public void runIntakeReversed(double speedMultiplyer) {
