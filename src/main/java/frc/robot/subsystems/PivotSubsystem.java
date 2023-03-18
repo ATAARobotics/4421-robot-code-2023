@@ -55,10 +55,10 @@ public class PivotSubsystem extends SubsystemBase {
             //down switch always detect
             case 1:
                 if(!sensedMetalBottom){
-                    if(pivotEncoder.getPosition() >= -1700){
+                    if(pivotEncoder.getPosition() >= -2200){
                         pivotMotor.set(-speed);
                     }else{
-                        pivotMotor.set(-speed/5);
+                        pivotMotor.set(-speed/3.5);
                     }
                 }
                 else{
@@ -91,7 +91,7 @@ public class PivotSubsystem extends SubsystemBase {
             //double edge detection to align 
             case 4:{
                 if(sensedMetalTop){
-                    pivotMotor.set(-speed);
+                    pivotMotor.set(-speed/3);
                 }
                 else{
                     stop();

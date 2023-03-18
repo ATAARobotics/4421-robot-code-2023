@@ -134,7 +134,7 @@ public class SwerveModule {
 
     private void setAngle(){
         SmartDashboard.putNumber(name + " angle", rotationEncoder.getAbsolutePosition()+rotationOffset);
-        double rotationVelocity = -angleController.calculate(getAngle());
+        double rotationVelocity = angleController.calculate(getAngle());
         // Clamp the value (not scale because faster is okay, it's on a PID)
         rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
         if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
