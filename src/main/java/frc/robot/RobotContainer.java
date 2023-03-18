@@ -43,6 +43,7 @@ public class RobotContainer {
     private final LightingSubsystem mLightingSubsystem;
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED_AUTO, Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
 
     private double swerveSpeed = 0.4421;
 
@@ -98,7 +99,12 @@ public class RobotContainer {
         configureBindings();
     }
 
+    public void AutoInit(double rotation){
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
+        rotationController.reset(new TrapezoidProfile.State(rotation, 0.0));
+
+    }
     private void configureBindings() {
         joysticks.IntakeIn.or(new Trigger(() -> joysticks.RotIntake.getAsBoolean())).whileTrue(new RunCommand(() -> m_intakeSubsystem.runIntake(joysticks.getOuttake() - joysticks.getOuttakeInversed())))
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
