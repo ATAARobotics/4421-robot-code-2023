@@ -88,6 +88,8 @@ public class RobotContainer {
         autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
         // autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem));
 
+        autoChooser.addOption("SquareWithRot", new SquareWithRot(m_swerveDriveSubsystem));
+
         // Do Nothing Auto
         autoChooser.addOption("Do Nothing", null);
 
@@ -135,8 +137,8 @@ public class RobotContainer {
                                         joysticks::getYVelocity,
                                         joysticks::getRotationVelocity, this::getSwerveSpeed,
                                         () -> 1));
-        joysticks.RotateLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
-                        () -> 0.1,
+        joysticks.RotateLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> -0.5,
+                        () -> 0,
                         () -> 0, () -> 1,
                         () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                         joysticks::getYVelocity,

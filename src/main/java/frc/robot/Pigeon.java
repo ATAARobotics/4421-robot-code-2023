@@ -52,7 +52,7 @@ public class Pigeon {
         return pigeon.getRoll() - initPitch;
     }
     public double getYaw() {
-        double yaw = -pigeon.getYaw();
+        double yaw = pigeon.getYaw();
 
         return yaw;
     }

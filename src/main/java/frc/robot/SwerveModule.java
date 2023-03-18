@@ -95,7 +95,6 @@ public class SwerveModule {
         this.rotationMotor = rotationMotor;
         this.rotationEncoder = rotationEncoder;
         this.rotationOffset = rotationOffset;
-
         // Current limit the motors to avoid brownouts
         this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 26, 26, 1));
         this.rotationMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 26, 26, 1));
@@ -104,6 +103,7 @@ public class SwerveModule {
 
         this.id = id;
         this.name = name;
+        SmartDashboard.putNumber(name + " offset", rotationOffset);
 
         if (invertDrive) {
             this.inversionConstant = -1.0;
@@ -133,8 +133,8 @@ public class SwerveModule {
     }
 
     private void setAngle(){
-        SmartDashboard.putNumber(name + " angle", rotationEncoder.getAbsolutePosition()+rotationOffset);
-        double rotationVelocity = angleController.calculate(getAngle());
+        SmartDashboard.putNumber(name + " angle", rotationEncoder.getAbsolutePosition()+SmartDashboard.getNumber(name + " offset", rotationOffset));
+        double rotationVelocity = -angleController.calculate(getAngle());
         // Clamp the value (not scale because faster is okay, it's on a PID)
         rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
         if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
@@ -185,7 +185,7 @@ public class SwerveModule {
      * Gets the angle in radians of the module from -Pi to Pi
      */
     public double getAngle() {
-        double angle = ((rotationEncoder.getAbsolutePosition()+rotationOffset) / 360 * 2.0 * Math.PI) ;
+        double angle = ((rotationEncoder.getAbsolutePosition()+SmartDashboard.getNumber(name + " offset", rotationOffset)) / 360 * 2.0 * Math.PI) ;
         angle %= 2.0 * Math.PI;
         if (angle < 0.0) {
             angle += 2.0 * Math.PI;

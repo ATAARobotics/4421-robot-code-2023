@@ -65,7 +65,7 @@ public class SwerveOdometry extends SwerveDriveOdometry{
     public Pose2d update(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
         SmartDashboard.putNumber("Pose X", getPoseMeters().getX());
         SmartDashboard.putNumber("pose Y", getPoseMeters().getY());
-        SmartDashboard.putNumber("Pose Rot", getPoseMeters().getRotation().getRadians());
+        SmartDashboard.putNumber("Pose Rot", getPoseMeters().getRotation().getDegrees());
         return super.update(gyroAngle, modulePositions);
     }
 }

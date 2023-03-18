@@ -64,11 +64,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private ChassisSpeeds moduleSpeeds =new ChassisSpeeds(0, 0, 0);
     
     public final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-        new Translation2d(Constants.WHEELBASE / 2.0, -Constants.TRACK_WIDTH / 2.0),
-        new Translation2d(Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0),
-        new Translation2d(-Constants.WHEELBASE / 2.0, -Constants.TRACK_WIDTH / 2.0),
-        new Translation2d(-Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0));
-    public final SwerveDriveKinematics swerveOdometryKinematics = new SwerveDriveKinematics(
         new Translation2d(Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0),
         new Translation2d(Constants.WHEELBASE / 2.0, -Constants.TRACK_WIDTH / 2.0),
         new Translation2d(-Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0),
@@ -114,7 +109,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
 
         // Set up odometry
-        odometry = new SwerveOdometry(swerveOdometryKinematics, new Rotation2d(pigeon.getYaw()), getModulePositions(), pigeon, alliance);
+        odometry = new SwerveOdometry(swerveKinematics, new Rotation2d(pigeon.getYaw()), getModulePositions(), pigeon, alliance);
 
         // Initialize the pose
         pose = initialPose;
@@ -133,11 +128,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
         this.useOdometry = useOdometry;
-        
         if (fieldOriented) {
             this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, -yVelocity, rotationVelocity, Rotation2d.fromDegrees(pigeon.getYaw()));
         }else{
-            this.moduleSpeeds = new ChassisSpeeds(-xVelocity, yVelocity, rotationVelocity);
+            this.moduleSpeeds = new ChassisSpeeds(-xVelocity, -yVelocity, rotationVelocity);
         }
         
     }
@@ -148,7 +142,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        odometry.update(new Rotation2d(pigeon.getYaw()), getModulePositions());
+        odometry.update(Rotation2d.fromDegrees(pigeon.getYaw()), getModulePositions());
         SmartDashboard.putBoolean("Field Oriented", fieldOriented);
         double gyroAngle = getHeading();
         SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
@@ -181,8 +175,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             // Execute functions on each swerve module
             for (SwerveModule module : swerveModules) {
                 module.setState(moduleStates[module.getId()]);
-                SmartDashboard.putNumber(module.getName() + "postion angle", module.getPosition().angle.getDegrees());
-                SmartDashboard.putNumber(module.getName() + "postion distance", module.getPosition().distanceMeters);
+                SmartDashboard.putNumber(module.getName() + " postion angle", module.getPosition().angle.getDegrees());
+                SmartDashboard.putNumber(module.getName() + " postion distance", module.getPosition().distanceMeters);
                 // Run periodic tasks on the module (running motors)
             }
         } else {
