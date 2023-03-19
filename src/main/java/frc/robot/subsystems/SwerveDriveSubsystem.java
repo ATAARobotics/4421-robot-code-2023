@@ -255,8 +255,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void setInitialPose(Pose2d pose) {
         initialPose = pose;
         odometry.resetPosition(new Rotation2d(pigeon.getYaw()), getModulePositions(), pose);
-        initialPoseX = pose.getX();
-        initialPoseY = pose.getY();
+        // initialPoseX = pose.getX();
+        // initialPoseY = pose.getY();
     }
 
     /**
