@@ -79,7 +79,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void OuttakeAuto(){
-        intake_motor.set(-0.32);
+        intake_motor.set(-1);
     }
 
     public void stopIntake(){

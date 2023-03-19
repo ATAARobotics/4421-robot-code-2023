@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -15,11 +16,28 @@ public class SwerveOdometry extends SwerveDriveOdometry{
     private boolean isInitialized = false;
     Pigeon pigeon;  
     Alliance alliance;
+    double time;
+    private double prevXVel;
+    private double prevYVel;
+    private double prevRotVel;
+
+    public double getXVel() {
+        return prevXVel;
+    }
+
+    public double getYVel() {
+        return prevYVel;
+    }
+
+    public double getRotVel() {
+        return prevRotVel;
+    }
 
     public SwerveOdometry(SwerveDriveKinematics kinematics, Rotation2d angle, SwerveModulePosition[] swerveModules, Pigeon pigeon, Alliance alliance) {
         super(kinematics, angle, swerveModules);
         this.pigeon = pigeon;
         this.alliance = alliance;
+        this.time = Timer.getFPGATimestamp();
     }
 
     // take the average of the 2 poses
@@ -66,6 +84,15 @@ public class SwerveOdometry extends SwerveDriveOdometry{
         SmartDashboard.putNumber("Pose X", getPoseMeters().getX());
         SmartDashboard.putNumber("pose Y", getPoseMeters().getY());
         SmartDashboard.putNumber("Pose Rot", getPoseMeters().getRotation().getDegrees());
-        return super.update(gyroAngle, modulePositions);
+        double delta = Timer.getFPGATimestamp() - time;
+        time = Timer.getFPGATimestamp();
+        double tempX = getPoseMeters().getX();
+        double tempY = getPoseMeters().getY();
+        double tempRot = getPoseMeters().getRotation().getDegrees();
+        Pose2d tempPose = super.update(gyroAngle, modulePositions);
+        prevXVel = (getPoseMeters().getX() - tempX) / delta;
+        prevYVel = (getPoseMeters().getY() - tempY) / delta;
+        prevRotVel = (getPoseMeters().getRotation().getDegrees() - tempRot) / delta;
+        return tempPose;
     }
 }

@@ -49,7 +49,6 @@ public class RedLeaderOverBack extends SequentialCommandGroup {
         addCommands(                    
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
                 new PivotCommand(m_pivotSubsystem, "firstdown"),
-                new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
                 new WaitCommand(0.25),
                 // score
                 new OuttakeCommand(m_intakeSubsystem),
@@ -57,11 +56,11 @@ public class RedLeaderOverBack extends SequentialCommandGroup {
                 // Drive over charging station with dead-reckoning
                 
                 //new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 1.5),
-                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 4),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 5),
 
                 // Auto-Balance on charging station
                 new WaitCommand(0.25),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 2),
+                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 2),
                 new AutoBalance(m_swerveDriveSubsystem, true)
 
         );

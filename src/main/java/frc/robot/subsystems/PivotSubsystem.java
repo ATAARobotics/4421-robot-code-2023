@@ -30,7 +30,7 @@ public class PivotSubsystem extends SubsystemBase {
     private boolean sensedMetalBottom = false;
     private boolean sensedMetalTop = false;
     
-    private double speed = 0.6;
+    private double speed = 0.9;
     
     private int direction = 0;
 
@@ -57,7 +57,7 @@ public class PivotSubsystem extends SubsystemBase {
             //down switch always detect
             case 1:
                 if(!sensedMetalBottom){
-                    if(pivotEncoder.getPosition() >= -2200){
+                    if(pivotEncoder.getPosition() >= -2000){
                         setSpeed(-speed);
                     }else{
                         //setSpeed(-speed/3.5);
@@ -108,7 +108,7 @@ public class PivotSubsystem extends SubsystemBase {
                     if(sensedMetalTop){
                         aboveTop = true;
                     }
-                    if (pivotEncoder.getPosition() <= -100){
+                    if (pivotEncoder.getPosition() <= -250){
                         setSpeed(speed);
                     }
                     else{

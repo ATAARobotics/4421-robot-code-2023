@@ -52,31 +52,32 @@ public class Red2PieceRight extends SequentialCommandGroup {
                 new InstantCommand(() -> m_swerveDriveSubsystem.setInitialPose(new Pose2d(AutoConstants.RED_RIGHT_MID_SCORING[0], AutoConstants.RED_RIGHT_MID_SCORING[1], new Rotation2d(0)))),
                 
                 new PivotCommand(m_pivotSubsystem, "firstdown"),
-                new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
                 new WaitCommand(0.25),
                 // score
                 new OuttakeCommand(m_intakeSubsystem),
 
                 // drive to midpoint + rotate + lower arm
-                new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI)), false),
-                    new PivotCommand(m_pivotSubsystem, "down")
-                ),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(0)), false),
                 
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0], AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(0.0)), true),
-                    new IntakeCommand(m_intakeSubsystem)
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0], AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI+0.01)), false),
+                    new PivotCommand(m_pivotSubsystem, "down")
+                ),
+
+                new ParallelCommandGroup(
+                    new IntakeCommand(m_intakeSubsystem),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0]-0.60, AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI+0.01)), false)
                 ),
 
                 // mid point + rotate + raising arm to scoring pos + extending
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI)), false),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(0)), false),
                     new PivotCommand(m_pivotSubsystem, "up")
                 ),
                 
                 // scoring position
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_RIGHT_SCORING[0], AutoConstants.RED_RIGHT_RIGHT_SCORING[1], new Rotation2d(Math.PI)), true)
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_RIGHT_SCORING[0], AutoConstants.RED_RIGHT_RIGHT_SCORING[1]-0.15, new Rotation2d(0)), false)
 
 
         );
