@@ -49,9 +49,15 @@ public class Constants {
     // radians/second/second
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
 
-    // Swerve offset
+//     // Swerve offset
+//     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
+//         -24.0820313-45+5.2, 147.919922+135+15-0.6, 82.96875+104-5.2, 139.6582-180-10.65
+//     }
+//             : new double[] {
+//                     0, 0, 0, 0
+//             };
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-        -24.0820313-45+5.2, 147.919922+135+15-0.6, 82.96875+104-5.2, 139.6582-180-10.65
+        24.0820313-90, -147.919922+90, -82.96875-90, -139.6582+90
     }
             : new double[] {
                     0, 0, 0, 0
@@ -76,6 +82,7 @@ public class Constants {
 
     // CAN Legacy Device IDs
     public static final int PIVOT_MOTOR_ID = 13;
+    public static final int PIVOT_MOTOR2_ID = 22;
     public static final int TELESCOPING_ARM_MOTOR_ID = 14;
     public static final int INTAKE_MOTOR_ID = 15;
     public static final int PIVOT_ENCODER_ID = 16;

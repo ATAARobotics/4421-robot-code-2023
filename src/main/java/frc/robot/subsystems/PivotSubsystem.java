@@ -22,14 +22,15 @@ import frc.robot.Constants;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 public class PivotSubsystem extends SubsystemBase {
     private CANSparkMax pivotMotor = new CANSparkMax(Constants.PIVOT_MOTOR_ID, MotorType.kBrushless);
+    private CANSparkMax pivotMotor2 = new CANSparkMax(Constants.PIVOT_MOTOR2_ID, MotorType.kBrushless);
     private CANCoder pivotEncoder = new CANCoder(Constants.PIVOT_ENCODER_ID);
-    private PIDController pivotPid = new PIDController(0, 0, 0);
+    // private PIDController pivotPid = new PIDController(0, 0, 0);
     private DigitalInput proximitySwitchBottom;
     private DigitalInput proximitySwitchTop;
     private boolean sensedMetalBottom = false;
     private boolean sensedMetalTop = false;
     
-    private double speed = 1.00;
+    private double speed = 0.6;
     
     private int direction = 0;
 
@@ -39,10 +40,11 @@ public class PivotSubsystem extends SubsystemBase {
     private boolean aboveTop = true;
     double setpoint;
     public PivotSubsystem() {
-        pivotMotor.setIdleMode(IdleMode.kBrake);
-        SmartDashboard.putNumber("Pivot P", 0);
-        SmartDashboard.putNumber("Pivot I", 0);
-        SmartDashboard.putNumber("Pivot D", 0);
+        setBrakes(true);
+        pivotMotor2.setInverted(true);
+        // SmartDashboard.putNumber("Pivot P", 0);
+        // SmartDashboard.putNumber("Pivot I", 0);
+        // SmartDashboard.putNumber("Pivot D", 0);
         this.proximitySwitchBottom = new DigitalInput(1);
         this.proximitySwitchTop = new DigitalInput(2);
         pivotEncoder.setPosition(0);
@@ -56,9 +58,10 @@ public class PivotSubsystem extends SubsystemBase {
             case 1:
                 if(!sensedMetalBottom){
                     if(pivotEncoder.getPosition() >= -2200){
-                        pivotMotor.set(-speed);
+                        setSpeed(-speed);
                     }else{
-                        pivotMotor.set(-speed/3.5);
+                        //setSpeed(-speed/3.5);
+                        setSpeed(-0.1);
                     }
                 }
                 else{
@@ -70,7 +73,7 @@ public class PivotSubsystem extends SubsystemBase {
             //top switch go up
             case 2:{
                 if(!sensedMetalTop){
-                    pivotMotor.set(speed);
+                    setSpeed(speed);
                 }
                 else{
                     aboveTop = false;
@@ -81,7 +84,7 @@ public class PivotSubsystem extends SubsystemBase {
             //top switch go down
             case 3:{
                 if(!sensedMetalTop){
-                    pivotMotor.set(-speed);
+                    setSpeed(-speed);
                 }
                 else{
                     movementState = 4;
@@ -91,7 +94,7 @@ public class PivotSubsystem extends SubsystemBase {
             //double edge detection to align 
             case 4:{
                 if(sensedMetalTop){
-                    pivotMotor.set(-speed/3);
+                    setSpeed(-0.15);
                 }
                 else{
                     stop();
@@ -105,18 +108,23 @@ public class PivotSubsystem extends SubsystemBase {
                     if(sensedMetalTop){
                         aboveTop = true;
                     }
-                    if (pivotEncoder.getPosition() <= 0){
-                        pivotMotor.set(speed);
+                    if (pivotEncoder.getPosition() <= -100){
+                        setSpeed(speed);
                     }
                     else{
-                        stop();
+                        if (pivotEncoder.getPosition() <= 0){
+                            setSpeed(0.1);
+                        }
+                        else{
+                            stop();
+                        }
                     }
                     break;
                 }
             //top switch go down
             case 6:{
                 if(!sensedMetalTop){
-                    pivotMotor.set(-speed);
+                    setSpeed(-speed);
                 }
                 else{
                     movementState = 7;
@@ -125,7 +133,7 @@ public class PivotSubsystem extends SubsystemBase {
             }
             case 7:{
                 if(sensedMetalTop){
-                    pivotMotor.set(-speed);
+                    setSpeed(-speed);
                 }
                 else{
                     movementState = 2;
@@ -135,7 +143,7 @@ public class PivotSubsystem extends SubsystemBase {
             }
             // override for arm to go up 
             case 8:{ 
-                pivotMotor.set(speed/2);
+                setSpeed(speed/2);
                 break;
             }         
             default:
@@ -162,13 +170,13 @@ public class PivotSubsystem extends SubsystemBase {
 
     }
     public void stop() {
-        pivotMotor.set(0);
+        setSpeed(0);
         movementState = 0;
     }
 
     public void overridestop() {
         pivotEncoder.setPosition(0);
-        pivotMotor.set(0);
+        setSpeed(0);
         movementState = 0;   
     }
      public void forceup() {
@@ -197,9 +205,15 @@ public class PivotSubsystem extends SubsystemBase {
     public void setBrakes(boolean toggle){
         if(toggle){
             pivotMotor.setIdleMode(IdleMode.kBrake);
+            pivotMotor2.setIdleMode(IdleMode.kBrake);
         }else{
             pivotMotor.setIdleMode(IdleMode.kCoast);
-
+            pivotMotor2.setIdleMode(IdleMode.kCoast);
         }
+    }
+
+    public void setSpeed(double speedy) {
+        pivotMotor.set(speedy);
+        pivotMotor2.set(speedy);
     }
 } 

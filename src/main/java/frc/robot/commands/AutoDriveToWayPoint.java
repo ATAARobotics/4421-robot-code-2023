@@ -33,7 +33,7 @@ public class AutoDriveToWayPoint extends CommandBase {
     // PID
     private final PIDController xController = new PIDController(1.0, 0.1, 0);
     private final PIDController yController = new PIDController(1.0, 0.1, 0);
-    private final PIDController rotController = new PIDController(2.0, 0, 0);
+    private final PIDController rotController = new PIDController(0.8, 0, 0);
 
     public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, double driveTolerance, double rotTolerance, double speedLimit, double rotLimit, boolean isEndPoint) {
         this.m_swerveDriveSubsystem = swerveDriveSubsystem;
@@ -67,7 +67,7 @@ public class AutoDriveToWayPoint extends CommandBase {
 
         xController.setSetpoint(goalPose.getX());
         yController.setSetpoint(goalPose.getY());
-        //rotController.setSetpoint(goalPose.getRotation().getRadians());
+        rotController.setSetpoint(goalPose.getRotation().getRadians());
     }
 
     @Override
@@ -98,16 +98,16 @@ public class AutoDriveToWayPoint extends CommandBase {
         ySpeed = 0;
       }
 
-      rotTemp = m_swerveDriveSubsystem.getHeading();
-      if(rotTemp > 0) {
-        rotTemp = rotTemp - Math.PI;
-      }
-      else {
-        rotTemp = rotTemp + Math.PI;
-      }
+      // rotTemp = m_swerveDriveSubsystem.getHeading();
+      // if(robotPose.getRotation().getRadians() > 0) {
+      //   rotTemp = rotTemp - Math.PI;
+      // }
+      // else {
+      //   rotTemp = rotTemp + Math.PI;
+      // }
 
       SmartDashboard.putBoolean("ROT-ACH", false);
-      rotSpeed = MathUtil.clamp(-rotController.calculate(rotTemp), -rotLimit, rotLimit);
+      rotSpeed = -MathUtil.clamp(rotController.calculate(robotPose.getRotation().getRadians()), -rotLimit, rotLimit);
       if (rotController.atSetpoint()) {
         SmartDashboard.putBoolean("ROT-ACH", true);
         rotSpeed = 0;
@@ -118,12 +118,11 @@ public class AutoDriveToWayPoint extends CommandBase {
       SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
       // Drive // x and y is flipped
-      m_swerveDriveSubsystem.setSwerveDrive(xSpeed, -ySpeed, 0, true);
+      m_swerveDriveSubsystem.setSwerveDrive(xSpeed, -ySpeed, rotSpeed, true);
     }
 
     @Override
     public boolean isFinished() {
-        //return (xController.atSetpoint() && yController.atSetpoint() && rotController.atSetpoint());
-        return (xController.atSetpoint() && yController.atSetpoint());
+        return (xController.atSetpoint() && yController.atSetpoint() && rotController.atSetpoint());
     }
 }
