@@ -38,7 +38,7 @@ public class Constants {
     public static final double TRACK_WIDTH = COMP_BOT ? 0.584: 0.584;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 3;
+    public static final double MAXIMUM_SPEED = 3.75;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
@@ -90,7 +90,7 @@ public class Constants {
     
     // CANdle
     public static final int CANDLE_ID = 21;
-    public static final int[] yellow = {255, 255, 0};
+    public static final int[] yellow = {255, 225, 0};
     public static final int[] red = {255, 0, 0};
     public static final int[] blue = {100, 100, 255};
     public static final int[] purple = {100, 0, 100};
@@ -226,7 +226,7 @@ public class Constants {
         public static final double tipThreshold = 5.0;
 
         // Intake time limit
-        public static final double INTAKE_TIME_LIMIT = 1.5;
+        public static final double INTAKE_TIME_LIMIT = 0.25;
 
         // Outake Delay
         public static final double OUTTAKE_DELAY = 0.35;

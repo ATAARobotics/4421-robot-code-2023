@@ -116,7 +116,7 @@ public class AutoDriveToWayPoint extends CommandBase {
       // }
 
       SmartDashboard.putBoolean("ROT-ACH", false);
-      rotSpeed = -MathUtil.clamp(rotController.calculate(robotPose.getRotation().getRadians()), -rotLimit, rotLimit);
+      rotSpeed = MathUtil.clamp(rotController.calculate(robotPose.getRotation().getRadians()), -rotLimit, rotLimit);
       if (rotController.atSetpoint()) {
         SmartDashboard.putBoolean("ROT-ACH", true);
         rotSpeed = 0;

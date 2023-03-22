@@ -57,11 +57,11 @@ public class PivotSubsystem extends SubsystemBase {
             //down switch always detect
             case 1:
                 if(!sensedMetalBottom){
-                    if(pivotEncoder.getPosition() >= -2000){
+                    if(pivotEncoder.getPosition() >= -2200){
                         setSpeed(-speed);
                     }else{
                         //setSpeed(-speed/3.5);
-                        setSpeed(-0.1);
+                        setSpeed(-0.2);
                     }
                 }
                 else{
@@ -145,7 +145,14 @@ public class PivotSubsystem extends SubsystemBase {
             case 8:{ 
                 setSpeed(speed/2);
                 break;
-            }         
+            }   
+            case 9:{
+                if(pivotEncoder.getPosition() >= -1200){
+                    setSpeed(-speed);
+                }else{
+                    setSpeed(0);
+                }
+            }      
             default:
                 stop();
         }
@@ -164,6 +171,7 @@ public class PivotSubsystem extends SubsystemBase {
     public void down() {
         movementState = 1;
 
+
     }
     public void firstdown() {
         movementState = 6;
@@ -172,6 +180,10 @@ public class PivotSubsystem extends SubsystemBase {
     public void stop() {
         setSpeed(0);
         movementState = 0;
+    }
+
+    public void downPosition() {
+        movementState = 9;
     }
 
     public void overridestop() {

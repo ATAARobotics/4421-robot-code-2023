@@ -45,7 +45,7 @@ public class RedLeftStack extends SequentialCommandGroup {
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
                     new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_LEFT_GAME_PIECE[0], AutoConstants.RED_LEFT_GAME_PIECE[1], new Rotation2d(0.0)), true),
-                    new IntakeCommand(intakeSubsystem)
+                    new IntakeCommand(intakeSubsystem, m_swerveDriveSubsystem)
                 ),
                 
                 // mid point + rotate TODO: parallel with raising arm to scoring pos

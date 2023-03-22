@@ -4,6 +4,8 @@ public class AutoConstants {
 
     private final static double X_OFFSET = 0.0;
     private final static double Y_OFFSET = 0.0;
+    //Forward speed in the auto intake command
+    public static final double FORWARD_SPEED_INTAKE_COMMAND = 0.3;
 
     // Red Leader
     // public final static double OUT_COMMUNITY_ZONE[] = {10.80+X_OFFSET, 2.75+Y_OFFSET};

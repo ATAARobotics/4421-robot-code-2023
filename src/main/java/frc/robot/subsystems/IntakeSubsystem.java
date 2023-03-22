@@ -66,8 +66,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void runIntakeReversed(double speedMultiplyer) {
         if(speedMultiplyer >= 0.5){
-            intake_motor.set(-outtake_speed*0.85);
-            intake_motor2.set(-outtake_speed*0.85);
+            intake_motor.set(-outtake_speed*0.5);
+            intake_motor2.set(-outtake_speed*0.5);
         }else if(speedMultiplyer <= -0.5){
             intake_motor.set(-1);
             intake_motor2.set(-1);
