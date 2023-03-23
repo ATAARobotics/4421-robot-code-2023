@@ -39,6 +39,7 @@ public class Constants {
 
     // Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 3.75;
+    public static final double SLOW_MAXIMUM_SPEED = 1.5;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
@@ -71,8 +72,6 @@ public class Constants {
     public static final double driveKS = (0.32 / 12);
     public static final double driveKV = (1.51 / 12);
     public static final double driveKA = (0.27 / 12);
-
-    public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
 
     // CAN FD Device IDs
     public static final int[] DRIVE_MOTORS_ID = { 1, 2, 3, 4 };
@@ -117,7 +116,7 @@ public class Constants {
     // least 0.1.
     public static final double JOY_DEAD_ZONE = 0.3;
     // Whether teleop should start in field oriented mode
-    public static final boolean FIELD_ORIENTED = false;
+    public static final boolean FIELD_ORIENTED = true;
     // The sensitivity value for the joysticks - the values are exponentiated to
     // this value, so higher numbers result in a lower sensitivity, 1 results in
     // normal sensitivity, and decimals increase sensitivity
