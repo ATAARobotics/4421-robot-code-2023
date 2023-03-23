@@ -24,7 +24,7 @@ import frc.robot.AutoConstants;
 
 // TODO: Test (based on PathPlanner coordinates)
 
-public class RedLeaderOverBack extends SequentialCommandGroup {
+public class RedOdo21Auto extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
@@ -38,7 +38,7 @@ public class RedLeaderOverBack extends SequentialCommandGroup {
 
     
 
-    public RedLeaderOverBack(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
+    public RedOdo21Auto(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
@@ -48,19 +48,21 @@ public class RedLeaderOverBack extends SequentialCommandGroup {
 
         addCommands(                    
                 new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+                new InstantCommand(() -> m_swerveDriveSubsystem.setInitialPose(new Pose2d(AutoConstants.Red_MID_MID_SCORING[0], AutoConstants.Red_MID_MID_SCORING[1], new Rotation2d(0)))),
+                
                 new PivotCommand(m_pivotSubsystem, "firstdown"),
+                new TelescopingArmCommand(m_telescopingArmSubsystem, "cube"),
                 new WaitCommand(0.25),
                 // score
                 new OuttakeCommand(m_intakeSubsystem),
 
-                // Drive over charging station with dead-reckoning
-                
-                //new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 1.5),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 5),
+                // Drive over charging station with odometry
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_OVER_CHARGING_STATION[0], AutoConstants.RED_MID_OVER_CHARGING_STATION[1], new Rotation2d(0)), false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_OVER_CHARGING_STATION[0], AutoConstants.RED_MID_OVER_CHARGING_STATION[1], new Rotation2d(0)), false),
 
                 // Auto-Balance on charging station
                 new WaitCommand(0.25),
-                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 2),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 2),
                 new AutoBalance(m_swerveDriveSubsystem, true)
 
         );

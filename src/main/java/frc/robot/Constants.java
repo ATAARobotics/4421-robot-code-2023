@@ -34,11 +34,12 @@ public class Constants {
     public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
 
 // Measurements are in meters
-    public static final double WHEELBASE = COMP_BOT ? 0.584: 0.584; 
-    public static final double TRACK_WIDTH = COMP_BOT ? 0.476: 0.476;
+    public static final double WHEELBASE = COMP_BOT ? 0.476: 0.476; 
+    public static final double TRACK_WIDTH = COMP_BOT ? 0.584: 0.584;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 3.4;
+    public static final double MAXIMUM_SPEED = 3.75;
+    public static final double SLOW_MAXIMUM_SPEED = 1.5;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
@@ -49,9 +50,15 @@ public class Constants {
     // radians/second/second
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
 
-    // Swerve offset
+//     // Swerve offset
+//     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
+//         -24.0820313-45+5.2, 147.919922+135+15-0.6, 82.96875+104-5.2, 139.6582-180-10.65
+//     }
+//             : new double[] {
+//                     0, 0, 0, 0
+//             };
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-        0, 0, 0, 0
+        24.0820313-90, -147.919922+90, -82.96875-90, -139.6582+90
     }
             : new double[] {
                     0, 0, 0, 0
@@ -66,8 +73,6 @@ public class Constants {
     public static final double driveKV = (1.51 / 12);
     public static final double driveKA = (0.27 / 12);
 
-    public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
-
     // CAN FD Device IDs
     public static final int[] DRIVE_MOTORS_ID = { 1, 2, 3, 4 };
     public static final int[] ROTATION_MOTORS_ID = { 5, 6, 7, 8 };
@@ -76,6 +81,7 @@ public class Constants {
 
     // CAN Legacy Device IDs
     public static final int PIVOT_MOTOR_ID = 13;
+    public static final int PIVOT_MOTOR2_ID = 22;
     public static final int TELESCOPING_ARM_MOTOR_ID = 14;
     public static final int INTAKE_MOTOR_ID = 15;
     public static final int PIVOT_ENCODER_ID = 16;
@@ -83,7 +89,7 @@ public class Constants {
     
     // CANdle
     public static final int CANDLE_ID = 21;
-    public static final int[] yellow = {255, 255, 0};
+    public static final int[] yellow = {255, 225, 0};
     public static final int[] red = {255, 0, 0};
     public static final int[] blue = {100, 100, 255};
     public static final int[] purple = {100, 0, 100};
@@ -211,15 +217,15 @@ public class Constants {
         public static final double DTOLERANCE = 0.09; // meters
         public static final double RTOLERANCE = 5.0; // degrees
         
-        public static final double SPEEDLIMIT = 1.0; // meters per second
-        public static final double ROTLIMIT = Math.PI;
+        public static final double SPEEDLIMIT = 1.5; // meters per second
+        public static final double ROTLIMIT = 2*Math.PI;
 
 
         // pigeon tip threshold to reset odometry in degrees
         public static final double tipThreshold = 5.0;
 
         // Intake time limit
-        public static final double INTAKE_TIME_LIMIT = 3.0;
+        public static final double INTAKE_TIME_LIMIT = 0.25;
 
         // Outake Delay
         public static final double OUTTAKE_DELAY = 0.35;

@@ -19,12 +19,11 @@ public class Robot extends TimedRobot {
     private Timer brakesOffTimer = new Timer();
 
     private RobotContainer robotContainer = null;
-
     private Command m_autonomousCommand = null;
     //Auto selector on SmartDashboard
 
     public Robot() {
-        robotContainer = new RobotContainer();
+        robotContainer = new RobotContainer(DriverStation.getAlliance());
         if (!Constants.COMP_MODE) {
             DriverStation.silenceJoystickConnectionWarning(true);
         } else {
@@ -92,10 +91,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        if(!Constants.FIELD_ORIENTED){
+        if(Constants.FIELD_ORIENTED){
+            robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 0);
+        }else{
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
         }
-        robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 180);
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;

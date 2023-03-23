@@ -96,7 +96,7 @@ public class DrivePlaceCommand extends CommandBase {
 
   @Override
   public void execute() {
-    var robotPose = odometry.getPose();
+    var robotPose = odometry.getPoseMeters();
 
       // Transform the tag's pose to set our goal
       var goalPose = targetPose;

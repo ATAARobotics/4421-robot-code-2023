@@ -19,9 +19,11 @@ public class PivotCommand extends CommandBase{
         switch(state){
             case "up":
                 m_pivotSubsystem.up();
+                firstrun = false;
                 break;
             case "down":
                 m_pivotSubsystem.down();
+                firstrun = false;
                 break;
             case "firstdown":
                 m_pivotSubsystem.firstdown();

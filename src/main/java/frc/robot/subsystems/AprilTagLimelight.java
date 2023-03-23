@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,11 +39,13 @@ public class AprilTagLimelight extends SubsystemBase {
   PhotonCamera photonCamera;
   frc.robot.AprilTag aprilTagPos;
   SwerveOdometry odometry;
+  SwerveDriveSubsystem swerve;
   
-  public AprilTagLimelight(SwerveOdometry odometry) {
+  public AprilTagLimelight(SwerveOdometry odometry, SwerveDriveSubsystem swerve) {
     super();
     this.range = 0.0d;
     this.odometry = odometry;
+    this.swerve = swerve;
   }
 
   @Override
@@ -78,7 +81,7 @@ public class AprilTagLimelight extends SubsystemBase {
     // Query the latest result from PhotonVision
     result = camera.getLatestResult();
 
-      robotPose = odometry.getPose();
+      robotPose = odometry.getPoseMeters();
 
         // rotation should from pigeon. X neg Y neg.   25 X 11.5 Y to center of the robot
         Transform3d cameraToRobot = new Transform3d(new Translation3d(-0.25, -0.115, -0.46), new Rotation3d(0, 0, 0));
@@ -94,7 +97,7 @@ public class AprilTagLimelight extends SubsystemBase {
           Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, aprilTagPos.aprilTagPose, cameraToRobot);
           redSide = (aprilTagPos.aprilTagPose.getRotation().getQuaternion().getZ() > 0.5);
           // Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d(), redSide);
-          odometry.addAprilTag(robotPose.toPose2d(), redSide);
+          odometry.addAprilTag(robotPose.toPose2d(), redSide, swerve.getModulePositions());
         }
     }
     }

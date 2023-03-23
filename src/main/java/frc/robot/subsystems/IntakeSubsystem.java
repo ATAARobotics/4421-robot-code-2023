@@ -16,7 +16,7 @@ public class IntakeSubsystem extends SubsystemBase{
     private Counter intake_encoder;
 
 
-    private double intake_speed = 0.55;
+    private double intake_speed = 1;
     private double outtake_speed = 0.25;
     private boolean hasGamePiece = false;
     private double intakeDelay = 0.35;
@@ -50,18 +50,27 @@ public class IntakeSubsystem extends SubsystemBase{
         timer.stop();
         timer.reset();
     }
-    public void runIntake() {
-        intake_motor.set(intake_speed);
-        intake_motor2.set(intake_speed);
+    public void runIntake(double speedMultiplyer) {
+        if(speedMultiplyer >= 0.5){
+            intake_motor.set(intake_speed*0.5);
+            intake_motor2.set(intake_speed*0.5);
+        }else if(speedMultiplyer <= -0.5){
+            intake_motor.set(1);
+            intake_motor2.set(1);
+        }else{
+            intake_motor.set(intake_speed);
+            intake_motor2.set(intake_speed);
+        }
+        hasGamePiece = false;
     }
 
     public void runIntakeReversed(double speedMultiplyer) {
         if(speedMultiplyer >= 0.5){
-            intake_motor.set(-outtake_speed*0.85);
-            intake_motor2.set(-outtake_speed*0.85);
+            intake_motor.set(-outtake_speed*0.5);
+            intake_motor2.set(-outtake_speed*0.5);
         }else if(speedMultiplyer <= -0.5){
-            intake_motor.set(-outtake_speed*2);
-            intake_motor2.set(-outtake_speed*2);
+            intake_motor.set(-1);
+            intake_motor2.set(-1);
         }else{
             intake_motor.set(-outtake_speed);
             intake_motor2.set(-outtake_speed);
@@ -70,7 +79,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void OuttakeAuto(){
-        intake_motor.set(-0.32);
+        intake_motor.set(-1);
     }
 
     public void stopIntake(){

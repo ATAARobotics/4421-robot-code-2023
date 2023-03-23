@@ -8,11 +8,17 @@ import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Pigeon;
@@ -55,14 +61,20 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     private double[] velocities;
     private double[] angles;
-
-    /**
+    private ChassisSpeeds moduleSpeeds =new ChassisSpeeds(0, 0, 0);
+    
+    public final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+        new Translation2d(Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0),
+        new Translation2d(Constants.WHEELBASE / 2.0, -Constants.TRACK_WIDTH / 2.0),
+        new Translation2d(-Constants.WHEELBASE / 2.0, Constants.TRACK_WIDTH / 2.0),
+        new Translation2d(-Constants.WHEELBASE / 2.0, -Constants.TRACK_WIDTH / 2.0));
+            /**
      * Set up the swerve drive
      * 
      * @param gyro        The gyro object running on the robot
      * @param initialPose The initial pose that the robot is in
      */
-    public SwerveDriveSubsystem(Pigeon pigeon, Translation2d initialPosition, String bus) {
+    public SwerveDriveSubsystem(Pigeon pigeon, Translation2d initialPosition, String bus, Alliance alliance) {
         this.pigeon = pigeon;
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
         TalonFX[] driveMotors = { new TalonFX(Constants.DRIVE_MOTORS_ID[0], bus),
@@ -77,18 +89,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[0], bus), Constants.ANGLE_OFFSET[0], true,
                 Constants.TICKS_PER_METER[0], 0, "Front Left");
         SwerveModule frontRightModule = new SwerveModule(driveMotors[1], rotationMotors[1],
-                new CANCoder(Constants.ROTATION_ENCODERS_ID[1], bus), Constants.ANGLE_OFFSET[1], false,
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[1], bus), Constants.ANGLE_OFFSET[1], true,
                 Constants.TICKS_PER_METER[1], 1, "Front Right");
         SwerveModule rearLeftModule = new SwerveModule(driveMotors[2], rotationMotors[2],
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[2], bus), Constants.ANGLE_OFFSET[2], true,
                 Constants.TICKS_PER_METER[2], 2, "Rear Left");
         SwerveModule rearRightModule = new SwerveModule(driveMotors[3], rotationMotors[3],
-                new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], false,
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], true,
                 Constants.TICKS_PER_METER[3], 3, "Rear Right");
-
-        // Velocity double array initialization
-        this.velocities = new double[4];
-        this.angles = new double[4];
 
         // Put the swerve modules in an array so we can process them easier
         swerveModules = new SwerveModule[] {
@@ -98,21 +106,34 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 rearRightModule
         };
 
+
+
         // Set up odometry
-        odometry = new SwerveOdometry(initialPose, pigeon);
+        odometry = new SwerveOdometry(swerveKinematics, new Rotation2d(pigeon.getYaw()), getModulePositions(), pigeon, alliance);
 
         // Initialize the pose
         pose = initialPose;
     }
 
+    public SwerveModulePosition[] getModulePositions() {
+                SwerveModulePosition[] positions = new SwerveModulePosition[4];
+                for (SwerveModule mod: swerveModules){
+                    positions[mod.getId()] = mod.getPosition();
+                }
+                return positions;
+            }
+
     /**
      * This function should be run during every teleop and auto periodic
      */
     public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
-        this.xVelocity = -xVelocity;
-        this.yVelocity = -yVelocity;
-        this.rotationVelocity = -rotationVelocity;
         this.useOdometry = useOdometry;
+        if (fieldOriented) {
+            this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, -rotationVelocity, Rotation2d.fromDegrees(pigeon.getYaw()));
+        }else{
+            this.moduleSpeeds = new ChassisSpeeds(-xVelocity, -yVelocity, rotationVelocity);
+        }
+        
     }
 
     public SwerveOdometry getOdometry() {
@@ -121,11 +142,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        odometry.update(Rotation2d.fromDegrees(pigeon.getYaw()), getModulePositions());
         SmartDashboard.putBoolean("Field Oriented", fieldOriented);
         double gyroAngle = getHeading();
         SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
         SmartDashboard.putNumber("Gyro Value RAW", pigeon.getYawRaw());
-
+        
         SmartDashboard.putBoolean("IS FIELD ORIENTED", this.fieldOriented);
 
         // check if robot is tipped
@@ -137,18 +159,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.setDefaultNumber("Drive-I", 1.2);
         SmartDashboard.setDefaultNumber("Drive-D", 0.005);
 
-        if (fieldOriented) {
-            double originalX = this.xVelocity;
-            double originalY = this.yVelocity;
-
-            this.xVelocity = originalX * Math.cos(gyroAngle) - originalY * Math.sin(gyroAngle);
-            this.yVelocity = originalY * Math.cos(gyroAngle) + originalX * Math.sin(gyroAngle);
-        }
-
-        // Get the wheelbase and track width from RobotMap. These are important because
-        // a long rectangular robot turns differently than a square robot
-        double wheelbase = Constants.WHEELBASE;
-        double trackWidth = Constants.TRACK_WIDTH;
+        
 
         if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("X Velocity", xVelocity);
@@ -156,72 +167,18 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Rotation Velocity", rotationVelocity);
         }
 
-         // Calculate wheel velocities and angles
-        double a, b, c, d;
-
-        a = this.xVelocity - rotationVelocity * wheelbase / 2;
-        b = this.xVelocity + rotationVelocity * wheelbase / 2;
-        c = this.yVelocity - rotationVelocity * trackWidth / 2;
-        d = this.yVelocity + rotationVelocity * trackWidth / 2;
-
-        velocities = new double[] {
-            Math.sqrt(Math.pow(d, 2) + Math.pow(b, 2)),
-            Math.sqrt(Math.pow(c, 2) + Math.pow(b, 2)),
-            Math.sqrt(Math.pow(d, 2) + Math.pow(a, 2)),
-            Math.sqrt(Math.pow(c, 2) + Math.pow(a, 2))
-        };
-        angles = new double[]{
-            Math.atan2(c, b),
-            Math.atan2(d, b),
-            Math.atan2(c, a),
-            Math.atan2(d, a)
-        };
         if (!safetyDisable) {
             // if (Constants.REPORTING_DIAGNOSTICS) {
             // SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
             // }
-
+            SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(moduleSpeeds);
             // Execute functions on each swerve module
             for (SwerveModule module : swerveModules) {
-                // Set the drive velocity in meters/second for the module
-                module.setDriveVelocity(getModuleVelocity(module.getId()));
-
-                // Set module angle target in radians from -Pi to Pi
-                module.setTargetAngle(getModuleAngle(module.getId()));
-
+                module.setState(moduleStates[module.getId()]);
+                SmartDashboard.putNumber(module.getName() + " postion angle", module.getPosition().angle.getDegrees());
+                SmartDashboard.putNumber(module.getName() + " postion distance", module.getPosition().distanceMeters);
                 // Run periodic tasks on the module (running motors)
-                if (module.periodic(Timer.getFPGATimestamp())) {
-                    // Something has gone horribly wrong if this code is running, there are several
-                    // checks to prevent it
-                    // Abort due to excessive speed
-                    safetyDisable = true;
-                    break;
-                }
             }
-
-            // Update the current pose with the latest velocities, angle, and a timestamp
-            double totalx = 0.0;
-            double totaly = 0.0;
-            for (SwerveModule module : swerveModules) {
-                totalx += module.getxvelocity();
-                totaly += module.getyvelocity();
-
-            }
-            double averagex = totalx / 4;
-            double averagey = totaly / 4;
-
-            double angle = Math.atan2(averagey, averagex);
-            double finalAngle = pigeon.getYaw() + angle;
-
-            // convert coordinates to field-centric
-            double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
-            averagex = velocity * Math.cos(finalAngle);
-            averagey = velocity * Math.sin(finalAngle);
-
-            pose = odometry.update(averagex, averagey, pigeon.getYaw(), Timer.getFPGATimestamp());
-            SmartDashboard.putNumber("Pose X", pose.getX());
-            SmartDashboard.putNumber("Pose Y", pose.getY());
-
         } else {
             for (SwerveModule module : swerveModules) {
                 module.stop();
@@ -273,8 +230,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * Gets the current pose of the robot
      */
     public Pose2d getPose() {
-        System.out.println("Diff X: " + Math.abs(pose.getX() - initialPoseX));
-        System.out.println("Diff Y: " + Math.abs(pose.getY() - initialPoseY));
         return pose;
     }
 
@@ -287,7 +242,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void resetPosition() {
         pose = initialPose;
-        odometry.setPose(pose);
+        odometry.resetPosition(new Rotation2d(0), getModulePositions(), pose);
     }
 
     public void resetHeading() {
@@ -299,9 +254,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setInitialPose(Pose2d pose) {
         initialPose = pose;
-        odometry.setPose(pose);
-        initialPoseX = pose.getX();
-        initialPoseY = pose.getY();
+        odometry.resetPosition(new Rotation2d(pigeon.getYaw()), getModulePositions(), pose);
+        // initialPoseX = pose.getX();
+        // initialPoseY = pose.getY();
     }
 
     /**

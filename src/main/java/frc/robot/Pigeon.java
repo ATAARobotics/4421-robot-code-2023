@@ -11,10 +11,9 @@ public class Pigeon {
 
     public Pigeon() {
         pigeon = new Pigeon2(Constants.PIGEON_ID, "rio");
-
+        pigeon.configFactoryDefault();
         // Mount direction settings - (forward, up) as according to the pigeon's casing
-        pigeon.configMountPose(AxisDirection.NegativeY, AxisDirection.PositiveZ);
-
+        pigeon.configMountPose(AxisDirection.PositiveY, AxisDirection.PositiveZ);
         // CALIBRATION OF PIGEON (attempt to complete all steps quickly):
         // 1. Drive the robot flush with a flat surface
         // 2. Restart the robot code or redeploy
@@ -54,16 +53,6 @@ public class Pigeon {
     }
     public double getYaw() {
         double yaw = pigeon.getYaw();
-
-        yaw *= Math.PI / 180.0;
-
-        yaw %= Math.PI * 2;
-
-        yaw += Math.PI * 3;
-
-        yaw %= Math.PI * 2;
-
-        yaw -= Math.PI;
 
         return yaw;
     }
