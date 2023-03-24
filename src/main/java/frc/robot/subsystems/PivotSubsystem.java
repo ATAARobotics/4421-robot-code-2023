@@ -149,10 +149,21 @@ public class PivotSubsystem extends SubsystemBase {
             case 9:{
                 if(pivotEncoder.getPosition() >= -1200){
                     setSpeed(-speed);
-                }else{
-                    setSpeed(0);
                 }
-            }      
+                else{
+                    stop();
+                }
+                break;
+            }     
+            case 10:{
+                if(!sensedMetalTop){
+                    setSpeed(speed);
+                }
+                else{
+                    movementState = 4;
+                }
+                break;
+            }
             default:
                 stop();
         }
@@ -166,7 +177,11 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void storedPosition(){
+        if(pivotEncoder.getPosition() >= -800){
             movementState = 3;
+        }else{
+            movementState = 10;
+        }
     }
     public void down() {
         movementState = 1;

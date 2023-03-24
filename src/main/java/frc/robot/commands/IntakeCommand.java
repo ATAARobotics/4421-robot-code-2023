@@ -25,7 +25,7 @@ public class IntakeCommand extends CommandBase{
             timerStarted = true;
             timer.start();
         }
-        m_swerveDriveSubsystem.setSwerveDrive(AutoConstants.FORWARD_SPEED_INTAKE_COMMAND, 0, 0, false);
+        m_swerveDriveSubsystem.setSwerveDrive(-AutoConstants.FORWARD_SPEED_INTAKE_COMMAND, 0, 0, false);
         m_intakeSubsystem.runIntake(0);
     }
 

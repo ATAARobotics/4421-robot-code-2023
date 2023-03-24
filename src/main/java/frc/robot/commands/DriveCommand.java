@@ -37,8 +37,8 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double xSpeed = MathUtil.clamp(xSupplier.getAsDouble() * speedSupplier.getAsDouble(), -speedSupplier.getAsDouble(), speedSupplier.getAsDouble());
-        double ySpeed = MathUtil.clamp(ySupplier.getAsDouble() * speedSupplier.getAsDouble(), -speedSupplier.getAsDouble(), speedSupplier.getAsDouble());
+        double xSpeed = MathUtil.clamp(xSupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED, Constants.MAXIMUM_SPEED);
+        double ySpeed = MathUtil.clamp(ySupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED, Constants.MAXIMUM_SPEED);
         double rotationSpeed = MathUtil.clamp(rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble() * Constants.MAXIMUM_ROTATIONAL_SPEED, -Constants.MAXIMUM_ROTATIONAL_SPEED, Constants.MAXIMUM_ROTATIONAL_SPEED);
 
         swerveSubsystem.setSwerveDrive(xSpeed, ySpeed, rotationSpeed, true);

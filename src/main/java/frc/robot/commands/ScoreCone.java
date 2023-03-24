@@ -3,12 +3,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 
-public class ScoreCone extends CommandBase {
+public class ScoreCone extends SequentialCommandGroup {
 
     PivotSubsystem m_pivotSubsystem;
     IntakeSubsystem m_intakeSubsystem;
@@ -16,23 +17,21 @@ public class ScoreCone extends CommandBase {
     String state;
     boolean firstrun = true;
     public ScoreCone(PivotSubsystem pivotSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, IntakeSubsystem intakeSubsystem) {
+        addRequirements(pivotSubsystem, telescopingArmSubsystem, intakeSubsystem);
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
         m_pivotSubsystem = pivotSubsystem;
-    }
-
-    @Override
-    public void initialize() {
-        new SequentialCommandGroup(
+        System.out.println("hello");
+        addCommands(
+            new InstantCommand(() -> System.out.println("score cone")),
             new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem),
             new WaitUntilCommand(() -> m_pivotSubsystem.getMovementState() == 0),
             new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(0), m_intakeSubsystem),
-            new InstantCommand(m_telescopingArmSubsystem::in, m_telescopingArmSubsystem)
-           );
-    }
+            new InstantCommand(m_telescopingArmSubsystem::in, m_telescopingArmSubsystem),
+            new WaitUntilCommand(() -> m_telescopingArmSubsystem.getMovementState() == 0),
+            new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)
 
-    @Override
-    public boolean isFinished() {
-        return m_pivotSubsystem.getMovementState() == 0 && m_telescopingArmSubsystem.getMovementState() == 0;
+        );
+        
     }
 }
