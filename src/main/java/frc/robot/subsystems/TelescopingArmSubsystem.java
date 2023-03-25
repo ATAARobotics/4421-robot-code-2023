@@ -66,6 +66,19 @@ public class TelescopingArmSubsystem extends SubsystemBase {
 
                 }
                 break;
+            case 4:
+                if(telescopingArmEncoder.getPosition() < 2000){
+                    telescopingArmMotor.set(speed);
+                }
+                else if (telescopingArmEncoder.getPosition() < 2100){
+                    telescopingArmMotor.set(speed/4);
+                }
+                else{
+                    movementState = 0;
+                    telescopingArmMotor.set(0);
+
+                }
+                break;
             default:
                 telescopingArmMotor.set(0);
                 break;
@@ -83,6 +96,14 @@ public class TelescopingArmSubsystem extends SubsystemBase {
     }
     public void scoreCube(){
         movementState = 2;
+    }
+    public void scoreCone(double toggle){
+        System.out.print(toggle);
+        if(toggle >= 0.5){
+            movementState = 4;
+        }else{
+            movementState = 0;
+        }
     }
     public void stop() {
         telescopingArmMotor.set(0.0);

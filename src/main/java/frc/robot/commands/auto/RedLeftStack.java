@@ -23,12 +23,6 @@ public class RedLeftStack extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
 
-    // for tweaking with tolerances and speed for auto
-    double DTOLERANCE = Constants.DTOLERANCE;
-    double RTOLERANCE = Constants.RTOLERANCE;
-    double SPEEDLIMIT = Constants.SPEEDLIMIT;
-    double ROTLIMIT = Constants.ROTLIMIT;
-
     public RedLeftStack(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
@@ -45,7 +39,7 @@ public class RedLeftStack extends SequentialCommandGroup {
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
                     new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_LEFT_GAME_PIECE[0], AutoConstants.RED_LEFT_GAME_PIECE[1], new Rotation2d(0.0)), true),
-                    new IntakeCommand(intakeSubsystem)
+                    new IntakeCommand(intakeSubsystem, m_swerveDriveSubsystem)
                 ),
                 
                 // mid point + rotate TODO: parallel with raising arm to scoring pos

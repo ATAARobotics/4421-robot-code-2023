@@ -30,7 +30,7 @@ public class PivotSubsystem extends SubsystemBase {
     private boolean sensedMetalBottom = false;
     private boolean sensedMetalTop = false;
     
-    private double speed = 0.6;
+    private double speed = 0.9;
     
     private int direction = 0;
 
@@ -61,7 +61,7 @@ public class PivotSubsystem extends SubsystemBase {
                         setSpeed(-speed);
                     }else{
                         //setSpeed(-speed/3.5);
-                        setSpeed(-0.1);
+                        setSpeed(-0.2);
                     }
                 }
                 else{
@@ -108,7 +108,7 @@ public class PivotSubsystem extends SubsystemBase {
                     if(sensedMetalTop){
                         aboveTop = true;
                     }
-                    if (pivotEncoder.getPosition() <= -100){
+                    if (pivotEncoder.getPosition() <= -250){
                         setSpeed(speed);
                     }
                     else{
@@ -145,7 +145,25 @@ public class PivotSubsystem extends SubsystemBase {
             case 8:{ 
                 setSpeed(speed/2);
                 break;
-            }         
+            }   
+            case 9:{
+                if(pivotEncoder.getPosition() >= -1200){
+                    setSpeed(-speed);
+                }
+                else{
+                    stop();
+                }
+                break;
+            }     
+            case 10:{
+                if(!sensedMetalTop){
+                    setSpeed(speed);
+                }
+                else{
+                    movementState = 4;
+                }
+                break;
+            }
             default:
                 stop();
         }
@@ -159,10 +177,15 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void storedPosition(){
+        if(pivotEncoder.getPosition() >= -800){
             movementState = 3;
+        }else{
+            movementState = 10;
+        }
     }
     public void down() {
         movementState = 1;
+
 
     }
     public void firstdown() {
@@ -172,6 +195,10 @@ public class PivotSubsystem extends SubsystemBase {
     public void stop() {
         setSpeed(0);
         movementState = 0;
+    }
+
+    public void downPosition() {
+        movementState = 9;
     }
 
     public void overridestop() {

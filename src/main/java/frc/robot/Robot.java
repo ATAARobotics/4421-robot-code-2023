@@ -81,6 +81,7 @@ public class Robot extends TimedRobot {
         robotContainer.getTelescopingArmSubsystem().stop();
         robotContainer.getPivotSubsystem().RestEncoder();
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
+        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
 
         m_autonomousCommand.schedule();
     }
@@ -91,10 +92,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        if(!Constants.FIELD_ORIENTED){
+        if(Constants.FIELD_ORIENTED){
+            robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 0);
+        }else{
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
         }
-        robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 0);
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;

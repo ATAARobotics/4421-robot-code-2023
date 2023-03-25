@@ -38,7 +38,8 @@ public class Constants {
     public static final double TRACK_WIDTH = COMP_BOT ? 0.584: 0.584;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 3;
+    public static final double MAXIMUM_SPEED = 3.75;
+    public static final double SLOW_MAXIMUM_SPEED = 1.5;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
@@ -72,8 +73,6 @@ public class Constants {
     public static final double driveKV = (1.51 / 12);
     public static final double driveKA = (0.27 / 12);
 
-    public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
-
     // CAN FD Device IDs
     public static final int[] DRIVE_MOTORS_ID = { 1, 2, 3, 4 };
     public static final int[] ROTATION_MOTORS_ID = { 5, 6, 7, 8 };
@@ -90,7 +89,7 @@ public class Constants {
     
     // CANdle
     public static final int CANDLE_ID = 21;
-    public static final int[] yellow = {255, 255, 0};
+    public static final int[] yellow = {255, 225, 0};
     public static final int[] red = {255, 0, 0};
     public static final int[] blue = {100, 100, 255};
     public static final int[] purple = {100, 0, 100};
@@ -117,7 +116,7 @@ public class Constants {
     // least 0.1.
     public static final double JOY_DEAD_ZONE = 0.3;
     // Whether teleop should start in field oriented mode
-    public static final boolean FIELD_ORIENTED = false;
+    public static final boolean FIELD_ORIENTED = true;
     // The sensitivity value for the joysticks - the values are exponentiated to
     // this value, so higher numbers result in a lower sensitivity, 1 results in
     // normal sensitivity, and decimals increase sensitivity
@@ -136,7 +135,7 @@ public class Constants {
             new Translation2d(-WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
             new Translation2d(-WHEELBASE / 2.0, -TRACK_WIDTH / 2.0));
     //Auto Balence
-    public static final double BEAM_BALANACED_DRIVE_KP = 0.02;
+    public static final double BEAM_BALANACED_DRIVE_KP = 0.2;
     public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
     public static final double BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES = 1;
 
@@ -211,22 +210,22 @@ public class Constants {
         
         };
 
-        public static final double E_DTOLERANCE = 0.03; // meters
-        public static final double E_RTOLERANCE = 3.0; // degrees
+        public static final double E_TOLERANCE = 0.09; // meters
+        public static final double E_RTOLERANCE = 5.0; // degrees
 
         // not endpoint tolerances
-        public static final double DTOLERANCE = 0.09; // meters
+        public static final double TOLERANCE = 0.25; // meters
         public static final double RTOLERANCE = 5.0; // degrees
         
-        public static final double SPEEDLIMIT = 1.0; // meters per second
-        public static final double ROTLIMIT = Math.PI;
+        public static final double SPEEDLIMIT = 4.0; // meters per second
+        public static final double ROTLIMIT = 2*Math.PI;
 
 
         // pigeon tip threshold to reset odometry in degrees
         public static final double tipThreshold = 5.0;
 
         // Intake time limit
-        public static final double INTAKE_TIME_LIMIT = 3.0;
+        public static final double INTAKE_TIME_LIMIT = 5;
 
         // Outake Delay
         public static final double OUTTAKE_DELAY = 0.35;

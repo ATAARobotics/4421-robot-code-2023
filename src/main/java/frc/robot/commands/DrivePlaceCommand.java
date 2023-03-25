@@ -38,7 +38,7 @@ public class DrivePlaceCommand extends CommandBase {
   private Pose2d targetPose;
 
   // takes in targetPose and the tolerance it is allowed. rotTolerance(degrees)
-  public DrivePlaceCommand(SwerveDriveSubsystem swerveDrive, Pose2d targetPose, double driveTolerance, double rotTolerance, double speedLimit, double rotLimit) {
+  public DrivePlaceCommand(SwerveDriveSubsystem swerveDrive, Pose2d targetPose, double xTolerance, double yTolerance, double rotTolerance, double speedLimit, double rotLimit) {
     this.swerveDrive = swerveDrive;
     this.odometry = swerveDrive.getOdometry();
     this.targetPose = targetPose;
@@ -46,8 +46,8 @@ public class DrivePlaceCommand extends CommandBase {
     this.rotLimit = rotLimit;
 
     // stop when values are small
-    xController.setTolerance(driveTolerance);
-    yController.setTolerance(driveTolerance);
+    xController.setTolerance(xTolerance);
+    yController.setTolerance(yTolerance);
     rotController.setTolerance(Units.degreesToRadians(rotTolerance));
     rotController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -68,7 +68,7 @@ public class DrivePlaceCommand extends CommandBase {
   }
 
   public DrivePlaceCommand(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose) {
-    this(swerveDriveSubsystem, targetPose, Constants.DTOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT);
+    this(swerveDriveSubsystem, targetPose, Constants.TOLERANCE, Constants.TOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT);
   }
 
   @Override

@@ -146,7 +146,6 @@ class OI {
     }
 
     public boolean getOverride(){
-        System.out.println(override);
         return !override;
     }
     public boolean notgetOverride(){
