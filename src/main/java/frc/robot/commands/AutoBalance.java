@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import javax.swing.text.StyledEditorKit.BoldAction;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -52,9 +53,9 @@ public class AutoBalance extends CommandBase {
         }
         error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
         if(notSlow){
-            drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1);
+            drivePower = -MathUtil.clamp(error * Constants.BEAM_BALANACED_DRIVE_KP, -2, 2);
         }else{
-            drivePower = -Math.min(Constants.BEAM_BALANACED_DRIVE_KP * error, 1) * 0.60;
+            drivePower = -MathUtil.clamp(error * Constants.BEAM_BALANACED_DRIVE_KP * 0.2, -0.6, 0.6);
         }
         System.out.println(drivePower);
         // Our robot needed an extra push to drive up in reverse, probably due to weight
@@ -65,7 +66,7 @@ public class AutoBalance extends CommandBase {
             drivePower = Math.copySign(1, drivePower);
         }
 
-        swerveSubsystem.setSwerveDrive(0, -drivePower, 0, false);
+        swerveSubsystem.setSwerveDrive(drivePower, 0, 0, false);
         // Debugging Print Statments
         SmartDashboard.putNumber("Current Angle", currentAngle);
         SmartDashboard.putNumber("Error", error);

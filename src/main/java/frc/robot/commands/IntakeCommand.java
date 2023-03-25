@@ -22,21 +22,21 @@ public class IntakeCommand extends CommandBase{
     @Override
     public void execute() {
         if (!timerStarted){
-            timerStarted = true;
             timer.start();
+            timerStarted = true;
         }
-        m_swerveDriveSubsystem.setSwerveDrive(-AutoConstants.FORWARD_SPEED_INTAKE_COMMAND, 0, 0, false);
+        // m_swerveDriveSubsystem.setSwerveDrive(-AutoConstants.FORWARD_SPEED_INTAKE_COMMAND, 0, 0, true);
         m_intakeSubsystem.runIntake(0);
     }
 
     @Override
     public boolean isFinished() {
-        return m_intakeSubsystem.isIntakeTimerDone() || timer.get() > Constants.INTAKE_TIME_LIMIT;
+        return (m_intakeSubsystem.isIntakeTimerDone() || timer.get() > Constants.INTAKE_TIME_LIMIT) && timerStarted == true;
     }
 
     @Override
     public void end(boolean interrupted) {
         m_intakeSubsystem.stopIntake();
-        m_swerveDriveSubsystem.setSwerveDrive(0, 0, 0, false);
+        // m_swerveDriveSubsystem.setSwerveDrive(0, 0, 0, false);
     }
 }

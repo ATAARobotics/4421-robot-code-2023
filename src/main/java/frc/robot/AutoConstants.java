@@ -18,7 +18,7 @@ public class AutoConstants {
     // RedRight
     public final static double RED_RIGHT_MID_POINT[] = {11.90+X_OFFSET -0.30, 4.70+Y_OFFSET};
     public final static double RED_RIGHT_GAME_PIECE[] = {10.00+X_OFFSET + 0.30, 4.60+Y_OFFSET-0.20};
-    public final static double RED_RIGHT_RIGHT_SCORING[] = {14.65+X_OFFSET, 4.95+Y_OFFSET};
+    public final static double RED_RIGHT_RIGHT_SCORING[] = {14.65+X_OFFSET, 4.95+Y_OFFSET-0.15};
     public final static double RED_RIGHT_MID_SCORING[] = {14.65+X_OFFSET, 4.45+Y_OFFSET};
 
     // Mid Scoring

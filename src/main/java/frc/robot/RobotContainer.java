@@ -157,8 +157,13 @@ public class RobotContainer {
                                         joysticks::getYVelocity,
                                         joysticks::getRotationVelocity, this::getSwerveSpeed,
                                         () -> 1));   
-        joysticks.AutoBalance.whileTrue(
+        joysticks.AutoBalance.onTrue(
                 new AutoBalance(m_swerveDriveSubsystem, true)
+        ).onFalse(
+            new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                        joysticks::getYVelocity,
+                        joysticks::getRotationVelocity, this::getSwerveSpeed,
+                        () -> 1)
         );
         joysticks.Forward.onTrue(new InstantCommand(() -> swerveSpeed=Constants.MAXIMUM_SPEED))
         .onFalse(new InstantCommand(() -> swerveSpeed=Constants.SLOW_MAXIMUM_SPEED));

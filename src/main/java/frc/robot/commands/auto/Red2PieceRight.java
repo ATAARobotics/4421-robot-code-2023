@@ -4,8 +4,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriveToWayPoint;
@@ -13,6 +15,7 @@ import frc.robot.commands.DeadReckoning;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotCommand;
+import frc.robot.commands.ScoreCone;
 import frc.robot.commands.TelescopingArmCommand;
 import frc.robot.subsystems.*;
 import frc.robot.AutoConstants;
@@ -30,12 +33,6 @@ public class Red2PieceRight extends SequentialCommandGroup {
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
     private final PivotSubsystem m_pivotSubsystem;
-
-    // for tweaking with tolerances and speed for auto
-    double DTOLERANCE = Constants.DTOLERANCE;
-    double RTOLERANCE = Constants.RTOLERANCE;
-    double SPEEDLIMIT = Constants.SPEEDLIMIT;
-    double ROTLIMIT = Constants.ROTLIMIT;
 
     
 
@@ -57,27 +54,48 @@ public class Red2PieceRight extends SequentialCommandGroup {
                 new OuttakeCommand(m_intakeSubsystem),
 
                 // drive to midpoint + rotate + lower arm
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(0)), false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(Math.PI/2)), false, true, false),
                 
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0], AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI+0.01)), false),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0], AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI)), true),
                     new PivotCommand(m_pivotSubsystem, "down")
                 ),
 
-                new ParallelCommandGroup(
+                new ParallelRaceGroup(
                     new IntakeCommand(m_intakeSubsystem, m_swerveDriveSubsystem),
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0]-0.60, AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI+0.01)), false)
+                    new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
+                    // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0]-1.00, AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI)), false)
                 ),
 
                 // mid point + rotate + raising arm to scoring pos + extending
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(0)), false),
-                    new PivotCommand(m_pivotSubsystem, "up")
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(0)), false, true, false),
+                    new InstantCommand(m_pivotSubsystem::up)
                 ),
                 
-                // scoring position
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_RIGHT_SCORING[0], AutoConstants.RED_RIGHT_RIGHT_SCORING[1]-0.15, new Rotation2d(0)), false)
+                // after coming back
+                new InstantCommand(m_telescopingArmSubsystem::in),
+                // drive into scoring in 2 commands
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(14.20, 4.60, new Rotation2d(0)), false, true, false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(14.65, 3.85 - 0.40, new Rotation2d(0)), true),
+                // scoring commands
+                new InstantCommand(m_pivotSubsystem::storedPosition),
+                new InstantCommand(() -> m_telescopingArmSubsystem.scoreCone(1)),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.5, 0, 0.5),
+                new WaitUntilCommand(() -> m_telescopingArmSubsystem.getMovementState() == 0),
+                new ScoreCone(m_pivotSubsystem, m_telescopingArmSubsystem, m_intakeSubsystem),
+                new InstantCommand(m_pivotSubsystem::up),
+                new InstantCommand(m_telescopingArmSubsystem::in),
+                // drive to charging and balance
+                new DeadReckoning(m_swerveDriveSubsystem, -1, -2, 0.5),
+                new DeadReckoning(m_swerveDriveSubsystem, -2, 0, 1.5),
+                new AutoBalance(m_swerveDriveSubsystem, true)
+
+
+                
+
+
 
 
         );

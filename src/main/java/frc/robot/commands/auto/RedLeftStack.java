@@ -23,12 +23,6 @@ public class RedLeftStack extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
 
-    // for tweaking with tolerances and speed for auto
-    double DTOLERANCE = Constants.DTOLERANCE;
-    double RTOLERANCE = Constants.RTOLERANCE;
-    double SPEEDLIMIT = Constants.SPEEDLIMIT;
-    double ROTLIMIT = Constants.ROTLIMIT;
-
     public RedLeftStack(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;

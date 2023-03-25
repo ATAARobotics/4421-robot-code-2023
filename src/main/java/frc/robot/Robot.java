@@ -81,6 +81,7 @@ public class Robot extends TimedRobot {
         robotContainer.getTelescopingArmSubsystem().stop();
         robotContainer.getPivotSubsystem().RestEncoder();
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
+        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
 
         m_autonomousCommand.schedule();
     }

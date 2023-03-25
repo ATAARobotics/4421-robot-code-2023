@@ -31,7 +31,9 @@ public class AutoDriveToWayPoint extends CommandBase {
     private double speedLimit;
     private double rotLimit;
 
-    private boolean isEndPoint;
+    private boolean isXEndPoint;
+    private boolean isYEndPoint;
+    private boolean isRotEndPoint;
 
     // PID
     private final PIDController xController = new PIDController(3.0, 0, 0);
@@ -44,19 +46,25 @@ public class AutoDriveToWayPoint extends CommandBase {
     private boolean X_ACH = false;
     private boolean ROT_ACH = false;
 
-    public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, double driveTolerance, double rotTolerance, double speedLimit, double rotLimit, boolean isEndPoint) {
+    public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, double xTolerance, double yTolerance, double rotTolerance, double speedLimit, double rotLimit, boolean isXEndPoint, boolean isYEndPoint, boolean isRotEndPoint) {
         this.m_swerveDriveSubsystem = swerveDriveSubsystem;
         this.targetPose = targetPose;
         this.odometry = swerveDriveSubsystem.getOdometry();
         rotController.enableContinuousInput(-Math.PI, Math.PI);
         this.speedLimit = speedLimit;
         this.rotLimit = rotLimit;
-        this.isEndPoint = isEndPoint;
+        this.isXEndPoint = isXEndPoint;
+        this.isYEndPoint = isYEndPoint;
+        this.isRotEndPoint = isRotEndPoint;
         addRequirements(this.m_swerveDriveSubsystem);
     }
 
+    public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, boolean isXEndPoint, boolean isYEndPoint, boolean isRotEndPoint) {
+      this(swerveDriveSubsystem, targetPose, Constants.TOLERANCE, Constants.TOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT, isXEndPoint, isYEndPoint, isRotEndPoint);
+    }
+
     public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, boolean isEndPoint) {
-      this(swerveDriveSubsystem, targetPose, Constants.DTOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT, isEndPoint);
+      this(swerveDriveSubsystem, targetPose, Constants.TOLERANCE, Constants.TOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT, isEndPoint, isEndPoint, isEndPoint);
     }
 
     @Override
@@ -64,14 +72,22 @@ public class AutoDriveToWayPoint extends CommandBase {
         m_swerveDriveSubsystem.setBrakes(true);
         goalPose = targetPose;
 
-        if (isEndPoint) {
-          xController.setTolerance(Constants.E_DTOLERANCE);
-          yController.setTolerance(Constants.E_DTOLERANCE);
-          rotController.setTolerance(Units.degreesToRadians(Constants.E_RTOLERANCE));
+        if (isXEndPoint) {
+          xController.setTolerance(Constants.E_TOLERANCE);
         } else {
-          xController.setTolerance(Constants.DTOLERANCE);
-          yController.setTolerance(Constants.DTOLERANCE);
-          rotController.setTolerance(Units.degreesToRadians(Constants.RTOLERANCE));
+          xController.setTolerance(Constants.TOLERANCE);
+        }
+
+        if (isYEndPoint) {
+          yController.setTolerance(Constants.E_TOLERANCE);
+        } else {
+          yController.setTolerance(Constants.TOLERANCE);
+        }
+
+        if (isRotEndPoint) {
+          rotController.setTolerance(Constants.E_TOLERANCE);
+        } else {
+          rotController.setTolerance(Constants.TOLERANCE);
         }
 
         xController.setSetpoint(goalPose.getX());

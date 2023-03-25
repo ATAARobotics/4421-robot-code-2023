@@ -30,12 +30,6 @@ public class RedLeaderBalance extends SequentialCommandGroup {
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
     private final PivotSubsystem m_pivotSubsystem;
 
-    // for tweaking with tolerances and speed for auto
-    double DTOLERANCE = Constants.DTOLERANCE;
-    double RTOLERANCE = Constants.RTOLERANCE;
-    double SPEEDLIMIT = Constants.SPEEDLIMIT;
-    double ROTLIMIT = Constants.ROTLIMIT;
-
     
 
     public RedLeaderBalance(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {

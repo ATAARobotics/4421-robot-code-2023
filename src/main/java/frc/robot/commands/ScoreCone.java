@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
@@ -28,7 +29,7 @@ public class ScoreCone extends SequentialCommandGroup {
             new WaitUntilCommand(() -> m_pivotSubsystem.getMovementState() == 0),
             new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(0), m_intakeSubsystem),
             new InstantCommand(m_telescopingArmSubsystem::in, m_telescopingArmSubsystem),
-            new WaitUntilCommand(() -> m_telescopingArmSubsystem.getMovementState() == 0),
+            new WaitCommand(0.75),
             new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)
 
         );

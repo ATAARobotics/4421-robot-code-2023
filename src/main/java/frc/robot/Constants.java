@@ -135,7 +135,7 @@ public class Constants {
             new Translation2d(-WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
             new Translation2d(-WHEELBASE / 2.0, -TRACK_WIDTH / 2.0));
     //Auto Balence
-    public static final double BEAM_BALANACED_DRIVE_KP = 0.02;
+    public static final double BEAM_BALANACED_DRIVE_KP = 0.2;
     public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
     public static final double BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES = 1;
 
@@ -210,14 +210,14 @@ public class Constants {
         
         };
 
-        public static final double E_DTOLERANCE = 0.03; // meters
-        public static final double E_RTOLERANCE = 3.0; // degrees
+        public static final double E_TOLERANCE = 0.09; // meters
+        public static final double E_RTOLERANCE = 5.0; // degrees
 
         // not endpoint tolerances
-        public static final double DTOLERANCE = 0.09; // meters
+        public static final double TOLERANCE = 0.25; // meters
         public static final double RTOLERANCE = 5.0; // degrees
         
-        public static final double SPEEDLIMIT = 1.5; // meters per second
+        public static final double SPEEDLIMIT = 4.0; // meters per second
         public static final double ROTLIMIT = 2*Math.PI;
 
 
@@ -225,7 +225,7 @@ public class Constants {
         public static final double tipThreshold = 5.0;
 
         // Intake time limit
-        public static final double INTAKE_TIME_LIMIT = 0.25;
+        public static final double INTAKE_TIME_LIMIT = 5;
 
         // Outake Delay
         public static final double OUTTAKE_DELAY = 0.35;
