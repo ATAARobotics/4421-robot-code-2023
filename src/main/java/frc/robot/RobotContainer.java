@@ -40,7 +40,7 @@ public class RobotContainer {
     private final PivotSubsystem m_pivotSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingSubsystem;
-    private final LightingSubsystem mLightingSubsystem;
+    private final LightingSubsystem m_lightingSubsystem;
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -54,10 +54,10 @@ public class RobotContainer {
         m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore", alliance);
         // new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry(), m_swerveDriveSubsystem);
        
-        m_intakeSubsystem = new IntakeSubsystem();
         m_pivotSubsystem = new PivotSubsystem();
         m_telescopingSubsystem = new TelescopingArmSubsystem();
-        mLightingSubsystem = new LightingSubsystem();
+        m_lightingSubsystem = new LightingSubsystem();
+        m_intakeSubsystem = new IntakeSubsystem(m_lightingSubsystem);
 
         m_swerveDriveSubsystem.setBrakes(true);
 
@@ -103,7 +103,10 @@ public class RobotContainer {
 
     private void configureBindings() {
         joysticks.IntakeIn.or(new Trigger(() -> joysticks.RotIntake.getAsBoolean())).whileTrue(new RunCommand(() -> m_intakeSubsystem.runIntake(joysticks.getOuttake() - joysticks.getOuttakeInversed())))
-        .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
+        .onFalse(new InstantCommand(() -> {
+            m_intakeSubsystem.stopIntake();
+            m_intakeSubsystem.resetRunStarted();
+        }));
 
         joysticks.IntakeOut.whileTrue(new RunCommand(() -> m_intakeSubsystem.runIntakeReversed(joysticks.getOuttake() - joysticks.getOuttakeInversed())))
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
@@ -157,7 +160,7 @@ public class RobotContainer {
         joysticks.Forward.onTrue(new InstantCommand(() -> swerveSpeed=1))
         .onFalse(new InstantCommand(() -> swerveSpeed=0.5));
 
-        joysticks.LightSwitch.onTrue(new InstantCommand(mLightingSubsystem::FlipLights));
+        joysticks.LightSwitch.onTrue(new InstantCommand(m_lightingSubsystem::FlipLights));
 
     }
 
