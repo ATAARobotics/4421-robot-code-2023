@@ -211,11 +211,11 @@ public class Constants {
         };
 
         public static final double E_TOLERANCE = 0.09; // meters
-        public static final double E_RTOLERANCE = 5.0; // degrees
+        public static final double E_RTOLERANCE = 2.0; // degrees
 
         // not endpoint tolerances
-        public static final double TOLERANCE = 0.25; // meters
-        public static final double RTOLERANCE = 5.0; // degrees
+        public static final double TOLERANCE = 0.18; // meters
+        public static final double RTOLERANCE = 8.0; // degrees
         
         public static final double SPEEDLIMIT = 4.0; // meters per second
         public static final double ROTLIMIT = 2*Math.PI;

@@ -69,7 +69,7 @@ public class AutoDriveToWayPoint extends CommandBase {
 
     @Override
     public void initialize() {
-        m_swerveDriveSubsystem.setBrakes(true);
+        // m_swerveDriveSubsystem.setBrakes(true);
         goalPose = targetPose;
 
         if (isXEndPoint) {
@@ -113,14 +113,12 @@ public class AutoDriveToWayPoint extends CommandBase {
       xSpeed = -MathUtil.clamp(xController.calculate(robotPose.getX()), -speedLimit, speedLimit);
       if (xController.atSetpoint()) {
         SmartDashboard.putBoolean("X-ACH", true);
-        xSpeed = 0;
       }
 
       SmartDashboard.putBoolean("Y-ACH", false);
       ySpeed = -MathUtil.clamp(yController.calculate(robotPose.getY()), -speedLimit, speedLimit);
       if (yController.atSetpoint()) {
         SmartDashboard.putBoolean("Y-ACH", true);
-        ySpeed = 0;
       }
 
       // rotTemp = m_swerveDriveSubsystem.getHeading();
@@ -135,7 +133,6 @@ public class AutoDriveToWayPoint extends CommandBase {
       rotSpeed = MathUtil.clamp(rotController.calculate(robotPose.getRotation().getRadians()), -rotLimit, rotLimit);
       if (rotController.atSetpoint()) {
         SmartDashboard.putBoolean("ROT-ACH", true);
-        rotSpeed = 0;
       }
 
       SmartDashboard.putNumber("xSpeed", xSpeed);

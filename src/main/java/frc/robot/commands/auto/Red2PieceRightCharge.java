@@ -28,7 +28,7 @@ import frc.robot.AutoConstants;
 
 // TODO: Test (based on PathPlanner coordinates)
 
-public class Red2PieceRight extends SequentialCommandGroup {
+public class Red2PieceRightCharge extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
@@ -36,7 +36,7 @@ public class Red2PieceRight extends SequentialCommandGroup {
 
     
 
-    public Red2PieceRight(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
+    public Red2PieceRightCharge(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
@@ -88,18 +88,10 @@ public class Red2PieceRight extends SequentialCommandGroup {
                 new ScoreCone(m_pivotSubsystem, m_telescopingArmSubsystem, m_intakeSubsystem),
                 new InstantCommand(m_pivotSubsystem::up),
                 new InstantCommand(m_telescopingArmSubsystem::in),
-
-                // drive to gamepieces
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(14.20, 4.60, new Rotation2d(0)), false, true, false),
-                
-                // midpoint
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0], AutoConstants.RED_RIGHT_MID_POINT[1], new Rotation2d(0)), false, false, false),
-
-                // drive to new gamepiece
-                new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0], AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI)), true),
-                    new PivotCommand(m_pivotSubsystem, "down")
-                )
+                // drive to charging and balance
+                new DeadReckoning(m_swerveDriveSubsystem, -1, -2, 0.5),
+                new DeadReckoning(m_swerveDriveSubsystem, -2, 0, 1.5),
+                new AutoBalance(m_swerveDriveSubsystem, true)
 
         );
 

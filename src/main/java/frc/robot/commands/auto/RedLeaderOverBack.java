@@ -50,11 +50,11 @@ public class RedLeaderOverBack extends SequentialCommandGroup {
                 // Drive over charging station with dead-reckoning
                 
                 //new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 1.5),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 5),
+                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 5),
 
                 // Auto-Balance on charging station
                 new WaitCommand(0.25),
-                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 2),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 2),
                 new AutoBalance(m_swerveDriveSubsystem, true)
 
         );

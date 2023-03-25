@@ -70,28 +70,29 @@ public class RobotContainer {
         
         // Red Autos
         autoChooser.setDefaultOption("RedLeaderOverBack", new RedLeaderOverBack(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedLeaderBalance", new RedLeaderBalance(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        // autoChooser.addOption("RedLeaderBalance", new RedLeaderBalance(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         // autoChooser.addOption("RedLeftDeadReckoning", new RedLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         // autoChooser.addOption("RedRightReckoning", new RedRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         
         // Red + Odometry Autos
-        autoChooser.addOption("RedOdo21Auto", new RedOdo21Auto(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        // autoChooser.addOption("RedOdo21Auto", new RedOdo21Auto(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         autoChooser.addOption("Red2PieceRight", new Red2PieceRight(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("Red2PieceRightCharge", new Red2PieceRightCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         // autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem, m_intakeSubsystem));
         // autoChooser.addOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
         // autoChooser.addOption("RedLeaderWGP", new RedLeaderWGP(m_swerveDriveSubsystem, m_intakeSubsystem));
         
         // Blue Autos
-        autoChooser.addOption("Teammate", new Teammate(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        // autoChooser.addOption("Teammate", new Teammate(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         // autoChooser.addOption("BlueLeftDeadReckoning", new BlueLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         // autoChooser.addOption("BlueRightDeadReckoning", new BlueRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-
+        autoChooser.addOption("Blue2PieceLeftCharge", new Blue2PieceLeftCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         // Testing Autos
-        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
-        autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem, m_intakeSubsystem));
+        // autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        // autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem, m_intakeSubsystem));
 
-        autoChooser.addOption("SquareWithRot", new SquareWithRot(m_swerveDriveSubsystem));
-        autoChooser.addOption("SquareWithOtherRot", new SquareWithOtherRot(m_swerveDriveSubsystem));
+        // autoChooser.addOption("SquareWithRot", new SquareWithRot(m_swerveDriveSubsystem));
+        // autoChooser.addOption("SquareWithOtherRot", new SquareWithOtherRot(m_swerveDriveSubsystem));
 
         // Do Nothing Auto
         autoChooser.addOption("Do Nothing", null);
@@ -112,10 +113,17 @@ public class RobotContainer {
         .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
        
         joysticks.PivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::up, m_pivotSubsystem::stop, m_pivotSubsystem));
-        joysticks.DownToStop.and(() -> joysticks.getOuttakeInversed() <= 0.5).whileTrue(new StartEndCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem::stop, m_pivotSubsystem))
+        
+        joysticks.DownToStop.and(() -> joysticks.getOuttakeInversed() <= 0.5).and(() -> joysticks.getOuttake() <= 0.5).whileTrue(new StartEndCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem::stop, m_pivotSubsystem))
+        .whileTrue(new StartEndCommand(m_telescopingSubsystem::in, m_telescopingSubsystem::stop, m_telescopingSubsystem));
+        
+
+        joysticks.DownToStop.and(() -> joysticks.getOuttakeInversed() <= 0.5).and(() -> joysticks.getOuttake() >= 0.5).whileTrue(new StartEndCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem::stop, m_pivotSubsystem))
         .whileTrue(new StartEndCommand(() -> m_telescopingSubsystem.scoreCone(joysticks.getOuttake()), m_telescopingSubsystem::stop, m_telescopingSubsystem));
+        
         joysticks.DownToStop.and(() -> joysticks.getOuttakeInversed() > 0.5).onTrue(new ScoreCone(m_pivotSubsystem, m_telescopingSubsystem, m_intakeSubsystem))
         .onFalse(new InstantCommand(m_pivotSubsystem::stop, m_pivotSubsystem)).onFalse(new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)).onFalse(new InstantCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+        
         joysticks.PivotDown.whileTrue(new StartEndCommand(m_pivotSubsystem::down, m_pivotSubsystem::stop, m_pivotSubsystem));
         joysticks.OverridePivotUp.whileTrue(new RunCommand(m_pivotSubsystem::forceup, m_pivotSubsystem))
         .onFalse(new InstantCommand(m_pivotSubsystem::overridestop, m_pivotSubsystem));
