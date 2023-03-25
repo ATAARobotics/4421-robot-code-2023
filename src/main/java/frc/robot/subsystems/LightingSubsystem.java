@@ -17,9 +17,16 @@ import frc.robot.Constants;
 public class LightingSubsystem extends SubsystemBase{
     private CANdle lights;
     private CANdleConfiguration config;
-
-    private int lightsFlip = 1;
     
+    public enum lightsState {
+        Yellow,
+        Purple,
+        Red,
+        None
+    }
+
+    private lightsState lightsColor = lightsState.None;
+
     public LightingSubsystem () {
         lights = new CANdle(21);
         config = new CANdleConfiguration();
@@ -29,19 +36,34 @@ public class LightingSubsystem extends SubsystemBase{
     }
 
     public void FlipLights(){
-        if(lightsFlip == 1 ){
-            lights.setLEDs(255, 255, 0, 0, 18, 256);
-            lightsFlip = 2 ;
-        } else if(lightsFlip == 2){
-            lights.setLEDs(255, 0, 255, 0, 18, 256);
-            lightsFlip = 3 ;
-        }else {
-            lights.setLEDs(0, 0, 0, 0, 0, 256);
-            lightsFlip = 1;       
-        }
-    
 
-        SmartDashboard.putNumber("is cone", lightsFlip);
+        SmartDashboard.putString("Light State", lightsColor.toString());
+
+        switch (lightsColor) {
+            case Yellow:
+                lights.setLEDs(255, 225, 0, 0, 8, 128);
+                lightsColor = lightsState.Purple;
+                break;
+            case Purple:
+                lights.setLEDs(255, 0, 255, 0, 8, 128);
+                lightsColor = lightsState.None;
+                break;
+            case None:
+                lights.setLEDs(0, 0, 0, 0, 8, 128);
+                lightsColor = lightsState.Yellow;
+                break;
+            case Red:
+                break; 
+        }
     }
 
+    public void hasGamePieceLights() {
+        lightsColor = lightsState.Red;
+        lights.setLEDs(255, 0, 0, 0, 8, 128);
+    }
+
+    public void resetLights() {
+        lightsColor = lightsState.None;
+        lights.setLEDs(0, 0, 0, 0, 8, 128); 
+    }
 }
