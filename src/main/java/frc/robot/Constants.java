@@ -218,7 +218,7 @@ public class Constants {
         public static final double RTOLERANCE = 8.0; // degrees
         
         public static final double SPEEDLIMIT = 4.0; // meters per second
-        public static final double ROTLIMIT = 2*Math.PI;
+        public static final double ROTLIMIT = Math.PI;
 
 
         // pigeon tip threshold to reset odometry in degrees

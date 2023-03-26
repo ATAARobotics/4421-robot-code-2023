@@ -78,6 +78,7 @@ public class RobotContainer {
         // autoChooser.addOption("RedOdo21Auto", new RedOdo21Auto(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         autoChooser.addOption("Red2PieceRight", new Red2PieceRight(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         autoChooser.addOption("Red2PieceRightCharge", new Red2PieceRightCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("Red2PieceStartConeRightCharge", new Red2PieceStartConeRightCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         // autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem, m_intakeSubsystem));
         // autoChooser.addOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
         // autoChooser.addOption("RedLeaderWGP", new RedLeaderWGP(m_swerveDriveSubsystem, m_intakeSubsystem));

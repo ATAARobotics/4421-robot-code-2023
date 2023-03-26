@@ -17,8 +17,9 @@ public class SwerveOdometry extends SwerveDriveOdometry{
     Pigeon pigeon;  
     Alliance alliance;
     double time;
-    double startingX;
-    double startingY;
+    public double startingX = 0;
+    public double startingY = 0;
+    public double startingRot = 0;
     private double prevXVel;
     private double prevYVel;
     private double prevRotVel;
