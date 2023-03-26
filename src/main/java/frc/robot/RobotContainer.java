@@ -45,6 +45,8 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     private double swerveSpeed = Constants.SLOW_MAXIMUM_SPEED;
+    private double swerveSpeedRot = Constants.SLOW_MAXIMUM_ROTATIONAL_SPEED;
+
 
     public RobotContainer(Alliance alliance) {
         // Hardware-based objects
@@ -65,7 +67,7 @@ public class RobotContainer {
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                         joysticks::getYVelocity,
                         joysticks::getRotationVelocity, this::getSwerveSpeed,
-                        () -> 1));
+                        this::getSwerveSpeedRot));
         // autoChooser
         
         // Red Autos
@@ -179,8 +181,8 @@ public class RobotContainer {
                         joysticks::getRotationVelocity, this::getSwerveSpeed,
                         () -> 1)
         );
-        joysticks.Forward.onTrue(new InstantCommand(() -> swerveSpeed=Constants.MAXIMUM_SPEED))
-        .onFalse(new InstantCommand(() -> swerveSpeed=Constants.SLOW_MAXIMUM_SPEED));
+        joysticks.Forward.onTrue(new InstantCommand(() -> {swerveSpeed=Constants.MAXIMUM_SPEED; swerveSpeedRot=Constants.MAXIMUM_ROTATIONAL_SPEED;}))
+        .onFalse(new InstantCommand(() -> {swerveSpeed=Constants.SLOW_MAXIMUM_SPEED; swerveSpeedRot=Constants.SLOW_MAXIMUM_ROTATIONAL_SPEED;}));
 
         joysticks.LightSwitch.onTrue(new InstantCommand(m_lightingSubsystem::FlipLights));
 
@@ -210,5 +212,8 @@ public class RobotContainer {
 
     public double getSwerveSpeed(){
         return swerveSpeed;
+    }
+    public double getSwerveSpeedRot(){
+        return swerveSpeedRot;
     }
 }

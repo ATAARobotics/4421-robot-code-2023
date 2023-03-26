@@ -38,12 +38,13 @@ public class Constants {
     public static final double TRACK_WIDTH = COMP_BOT ? 0.584: 0.584;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 3.75;
+    public static final double MAXIMUM_SPEED = 4.5;
     public static final double SLOW_MAXIMUM_SPEED = 1.5;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 
-    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI;
+    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI*3;
+    public static final double SLOW_MAXIMUM_ROTATIONAL_SPEED = Math.PI;
     // Maximum rotational speed is in radians/second Auto
     public static final double MAXIMUM_ROTATIONAL_SPEED_AUTO = Math.PI;
     // USED ONLY IN AUTO - Maximum rotational acceleration is in
@@ -210,15 +211,15 @@ public class Constants {
         
         };
 
-        public static final double E_TOLERANCE = 0.09; // meters
-        public static final double E_RTOLERANCE = 2.0; // degrees
+        public static final double E_TOLERANCE = 0.08; // meters
+        public static final double E_RTOLERANCE = 3.0; // degrees
 
         // not endpoint tolerances
         public static final double TOLERANCE = 0.18; // meters
         public static final double RTOLERANCE = 8.0; // degrees
         
-        public static final double SPEEDLIMIT = 4.0; // meters per second
-        public static final double ROTLIMIT = 1.5*Math.PI;
+        public static final double SPEEDLIMIT = 4; // meters per second
+        public static final double ROTLIMIT = Math.PI;
 
 
         // pigeon tip threshold to reset odometry in degrees
