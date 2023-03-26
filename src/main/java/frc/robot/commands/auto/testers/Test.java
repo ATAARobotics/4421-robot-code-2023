@@ -1,4 +1,4 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.auto.testers;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,7 +18,7 @@ public class Test extends SequentialCommandGroup {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         addCommands(
-                new IntakeCommand(m_intakeSubsystem, m_swerveDriveSubsystem)
+                new IntakeCommand(m_intakeSubsystem)
         );
 
     }

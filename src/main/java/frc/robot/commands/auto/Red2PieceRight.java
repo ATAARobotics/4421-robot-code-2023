@@ -68,7 +68,7 @@ public class Red2PieceRight extends SequentialCommandGroup {
                 ),
 
                 new ParallelRaceGroup(
-                    new IntakeCommand(m_intakeSubsystem, m_swerveDriveSubsystem),
+                    new IntakeCommand(m_intakeSubsystem),
                     new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
                     // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0]-1.00, AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI)), false)
                 ),

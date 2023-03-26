@@ -13,9 +13,8 @@ public class IntakeCommand extends CommandBase{
     Timer timer;
     boolean timerStarted = false;
 
-    public IntakeCommand(IntakeSubsystem intakeSubsystem, SwerveDriveSubsystem swerveDriveSubsystem) {
+    public IntakeCommand(IntakeSubsystem intakeSubsystem) {
         m_intakeSubsystem = intakeSubsystem;
-        m_swerveDriveSubsystem = swerveDriveSubsystem;
         timer = new Timer();
     }
 
@@ -25,7 +24,6 @@ public class IntakeCommand extends CommandBase{
             timer.start();
             timerStarted = true;
         }
-        // m_swerveDriveSubsystem.setSwerveDrive(-AutoConstants.FORWARD_SPEED_INTAKE_COMMAND, 0, 0, true);
         m_intakeSubsystem.runIntake(0);
     }
 

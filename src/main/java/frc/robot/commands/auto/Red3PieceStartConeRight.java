@@ -70,7 +70,7 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
                 ),
 
                 new ParallelRaceGroup(
-                    new IntakeCommand(m_intakeSubsystem, m_swerveDriveSubsystem),
+                    new IntakeCommand(m_intakeSubsystem),
                     new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
                     // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0]-1.00, AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI)), false)
                 ),
@@ -94,7 +94,7 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
                 new WaitCommand(0.2),
                 new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
 
-                // drive to charging and balance
+                // drive to get another gamepiece
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
                 new ParallelCommandGroup(
                     new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_2GAME_PIECE[0]+startingX, AutoConstants.A2_RED_RIGHT_2GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true, true, true),
@@ -102,7 +102,7 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
                 ),
 
                 new ParallelRaceGroup(
-                    new IntakeCommand(m_intakeSubsystem, m_swerveDriveSubsystem),
+                    new IntakeCommand(m_intakeSubsystem),
                     new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
                 )
 
