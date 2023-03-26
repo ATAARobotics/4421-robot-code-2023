@@ -61,36 +61,35 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
                 new InstantCommand(m_telescopingArmSubsystem::in),
 
                 // drive to midpoint + rotate + lower arm
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
+                //new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
                 
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_GAME_PIECE[0]+startingX, AutoConstants.A2_RED_RIGHT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true),
-                    new PivotCommand(m_pivotSubsystem, "down")
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_GAME_PIECE[0]+startingX, AutoConstants.A2_RED_RIGHT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true, true, true),
+                    new InstantCommand(m_pivotSubsystem::downSlow, m_pivotSubsystem)
                 ),
 
                 new ParallelRaceGroup(
                     new IntakeCommand(m_intakeSubsystem),
-                    new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
+                    new DeadReckoning(swerveDriveSubsystem, -1.5, 0, 1)
                     // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0]-1.00, AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI)), false)
                 ),
 
                 // mid point + rotate + raising arm to scoring pos + extending
                 new ParallelCommandGroup(
                     new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, false),
-                    new InstantCommand(m_pivotSubsystem::up)
-                ),
+                    new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem)
+                    ),
                 
                 // after coming back
                 new InstantCommand(m_telescopingArmSubsystem::in),
                 // drive into scoring in 2 commands
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 0.6),
                 new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem),
-                new WaitUntilCommand(() -> (m_pivotSubsystem.getMovementState() == 0)),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.5, 0, 0.4),
                 // score
-                new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
+                new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(0), m_intakeSubsystem),
                 new WaitCommand(0.2),
                 new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
 
@@ -103,9 +102,18 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
 
                 new ParallelRaceGroup(
                     new IntakeCommand(m_intakeSubsystem),
-                    new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
-                )
-
+                    new DeadReckoning(swerveDriveSubsystem, -1.5, 0, 0.75)
+                ),
+                new ParallelCommandGroup(
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, false, false),
+                    new InstantCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem)
+                ),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING2[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING2[1]+startingY, new Rotation2d(0+startingRot)), true),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.5, 0, 1),
+                new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(-1), m_intakeSubsystem),
+                new WaitCommand(0.4),
+                new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)
         );
 
     }

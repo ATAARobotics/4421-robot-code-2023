@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,7 +39,7 @@ public class AutoDriveToWayPoint extends CommandBase {
     // PID
     private final PIDController xController = new PIDController(3.0, 0, 0);
     private final PIDController yController = new PIDController(3.0, 0, 0);
-    private final PIDController rotController = new PIDController(3.0, 0.1, 0);
+    private final PIDController rotController = new PIDController(3.0, 0.15, 0);
 
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.driveKS, Constants.driveKV);
 
@@ -85,9 +86,9 @@ public class AutoDriveToWayPoint extends CommandBase {
         }
 
         if (isRotEndPoint) {
-          rotController.setTolerance(Constants.E_TOLERANCE);
+          rotController.setTolerance(Rotation2d.fromDegrees(Constants.RTOLERANCE).getRadians());
         } else {
-          rotController.setTolerance(Constants.TOLERANCE);
+          rotController.setTolerance(Rotation2d.fromDegrees(Constants.E_RTOLERANCE).getRadians());
         }
 
         xController.setSetpoint(goalPose.getX());

@@ -26,15 +26,17 @@ public class AutoConstants {
 
     // RedRight2
     public final static double A2_RED_RIGHT_MID_POINT[] = {-3.05+X_OFFSET, -0.55+Y_OFFSET};
-    public final static double A2_RED_RIGHT_GAME_PIECE[] = {-4.35+X_OFFSET, -0.6+Y_OFFSET};
-    public final static double A2_RED_RIGHT_2GAME_PIECE[] = {-4.35+X_OFFSET, -1.8+Y_OFFSET};
-    public final static double A2_RED_RIGHT_MID_SCORING[] = {0.0+X_OFFSET, -0.80+Y_OFFSET};
+    public final static double A2_RED_RIGHT_MID_POINT2[] = {-2.5+X_OFFSET, -0.55+Y_OFFSET};
+    public final static double A2_RED_RIGHT_GAME_PIECE[] = {-4.35+X_OFFSET, -0.8+Y_OFFSET};
+    public final static double A2_RED_RIGHT_2GAME_PIECE[] = {-3.7+X_OFFSET, -2.2+Y_OFFSET};
+    public final static double A2_RED_RIGHT_MID_SCORING[] = {0.0+X_OFFSET, -1.05 +Y_OFFSET};
+    public final static double A2_RED_RIGHT_MID_SCORING2[] = {1+X_OFFSET, -1.05 +Y_OFFSET};
     public final static double A2_RED_RIGHT_RIGHT_SCORING[] = {0.0+X_OFFSET, 0.0+Y_OFFSET};
     public final static double A2_RED_COMMUNITY_RIGHT_SCORING[] = {-0.45+X_OFFSET, -0.65+Y_OFFSET};
 
     // RedLeft2
     public final static double A2_RED_LEFT_GAME_PIECE[] = {-4.35+X_OFFSET, 0.45+Y_OFFSET};
-    public final static double A2_RED_LEFT_2GAME_PIECE[] = {-4.35+X_OFFSET, 1.8+Y_OFFSET};
+    public final static double A2_RED_LEFT_2GAME_PIECE[] = {-4.25+X_OFFSET, 1.8+Y_OFFSET};
     public final static double A2_RED_LEFT_MID_SCORING[] = {0.0+X_OFFSET, 0.80+Y_OFFSET};
     public final static double A2_RED_LEFT_LEFT_SCORING[] = {0.0+X_OFFSET, 0.0+Y_OFFSET}; // 14.65, 0.45
     public final static double A2_RED_LEFT_BUMPCHECK_IN[] = {-1.25+X_OFFSET, 0.35+Y_OFFSET}; // 13.40, 0.80
