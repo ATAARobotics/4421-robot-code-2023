@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.auto.*;
+import frc.robot.commands.auto.testers.Test;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class RobotContainer {
         // autoChooser.addOption("Red2PieceRightCharge", new Red2PieceRightCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         
         // Red Left
+        autoChooser.addOption("Red2PieceLeft", new Red2PieceLeft(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         autoChooser.addOption("Red3PieceStartConeLeft", new Red3PieceStartConeLeft(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
 
         // Red Right
@@ -94,7 +96,7 @@ public class RobotContainer {
         autoChooser.addOption("Blue3PieceStartConeLeft", new Blue3PieceStartConeLeft(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         // Testing Autos
         // autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
-        // autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem, m_intakeSubsystem));
+        autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem, m_intakeSubsystem));
 
         // autoChooser.addOption("SquareWithRot", new SquareWithRot(m_swerveDriveSubsystem));
         // autoChooser.addOption("SquareWithOtherRot", new SquareWithOtherRot(m_swerveDriveSubsystem));

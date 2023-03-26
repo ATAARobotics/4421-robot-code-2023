@@ -73,7 +73,7 @@ public class IntakeSubsystem extends SubsystemBase{
         if (isIntakeTimerDone()) {
             intake_motor.set(0.0);
             this.hasGamePiece = true;
-            m_lightingSubsystem.hasGamePieceLights();
+            //m_lightingSubsystem.hasGamePieceLights();
             timerReset();
         }
     }
@@ -90,7 +90,7 @@ public class IntakeSubsystem extends SubsystemBase{
             intake_motor2.set(-outtake_speed);
         }
         hasGamePiece = false;
-        m_lightingSubsystem.resetLights();
+        //m_lightingSubsystem.resetLights();
     }
 
     public void OuttakeAuto(){

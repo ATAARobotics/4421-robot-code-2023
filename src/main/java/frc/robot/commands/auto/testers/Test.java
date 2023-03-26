@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoConstants;
 import frc.robot.commands.AutoDriveToWayPoint;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.RotateCommand;
 import frc.robot.subsystems.*;
 
 public class Test extends SequentialCommandGroup {
@@ -18,7 +19,9 @@ public class Test extends SequentialCommandGroup {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         addCommands(
-                new IntakeCommand(m_intakeSubsystem)
+            new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+            new InstantCommand(() -> m_swerveDriveSubsystem.setInitialPose()),
+            new RotateCommand(m_swerveDriveSubsystem, Math.PI, 3)
         );
 
     }

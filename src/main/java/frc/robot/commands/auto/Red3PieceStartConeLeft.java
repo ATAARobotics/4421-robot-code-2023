@@ -62,7 +62,7 @@ public class Red3PieceStartConeLeft extends SequentialCommandGroup {
 
                 // drive to bump slower since closer distance
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false, 1.0),
                 
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
@@ -81,7 +81,7 @@ public class Red3PieceStartConeLeft extends SequentialCommandGroup {
                     new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
                     new InstantCommand(m_pivotSubsystem::up)
                 ),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false, 1.0),
                 
                 // after coming back
                 new InstantCommand(m_telescopingArmSubsystem::in),
@@ -100,7 +100,7 @@ public class Red3PieceStartConeLeft extends SequentialCommandGroup {
 
                 // the bumps
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false, 1.0),
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_GAME_PIECE[0]+startingX, AutoConstants.A2_RED_LEFT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
                 
                 new ParallelCommandGroup(

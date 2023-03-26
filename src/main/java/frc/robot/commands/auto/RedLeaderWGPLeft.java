@@ -49,30 +49,31 @@ public class RedLeaderWGPLeft extends SequentialCommandGroup {
 
         addCommands(                    
             new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(true, 0)),
+            new InstantCommand(() -> m_swerveDriveSubsystem.setInitialPose()),
+
                 new PivotCommand(m_pivotSubsystem, "firstdown"),
                 new WaitCommand(0.25),
                 // score
                 new OuttakeCommand(m_intakeSubsystem),
 
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(-0.4, -0.7, new Rotation2d(0)), false),
+                
+
                 // Drive over charging station with dead-reckoning
-                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 5),
+                new DeadReckoning(m_swerveDriveSubsystem, -2.0, 0.0, 2.8),
 
-                // initialize odometry to move
-                new WaitCommand(0.25),
-                new InstantCommand(() -> m_swerveDriveSubsystem.setInitialPose()),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(m_swerveDriveSubsystem.getOdometry().getPoseMeters().getX(), m_swerveDriveSubsystem.getOdometry().getPoseMeters().getY(), new Rotation2d(Math.PI)), true),
+                
 
-                new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_MID_LEFT_GAME_PIECE[0]+startingX, AutoConstants.RED_MID_LEFT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true),
-                    new PivotCommand(m_pivotSubsystem, "down")
-                ),
+                new PivotCommand(m_pivotSubsystem, "down"),
 
                 new ParallelRaceGroup(
                     new IntakeCommand(m_intakeSubsystem),
-                    new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
+                    new DeadReckoning(m_swerveDriveSubsystem, -1, 0, 1.25)
                 ),
 
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_OUTSIDE_COMMUNITY[0]+startingX, AutoConstants.RED_OUTSIDE_COMMUNITY[1]+startingY, new Rotation2d(0+startingRot)), true),
+                    new DeadReckoning(m_swerveDriveSubsystem, 1, 1, 0.5),
                     new PivotCommand(m_pivotSubsystem, "up")
                 ),
 

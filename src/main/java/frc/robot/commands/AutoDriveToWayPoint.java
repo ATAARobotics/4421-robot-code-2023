@@ -68,6 +68,10 @@ public class AutoDriveToWayPoint extends CommandBase {
       this(swerveDriveSubsystem, targetPose, Constants.TOLERANCE, Constants.TOLERANCE, Constants.RTOLERANCE, Constants.SPEEDLIMIT, Constants.ROTLIMIT, isEndPoint, isEndPoint, isEndPoint);
     }
 
+    public AutoDriveToWayPoint(SwerveDriveSubsystem swerveDriveSubsystem, Pose2d targetPose, boolean isXEndPoint, boolean isYEndPoint, boolean isRotEndPoint, double speedLimit) {
+      this(swerveDriveSubsystem, targetPose, Constants.TOLERANCE, Constants.TOLERANCE, Constants.RTOLERANCE, speedLimit, Constants.ROTLIMIT, isXEndPoint, isYEndPoint, isRotEndPoint);
+    }
+
     @Override
     public void initialize() {
         // m_swerveDriveSubsystem.setBrakes(true);

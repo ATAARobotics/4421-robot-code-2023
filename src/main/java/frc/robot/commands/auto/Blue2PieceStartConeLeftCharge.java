@@ -63,11 +63,11 @@ public class Blue2PieceStartConeLeftCharge extends SequentialCommandGroup {
                 new InstantCommand(m_telescopingArmSubsystem::in),
 
                 // drive to midpoint + rotate + lower arm
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(-Math.PI/2+startingRot)), false, true, false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_BLUE_LEFT_MID_POINT[0]+startingX, -AutoConstants.A2_BLUE_LEFT_MID_POINT[1]+startingY, new Rotation2d(-Math.PI/2+startingRot)), false, true, false),
                 
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_GAME_PIECE[0]+startingX, AutoConstants.A2_RED_RIGHT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_GAME_PIECE[0]+startingX, -AutoConstants.A2_RED_RIGHT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true),
                     new PivotCommand(m_pivotSubsystem, "down")
                 ),
 
@@ -79,14 +79,14 @@ public class Blue2PieceStartConeLeftCharge extends SequentialCommandGroup {
 
                 // mid point + rotate + raising arm to scoring pos + extending
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, false),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, -AutoConstants.A2_BLUE_LEFT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, false),
                     new InstantCommand(m_pivotSubsystem::up)
                 ),
                 
                 // after coming back
                 new InstantCommand(m_telescopingArmSubsystem::in),
                 // drive into scoring in 2 commands
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, -AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_BLUE_LEFT_MID_SCORING[0]+startingX, AutoConstants.A2_BLUE_LEFT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true),
                 new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 0.6),
                 new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem),
