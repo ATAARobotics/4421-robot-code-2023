@@ -42,12 +42,9 @@ public class Red2PieceStartConeRightCharge extends SequentialCommandGroup {
         m_telescopingArmSubsystem = telescopingArmSubsystem;
         m_pivotSubsystem = pivotSubsystem;
 
-        // double startingX = m_swerveDriveSubsystem.getOdometry().startingX;
-        // double startingY = m_swerveDriveSubsystem.getOdometry().startingY;
-        // double startingRot = m_swerveDriveSubsystem.getOdometry().startingRot;
-        double startingX = 0;
-        double startingY = 0;
-        double startingRot = 0;
+        double startingX = m_swerveDriveSubsystem.getOdometry().startingX;
+        double startingY = m_swerveDriveSubsystem.getOdometry().startingY + 0.075*Constants.MovementRatio;
+        double startingRot = m_swerveDriveSubsystem.getOdometry().startingRot;
         addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingArmSubsystem, m_pivotSubsystem);
 
         addCommands(                    
@@ -93,7 +90,7 @@ public class Red2PieceStartConeRightCharge extends SequentialCommandGroup {
                 new WaitUntilCommand(() -> (m_pivotSubsystem.getMovementState() == 0)),
                 // score
                 new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
-                new WaitCommand(0.2),
+                new WaitCommand(0.4),
                 new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
                 // drive to charging and balance
                 new DeadReckoning(m_swerveDriveSubsystem, -1, -3, 0.5),
