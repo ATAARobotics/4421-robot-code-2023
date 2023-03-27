@@ -221,7 +221,7 @@ public class Constants {
         public static final double SPEEDLIMIT = 4; // meters per second
         public static final double ROTLIMIT = Math.PI;
 
-
+        public static final double MovementRatio = (1.6/1.13);
         // pigeon tip threshold to reset odometry in degrees
         public static final double tipThreshold = 5.0;
 

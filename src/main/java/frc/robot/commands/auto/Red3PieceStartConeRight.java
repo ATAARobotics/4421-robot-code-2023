@@ -43,7 +43,7 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
         m_pivotSubsystem = pivotSubsystem;
 
         double startingX = m_swerveDriveSubsystem.getOdometry().startingX;
-        double startingY = m_swerveDriveSubsystem.getOdometry().startingY;
+        double startingY = m_swerveDriveSubsystem.getOdometry().startingY + 0.075*Constants.MovementRatio;
         double startingRot = m_swerveDriveSubsystem.getOdometry().startingRot;
 
         addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingArmSubsystem, m_pivotSubsystem);
@@ -91,7 +91,7 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
                 new WaitUntilCommand(() -> (m_pivotSubsystem.getMovementState() == 0)),
                 // score
                 new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
-                new WaitCommand(0.2),
+                new WaitCommand(0.4),
                 new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
 
                 // drive to get another gamepiece
@@ -106,15 +106,16 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
                     new DeadReckoning(swerveDriveSubsystem, 0, -1.5, 0.75)
                 ),
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, false, false),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), true, true, true),
                     new InstantCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem)
-                ),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING2[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING2[1]+startingY, new Rotation2d(0+startingRot)), true),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.5, 0, 1),
-                new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(-1), m_intakeSubsystem),
-                new WaitCommand(0.4),
-                new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)
+                )
+
+                // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
+                // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING2[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING2[1]+startingY, new Rotation2d(0+startingRot)), true),
+                // new DeadReckoning(m_swerveDriveSubsystem, 1.5, 0, 1),
+                // new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(-1), m_intakeSubsystem),
+                // new WaitCommand(0.4),
+                // new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)
         );
 
     }

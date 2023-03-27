@@ -43,7 +43,7 @@ public class Red2PieceRightCharge extends SequentialCommandGroup {
         m_pivotSubsystem = pivotSubsystem;
 
         double startingX = m_swerveDriveSubsystem.getOdometry().startingX;
-        double startingY = m_swerveDriveSubsystem.getOdometry().startingY;
+        double startingY = m_swerveDriveSubsystem.getOdometry().startingY+ 0.075*Constants.MovementRatio;
         double startingRot = m_swerveDriveSubsystem.getOdometry().startingRot;
 
         addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingArmSubsystem, m_pivotSubsystem);

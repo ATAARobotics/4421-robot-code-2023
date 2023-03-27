@@ -29,7 +29,7 @@ public class ScoreCone extends SequentialCommandGroup {
             new WaitUntilCommand(() -> m_pivotSubsystem.getMovementState() == 0),
             new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(0), m_intakeSubsystem),
             new InstantCommand(m_telescopingArmSubsystem::in, m_telescopingArmSubsystem),
-            new WaitCommand(0.75),
+            new WaitCommand(0.25),
             new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)
 
         );
