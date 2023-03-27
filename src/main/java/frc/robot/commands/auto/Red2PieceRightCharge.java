@@ -57,7 +57,7 @@ public class Red2PieceRightCharge extends SequentialCommandGroup {
                 // score
                 new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
                 new WaitCommand(0.2),
-
+                new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
                 // drive to midpoint + rotate + lower arm
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
                 

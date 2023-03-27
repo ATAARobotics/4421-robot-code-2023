@@ -90,9 +90,9 @@ public class AutoDriveToWayPoint extends CommandBase {
         }
 
         if (isRotEndPoint) {
-          rotController.setTolerance(Rotation2d.fromDegrees(Constants.RTOLERANCE).getRadians());
+          rotController.setTolerance(Units.degreesToRadians(Constants.E_RTOLERANCE));
         } else {
-          rotController.setTolerance(Rotation2d.fromDegrees(Constants.E_RTOLERANCE).getRadians());
+          rotController.setTolerance(Units.degreesToRadians(Constants.RTOLERANCE));
         }
 
         xController.setSetpoint(goalPose.getX());

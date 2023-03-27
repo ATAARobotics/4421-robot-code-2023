@@ -57,6 +57,7 @@ public class Red2PieceLeft extends SequentialCommandGroup {
                 // score
                 new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
                 new WaitCommand(0.2),
+                new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
 
                 // drive to midpoint + rotate + lower arm
                 new ParallelCommandGroup(
@@ -66,7 +67,7 @@ public class Red2PieceLeft extends SequentialCommandGroup {
 
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
-                    new DeadReckoning(m_swerveDriveSubsystem, -1, 0.1, 3),
+                    new DeadReckoning(m_swerveDriveSubsystem, -1, 0, 3.2),
                     new PivotCommand(m_pivotSubsystem, "down")
                 ),
 
@@ -78,7 +79,7 @@ public class Red2PieceLeft extends SequentialCommandGroup {
 
                 // mid point + rotate + raising arm to scoring pos + extending
                 new ParallelCommandGroup(
-                    new DeadReckoning(m_swerveDriveSubsystem, 1, 0, 4),
+                    new DeadReckoning(m_swerveDriveSubsystem, 1, 0, 4.2),
                     new InstantCommand(m_pivotSubsystem::up)
                 )
                 // new DeadReckoning(m_swerveDriveSubsystem, 0, -1, 1),

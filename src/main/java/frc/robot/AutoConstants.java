@@ -28,7 +28,7 @@ public class AutoConstants {
     public final static double A2_RED_RIGHT_MID_POINT[] = {-3.05+X_OFFSET, -0.55+Y_OFFSET};
     public final static double A2_RED_RIGHT_MID_POINT2[] = {-2.5+X_OFFSET, -0.55+Y_OFFSET};
     public final static double A2_RED_RIGHT_GAME_PIECE[] = {-4.35+X_OFFSET, -0.8+Y_OFFSET};
-    public final static double A2_RED_RIGHT_2GAME_PIECE[] = {-3.7+X_OFFSET, -2.2+Y_OFFSET};
+    public final static double A2_RED_RIGHT_2GAME_PIECE[] = {-4+X_OFFSET, -0.8+Y_OFFSET};
     public final static double A2_RED_RIGHT_MID_SCORING[] = {0.0+X_OFFSET, -1.05 +Y_OFFSET};
     public final static double A2_RED_RIGHT_MID_SCORING2[] = {1+X_OFFSET, -1.05 +Y_OFFSET};
     public final static double A2_RED_RIGHT_RIGHT_SCORING[] = {0.0+X_OFFSET, 0.0+Y_OFFSET};
