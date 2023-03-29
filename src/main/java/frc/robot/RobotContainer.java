@@ -8,11 +8,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
-import frc.robot.commands.auto.*;
-import frc.robot.commands.auto.Red.Center.RedLeaderOverBack;
-import frc.robot.commands.auto.Red.Left.Red2PieceLeft;
-import frc.robot.commands.auto.Red.Right.RedRight_ConeMid_CubeMid_ConeGrab;
-import frc.robot.commands.auto.testers.Test;
+import frc.robot.commands.auto.Red.Right.*;
+import frc.robot.commands.auto.Red.Left.*;
+import frc.robot.commands.auto.Red.Center.*;
+import frc.robot.commands.auto.Blue.Right.*;
+import frc.robot.commands.auto.Blue.Left.*;
+import frc.robot.commands.auto.Blue.Center.*;
+import frc.robot.commands.auto.Irrelevant.*;
+import frc.robot.commands.auto.testers.*;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -75,37 +78,54 @@ public class RobotContainer {
         // autoChooser
         
         // Red Autos
-        autoChooser.setDefaultOption("RedLeaderOverBack", new RedLeaderOverBack(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedLeaderWGPLeft", new RedLeaderWGPLeft(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("RedLeaderBalance", new RedLeaderBalance(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        // Do Nothing Auto
+        autoChooser.setDefaultOption("Do Nothing", new DoNothing(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         
-        // Red + Odometry Autos
-        // autoChooser.addOption("Red2PieceRight", new Red2PieceRight(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("Red2PieceRightCharge", new Red2PieceRightCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        
-        // Red Left
-        autoChooser.addOption("Red2PieceLeft", new Red2PieceLeft(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("Red3PieceStartConeLeft", new Red3PieceStartConeLeft(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        //Red
+        autoChooser.addOption("RedRight_ConeMid_CubeHigh_Charge", new RedRight_ConeMid_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedRight_ConeMid_CubeMid_Charge", new RedRight_ConeMid_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedRight_ConeMid_CubeHigh_ConeGrab", new RedRight_ConeMid_CubeHigh_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedRight_ConeMid_CubeMid_ConeGrab", new RedRight_ConeMid_CubeMid_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedRight_ConeMid_CubeHigh", new RedRight_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedRight_ConeMid_CubeMid", new RedRight_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
 
-        // Red Right
-        autoChooser.addOption("Red2PieceStartConeRightCharge", new Red2PieceStartConeRightCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("Red3PieceStartConeRight", new RedRight_ConeMid_CubeMid_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedLeft_ConeMid_CubeHigh", new RedLeft_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedLeft_ConeMid_CubeMid", new RedLeft_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+
+        autoChooser.addOption("RedCenter_CubeHigh_Over_Charge", new RedCenter_CubeHigh_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedCenter_CubeMid_Over_Charge", new RedCenter_CubeMid_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedCenter_CubeHigh_Charge", new RedCenter_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("RedCenter_CubeMid_Charge", new RedCenter_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         
-        // Blue Autos
-        // autoChooser.addOption("Teammate", new Teammate(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("BlueLeftDeadReckoning", new BlueLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("BlueRightDeadReckoning", new BlueRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("Blue2PieceStartConeLeftCharge", new Blue2PieceStartConeLeftCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("Blue3PieceStartConeLeft", new Blue3PieceStartConeLeft(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        //Blue
+        autoChooser.addOption("BlueLeft_ConeMid_CubeHigh_Charge", new BlueLeft_ConeMid_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueLeft_ConeMid_CubeMid_Charge", new BlueLeft_ConeMid_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueLeft_ConeMid_CubeHigh_ConeGrab", new BlueLeft_ConeMid_CubeHigh_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueLeft_ConeMid_CubeMid_ConeGrab", new BlueLeft_ConeMid_CubeMid_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueLeft_ConeMid_CubeHigh", new BlueLeft_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueLeft_ConeMid_CubeMid", new BlueLeft_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        
+        autoChooser.addOption("BlueRight_ConeMid_CubeHigh", new BlueRight_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueRight_ConeMid_CubeMid", new BlueRight_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+
+        autoChooser.addOption("BlueCenter_CubeHigh_Over_Charge", new BlueCenter_CubeHigh_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueCenter_CubeMid_Over_Charge", new BlueCenter_CubeMid_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueCenter_CubeHigh_Charge", new BlueCenter_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("BlueCenter_CubeMid_Charge", new BlueCenter_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        
+        //Irrelevant
+        autoChooser.addOption("Irrelevant_CubeHigh", new Irrelevant_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("Irrelevant_CubeMid", new Irrelevant_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("Irrelevant_ConeMid", new Irrelevant_ConeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        
+
         // Testing Autos
         // autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
-        autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem, m_intakeSubsystem));
+        //autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem, m_intakeSubsystem));
 
         // autoChooser.addOption("SquareWithRot", new SquareWithRot(m_swerveDriveSubsystem));
         // autoChooser.addOption("SquareWithOtherRot", new SquareWithOtherRot(m_swerveDriveSubsystem));
 
-        // Do Nothing Auto
-        autoChooser.addOption("Do Nothing", null);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
 

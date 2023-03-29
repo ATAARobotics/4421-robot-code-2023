@@ -1,4 +1,4 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.auto.Red.Right;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,7 +28,7 @@ import frc.robot.AutoConstants;
 
 // TODO: Test (based on PathPlanner coordinates)
 
-public class Red3PieceStartConeLeft extends SequentialCommandGroup {
+public class RedRight_ConeMid_CubeHigh_Charge extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
@@ -36,16 +36,15 @@ public class Red3PieceStartConeLeft extends SequentialCommandGroup {
 
     
 
-    public Red3PieceStartConeLeft(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
+    public RedRight_ConeMid_CubeHigh_Charge(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
         m_pivotSubsystem = pivotSubsystem;
 
         double startingX = m_swerveDriveSubsystem.getOdometry().startingX;
-        double startingY = m_swerveDriveSubsystem.getOdometry().startingY;
+        double startingY = m_swerveDriveSubsystem.getOdometry().startingY + 0.075*Constants.MovementRatio;
         double startingRot = m_swerveDriveSubsystem.getOdometry().startingRot;
-
         addRequirements(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingArmSubsystem, m_pivotSubsystem);
 
         addCommands(                    
@@ -60,13 +59,12 @@ public class Red3PieceStartConeLeft extends SequentialCommandGroup {
                 new InstantCommand(m_pivotSubsystem::up),
                 new InstantCommand(m_telescopingArmSubsystem::in),
 
-                // drive to bump slower since closer distance
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false, 1.0),
+                // drive to midpoint + rotate + lower arm
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
                 
                 // drive to cone + parallel with intake
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_GAME_PIECE[0]+startingX, AutoConstants.A2_RED_LEFT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_GAME_PIECE[0]+startingX, AutoConstants.A2_RED_RIGHT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true),
                     new PivotCommand(m_pivotSubsystem, "down")
                 ),
 
@@ -78,40 +76,30 @@ public class Red3PieceStartConeLeft extends SequentialCommandGroup {
 
                 // mid point + rotate + raising arm to scoring pos + extending
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, false),
                     new InstantCommand(m_pivotSubsystem::up)
                 ),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false, 1.0),
                 
                 // after coming back
                 new InstantCommand(m_telescopingArmSubsystem::in),
-                
-                // drive into scoring in 1 command
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_MID_SCORING[0]+startingX, AutoConstants.A2_RED_LEFT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true),
+                // drive into scoring in 2 commands
+                //new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true),
+                //get into high cube scoring position
+                new InstantCommand(m_pivotSubsystem::highCube, m_pivotSubsystem),
+                new InstantCommand(m_telescopingArmSubsystem::scoreCube, m_telescopingArmSubsystem),
                 new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 0.6),
-                new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem),
-                new WaitUntilCommand(() -> (m_pivotSubsystem.getMovementState() == 0)),
+                new WaitUntilCommand(() -> m_telescopingArmSubsystem.getMovementState() == 0),
                 // score
                 new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
-                new WaitCommand(0.2),
+                new WaitCommand(0.4),
                 new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
-
-                // drive to get another gamepiece
-
-                // the bumps
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false, 1.0),
-                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_GAME_PIECE[0]+startingX, AutoConstants.A2_RED_LEFT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI/2+startingRot)), false, true, false),
-                
-                new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_2GAME_PIECE[0]+startingX, AutoConstants.A2_RED_LEFT_2GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), true, true, true),
-                    new PivotCommand(m_pivotSubsystem, "down")
-                ),
-
-                new ParallelRaceGroup(
-                    new IntakeCommand(m_intakeSubsystem),
-                    new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
-                )
+                new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem),
+                new InstantCommand(m_telescopingArmSubsystem::in, m_telescopingArmSubsystem),
+                // drive to charging and balance
+                new DeadReckoning(m_swerveDriveSubsystem, -1, -3, 0.5),
+                new DeadReckoning(m_swerveDriveSubsystem, -2, 0, 1.5),
+                new AutoBalance(m_swerveDriveSubsystem, true)
 
         );
 

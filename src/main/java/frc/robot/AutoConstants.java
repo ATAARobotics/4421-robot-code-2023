@@ -25,26 +25,36 @@ public class AutoConstants {
     public final static double RED_COMMUNITY_RIGHT_SCORING[] = {-0.45+X_OFFSET, 0.15+Y_OFFSET};
 
     // RedRight2
-    public final static double A2_RED_RIGHT_MID_POINT[] = {-3.05+X_OFFSET, -0.55+Y_OFFSET};
     public final static double A2_RED_RIGHT_MID_POINT2[] = {-2.5+X_OFFSET, -0.55+Y_OFFSET};
-    public final static double A2_RED_RIGHT_GAME_PIECE[] = {-4.35+X_OFFSET, -0.7+Y_OFFSET};
-    public final static double A2_RED_RIGHT_2GAME_PIECE[] = {-5.2+X_OFFSET, -0.8+Y_OFFSET};
-    public final static double A2_RED_RIGHT_MID_SCORING[] = {0.0+X_OFFSET, -0.8 +Y_OFFSET};
     public final static double A2_RED_RIGHT_MID_SCORING2[] = {1+X_OFFSET, -1.05 +Y_OFFSET};
     public final static double A2_RED_RIGHT_RIGHT_SCORING[] = {0.0+X_OFFSET, 0.0+Y_OFFSET};
     public final static double A2_RED_COMMUNITY_RIGHT_SCORING[] = {-0.45+X_OFFSET, -0.65+Y_OFFSET};
+    
+    public final static double A2_RED_RIGHT_MID_POINT[] = {-3.05+X_OFFSET, -0.55+Y_OFFSET};
+    public final static double A2_RED_RIGHT_GAME_PIECE[] = {-4.35+X_OFFSET, -0.7+Y_OFFSET};
+    public final static double A2_RED_RIGHT_MID_SCORING[] = {0.0+X_OFFSET, -0.8 +Y_OFFSET};
+    public final static double A2_RED_RIGHT_2GAME_PIECE[] = {-5.2+X_OFFSET, -0.8+Y_OFFSET};
 
     // RedLeft2
-    public final static double A2_RED_LEFT_GAME_PIECE[] = {-4.75+X_OFFSET, 0.35+Y_OFFSET};
     public final static double A2_RED_LEFT_2GAME_PIECE[] = {-4.25+X_OFFSET, 1.8+Y_OFFSET};
-    public final static double A2_RED_LEFT_MID_SCORING[] = {0.5+X_OFFSET, 0.665+Y_OFFSET};
     public final static double A2_RED_LEFT_LEFT_SCORING[] = {0.0+X_OFFSET, 0.0+Y_OFFSET}; // 14.65, 0.45
+    
     public final static double A2_RED_LEFT_BUMPCHECK_IN[] = {-1.25+X_OFFSET, 0.35+Y_OFFSET}; // 13.40, 0.80
     public final static double A2_RED_LEFT_BUMPCHECK_OUT[] = {-3+X_OFFSET, 0.35+Y_OFFSET}; // 11.80, 0.80
+    public final static double A2_RED_LEFT_GAME_PIECE[] = {-4.75+X_OFFSET, 0.35+Y_OFFSET};
+    public final static double A2_RED_LEFT_MID_SCORING[] = {0.5+X_OFFSET, 0.665+Y_OFFSET};
 
-    // Blue changes
-    public final static double A2_BLUE_LEFT_MID_POINT[] = {-3.05+X_OFFSET, -0.25+Y_OFFSET};
-    public final static double A2_BLUE_LEFT_MID_SCORING[] = {0.0+X_OFFSET, 0.80+Y_OFFSET};
+    // Blue Left
+    public final static double A2_BLUE_LEFT_MID_POINT[] = {-3.05+X_OFFSET, 0.55+Y_OFFSET};
+    public final static double A2_BLUE_LEFT_GAME_PIECE[] = {-4.35+X_OFFSET, 0.7+Y_OFFSET};
+    public final static double A2_BLUE_LEFT_MID_SCORING[] = {0.0+X_OFFSET, 0.8 +Y_OFFSET};
+    public final static double A2_BLUE_LEFT_2GAME_PIECE[] = {-5.2+X_OFFSET, 0.8+Y_OFFSET};
+
+    // Blue Right
+    public final static double A2_BLUE_RIGHT_BUMPCHECK_IN[] = {-1.25+X_OFFSET, -0.35+Y_OFFSET}; // 13.40, 0.80
+    public final static double A2_BLUE_RIGHT_BUMPCHECK_OUT[] = {-3+X_OFFSET, -0.35+Y_OFFSET}; // 11.80, 0.80
+    public final static double A2_BLUE_RIGHT_GAME_PIECE[] = {-4.75+X_OFFSET, -0.35+Y_OFFSET};
+    public final static double A2_BLUE_RIGHT_MID_SCORING[] = {0.5+X_OFFSET, -0.665+Y_OFFSET};
 
     // Mid Scoring but robot centric
     public final static double RED_OUTSIDE_COMMUNITY[] = {0.0+X_OFFSET, 0.0+Y_OFFSET}; // 11, 2.8

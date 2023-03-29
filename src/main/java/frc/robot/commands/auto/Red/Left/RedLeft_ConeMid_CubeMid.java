@@ -28,7 +28,7 @@ import frc.robot.AutoConstants;
 
 // TODO: Test (based on PathPlanner coordinates)
 
-public class Red2PieceLeft extends SequentialCommandGroup {
+public class RedLeft_ConeMid_CubeMid extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
@@ -36,7 +36,7 @@ public class Red2PieceLeft extends SequentialCommandGroup {
 
     
 
-    public Red2PieceLeft(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
+    public RedLeft_ConeMid_CubeMid(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
@@ -91,28 +91,6 @@ public class Red2PieceLeft extends SequentialCommandGroup {
                 new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
                 new WaitCommand(0.4),
                 new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)
-                // new ParallelRaceGroup(
-                //     new IntakeCommand(m_intakeSubsystem),
-                //     new DeadReckoning(swerveDriveSubsystem, -1, 0, 1.25)
-                //     new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.RED_RIGHT_GAME_PIECE[0]-1.00, AutoConstants.RED_RIGHT_GAME_PIECE[1], new Rotation2d(Math.PI)), false)
-                // )
-
-                // mid point + rotate + raising arm to scoring pos + extending
-                // new ParallelCommandGroup(
-                //     new DeadReckoning(m_swerveDriveSubsystem, 1, 0, 4.2),
-                //     new InstantCommand(m_pivotSubsystem::up)
-                // )
-                // new DeadReckoning(m_swerveDriveSubsystem, 0, -1, 1),
-                // new DeadReckoning(m_swerveDriveSubsystem, 1, 0, 1.2)
-                
-                // Score cone
-                // new InstantCommand(m_pivotSubsystem::storedPosition),
-                // new InstantCommand(() -> m_telescopingArmSubsystem.scoreCone(1)),
-                // new WaitUntilCommand(() -> m_telescopingArmSubsystem.getMovementState() == 0),
-                // new ScoreCone(m_pivotSubsystem, m_telescopingArmSubsystem, m_intakeSubsystem),
-                // new InstantCommand(m_pivotSubsystem::up),
-                // new InstantCommand(m_telescopingArmSubsystem::in)
-
         );
 
     }

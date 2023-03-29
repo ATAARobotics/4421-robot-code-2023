@@ -25,7 +25,7 @@ import frc.robot.AutoConstants;
 
 // TODO: Test (based on PathPlanner coordinates)
 
-public class RedLeaderOverBack extends SequentialCommandGroup {
+public class RedCenter_CubeHigh_Over_Charge extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
@@ -33,7 +33,7 @@ public class RedLeaderOverBack extends SequentialCommandGroup {
 
     
 
-    public RedLeaderOverBack(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
+    public RedCenter_CubeHigh_Over_Charge(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
@@ -62,7 +62,7 @@ public class RedLeaderOverBack extends SequentialCommandGroup {
 
                 // Auto-Balance on charging station
                 new WaitCommand(0.25),
-                new DeadReckoning(m_swerveDriveSubsystem, 3.0, 0.0, 1.5),
+                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 2),
                 new AutoBalance(m_swerveDriveSubsystem, true)
 
         );
