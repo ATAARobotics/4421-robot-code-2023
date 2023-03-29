@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.auto.*;
+import frc.robot.commands.auto.Red.Center.RedLeaderOverBack;
+import frc.robot.commands.auto.Red.Left.Red2PieceLeft;
+import frc.robot.commands.auto.Red.Right.RedRight_ConeMid_CubeMid_ConeGrab;
 import frc.robot.commands.auto.testers.Test;
 import frc.robot.subsystems.*;
 
@@ -86,7 +89,7 @@ public class RobotContainer {
 
         // Red Right
         autoChooser.addOption("Red2PieceStartConeRightCharge", new Red2PieceStartConeRightCharge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("Red3PieceStartConeRight", new Red3PieceStartConeRight(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        autoChooser.addOption("Red3PieceStartConeRight", new RedRight_ConeMid_CubeMid_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         
         // Blue Autos
         // autoChooser.addOption("Teammate", new Teammate(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
@@ -131,7 +134,10 @@ public class RobotContainer {
         joysticks.DownToStop.and(() -> joysticks.getOuttakeInversed() <= 0.5).and(() -> joysticks.getOuttake() >= 0.5).whileTrue(new StartEndCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem::stop, m_pivotSubsystem))
         .whileTrue(new StartEndCommand(() -> m_telescopingSubsystem.scoreCone(joysticks.getOuttake()), m_telescopingSubsystem::stop, m_telescopingSubsystem));
         
-        joysticks.DownToStop.and(() -> joysticks.getOuttakeInversed() > 0.5).onTrue(new ScoreCone(m_pivotSubsystem, m_telescopingSubsystem, m_intakeSubsystem))
+        joysticks.DownToStop.and(() -> joysticks.getOuttakeInversed() >= 0.5).and(() -> joysticks.getOuttake() <= 0.5).onTrue(new ScoreCone(m_pivotSubsystem, m_telescopingSubsystem, m_intakeSubsystem))
+        .onFalse(new InstantCommand(m_pivotSubsystem::stop, m_pivotSubsystem)).onFalse(new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)).onFalse(new InstantCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
+        
+        joysticks.DownToStop.and(() -> joysticks.getOuttakeInversed() >= 0.5).and(() -> joysticks.getOuttake() >= 0.5).onTrue(new ScoreCube(m_pivotSubsystem, m_telescopingSubsystem, m_intakeSubsystem))
         .onFalse(new InstantCommand(m_pivotSubsystem::stop, m_pivotSubsystem)).onFalse(new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem)).onFalse(new InstantCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
         
         joysticks.PivotDown.whileTrue(new StartEndCommand(m_pivotSubsystem::down, m_pivotSubsystem::stop, m_pivotSubsystem));
