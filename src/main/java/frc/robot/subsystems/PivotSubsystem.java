@@ -179,6 +179,20 @@ public class PivotSubsystem extends SubsystemBase {
 
                 }
                 break;
+            case 12:
+                if(!sensedMetalBottom){
+                    if(pivotEncoder.getPosition() >= -1050){
+                        setSpeed(-speed);
+                    }else{
+                        stop();
+                    }
+                }
+                else{
+                    aboveTop = false;
+                    stop();
+
+                }
+                break;
             default:
                 stop();
         }
@@ -206,8 +220,12 @@ public class PivotSubsystem extends SubsystemBase {
     }
     public void firstdown() {
         movementState = 6;
-
     }
+
+    public void highCube(){
+        movementState = 12;
+    }
+
     public void stop() {
         setSpeed(0);
         movementState = 0;

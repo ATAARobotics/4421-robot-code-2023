@@ -47,8 +47,11 @@ public class TelescopingArmSubsystem extends SubsystemBase {
                 }
                 break;
             case 2:
-                if(telescopingArmEncoder.getPosition() <= 1000){
+                if(telescopingArmEncoder.getPosition() < 2700){
                     telescopingArmMotor.set(speed);
+                }
+                else if (telescopingArmEncoder.getPosition() < 2800){
+                    telescopingArmMotor.set(speed/4);
                 }
                 else{
                     movementState = 0;

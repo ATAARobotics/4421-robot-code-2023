@@ -1,4 +1,4 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.auto.Red.Right;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,7 +28,7 @@ import frc.robot.AutoConstants;
 
 // TODO: Test (based on PathPlanner coordinates)
 
-public class Red3PieceStartConeRight extends SequentialCommandGroup {
+public class RedRight_ConeMid_CubeMid_ConeGrab extends SequentialCommandGroup {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final TelescopingArmSubsystem m_telescopingArmSubsystem;
@@ -36,7 +36,7 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
 
     
 
-    public Red3PieceStartConeRight(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
+    public RedRight_ConeMid_CubeMid_ConeGrab(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, TelescopingArmSubsystem telescopingArmSubsystem, PivotSubsystem pivotSubsystem) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
@@ -106,7 +106,7 @@ public class Red3PieceStartConeRight extends SequentialCommandGroup {
                     new DeadReckoning(swerveDriveSubsystem, 0, -1.5, 0.75)
                 ),
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), true, true, true),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, true),
                     new InstantCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem)
                 )
 
