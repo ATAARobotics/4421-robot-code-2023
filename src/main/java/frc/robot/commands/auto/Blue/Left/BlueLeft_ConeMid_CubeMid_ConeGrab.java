@@ -86,8 +86,11 @@ public class BlueLeft_ConeMid_CubeMid_ConeGrab extends SequentialCommandGroup {
                 // drive into scoring in 2 commands
                 //new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_BLUE_LEFT_MID_SCORING[0]+startingX, AutoConstants.A2_BLUE_LEFT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 0.6),
-                new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem),
+                
+                new ParallelCommandGroup(
+                    new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 0.8),
+                    new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem)
+                ),
                 new WaitUntilCommand(() -> (m_pivotSubsystem.getMovementState() == 0)),
                 // score
                 new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
@@ -103,12 +106,14 @@ public class BlueLeft_ConeMid_CubeMid_ConeGrab extends SequentialCommandGroup {
 
                 new ParallelRaceGroup(
                     new IntakeCommand(m_intakeSubsystem),
-                    new DeadReckoning(swerveDriveSubsystem, 0, 1.5, 0.75)
+                    new DeadReckoning(swerveDriveSubsystem, 0, 1, 1.13)
                 ),
                 new ParallelCommandGroup(
                     new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_BLUE_LEFT_MID_POINT[0]+startingX, AutoConstants.A2_BLUE_LEFT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, true),
                     new InstantCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem)
-                )
+                ),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_BLUE_LEFT_MID_SCORING[0]+startingX, AutoConstants.A2_BLUE_LEFT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true)
+
 
                 // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
                 // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_BLUE_LEFT_MID_SCORING2[0]+startingX, AutoConstants.A2_BLUE_LEFT_MID_SCORING2[1]+startingY, new Rotation2d(0+startingRot)), true),

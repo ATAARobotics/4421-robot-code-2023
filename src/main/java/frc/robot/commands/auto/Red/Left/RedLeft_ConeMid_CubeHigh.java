@@ -60,17 +60,12 @@ public class RedLeft_ConeMid_CubeHigh extends SequentialCommandGroup {
                 new InstantCommand(m_telescopingArmSubsystem::in),
 
                 // drive to midpoint + rotate + lower arm
-                new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI+startingRot)), false, true, true, 1.5),
-                    new PivotCommand(m_pivotSubsystem, "up")
-                ),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_IN[1]+startingY, new Rotation2d(Math.PI+startingRot)), false, true, true, 1.5),
 
                 // drive to cone + parallel with intake
-                new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI+startingRot)), false, true, true, 0.75),
+                new InstantCommand(m_pivotSubsystem::down),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[0]+startingX, AutoConstants.A2_RED_LEFT_BUMPCHECK_OUT[1]+startingY, new Rotation2d(Math.PI+startingRot)), false, true, true, 0.75),
 
-                    new PivotCommand(m_pivotSubsystem, "down")
-                ),
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_LEFT_GAME_PIECE[0]+startingX, AutoConstants.A2_RED_LEFT_GAME_PIECE[1]+startingY, new Rotation2d(Math.PI+startingRot)), false, true, true),
                 new ParallelCommandGroup(
                     new DeadReckoning(swerveDriveSubsystem, -1, 0, 0.5),
@@ -90,11 +85,7 @@ public class RedLeft_ConeMid_CubeHigh extends SequentialCommandGroup {
                 new InstantCommand(m_telescopingArmSubsystem::scoreCube, m_telescopingArmSubsystem),
                 new WaitUntilCommand(() -> m_telescopingArmSubsystem.getMovementState() == 0),
                 // score
-                new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
-                new WaitCommand(0.4),
-                new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
-                new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem),
-                new InstantCommand(m_telescopingArmSubsystem::in, m_telescopingArmSubsystem)
+                new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem)
         );
 
     }

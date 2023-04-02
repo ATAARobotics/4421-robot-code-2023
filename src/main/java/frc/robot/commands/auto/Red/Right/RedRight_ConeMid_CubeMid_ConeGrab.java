@@ -103,12 +103,13 @@ public class RedRight_ConeMid_CubeMid_ConeGrab extends SequentialCommandGroup {
 
                 new ParallelRaceGroup(
                     new IntakeCommand(m_intakeSubsystem),
-                    new DeadReckoning(swerveDriveSubsystem, 0, -1.5, 0.75)
+                    new DeadReckoning(swerveDriveSubsystem, 0, -1, 1.13)
                 ),
                 new ParallelCommandGroup(
-                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, true),
+                    new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, false),
                     new InstantCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem)
-                )
+                ),
+                new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true)
 
                 // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
                 // new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING2[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING2[1]+startingY, new Rotation2d(0+startingRot)), true),

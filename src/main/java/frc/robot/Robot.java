@@ -60,10 +60,12 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().cancelAll();
         robotContainer.getPivotSubsystem().stop();
         robotContainer.getTelescopingArmSubsystem().stop();
+
         // Write remaining blackbox data to file
         // Start brake timer
         brakesOffTimer.reset();
         brakesOffTimer.start();
+        robotContainer.getSwerveDriveSubsystem().WheelLock();
     }
 
     @Override
@@ -71,7 +73,7 @@ public class Robot extends TimedRobot {
         if (brakesOffTimer.get() > 2.5) {
             brakesOffTimer.stop();
             brakesOffTimer.reset();
-            robotContainer.getSwerveDriveSubsystem().setBrakes(false);
+            //robotContainer.getSwerveDriveSubsystem().setBrakes(false);
         }
     }
 

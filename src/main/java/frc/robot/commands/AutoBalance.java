@@ -53,9 +53,9 @@ public class AutoBalance extends CommandBase {
         }
         error = Constants.BEAM_BALANCED_GOAL_DEGREES - currentAngle;
         if(notSlow){
-            drivePower = -MathUtil.clamp(error * Constants.BEAM_BALANACED_DRIVE_KP, -2, 2);
+            drivePower = -MathUtil.clamp(error * Constants.BEAM_BALANACED_DRIVE_KP, -3, 3);
         }else{
-            drivePower = -MathUtil.clamp(error * Constants.BEAM_BALANACED_DRIVE_KP * 0.2, -0.6, 0.6);
+            drivePower = -MathUtil.clamp(error * Constants.BEAM_BALANACED_DRIVE_KP * 0.2, -0.7, 0.7);
         }
         System.out.println(drivePower);
         // Our robot needed an extra push to drive up in reverse, probably due to weight

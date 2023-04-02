@@ -20,23 +20,18 @@ public class RotateCommand extends CommandBase {
   private Pose2d robotPose;
   private final PIDController rotController = new PIDController(3.0, 0.1, 0);
 
-  private final SwerveDriveSubsystem swerveDrive;
+  private final SwerveDriveSubsystem m_swerveDriveSubsystem;
 
   // takes in targetPose and the tolerance it is allowed. rotTolerance(degrees)
   public RotateCommand(SwerveDriveSubsystem swerveDrive, double angle, double tolerance) {
-    this.swerveDrive = swerveDrive;
+    this.m_swerveDriveSubsystem = swerveDrive;
     this.angle = angle;
     // stop when values are small
 
     rotController.setTolerance(Units.degreesToRadians(tolerance));
     rotController.enableContinuousInput(-Math.PI, Math.PI);
-
-    addRequirements(swerveDrive);
-  }
-
-  @Override
-  public void initialize() {
     rotController.setSetpoint(angle);
+    addRequirements(swerveDrive);
   }
 
   @Override
@@ -44,7 +39,7 @@ public class RotateCommand extends CommandBase {
 
       // Transform the tag's pose to set our goal
       
-      robotPose = swerveDrive.getOdometry().getPoseMeters();
+      robotPose = m_swerveDriveSubsystem.getOdometry().getPoseMeters();
 
       rotSpeed = MathUtil.clamp(rotController.calculate(robotPose.getRotation().getRadians()), -rotLimit, rotLimit);
       if (rotController.atSetpoint()) {
@@ -53,7 +48,7 @@ public class RotateCommand extends CommandBase {
       // SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
       // Drive // yspeed = xspeed  // x speed = y speed. setSwerveDrive is wrong
-      swerveDrive.setSwerveDrive(0, 0, rotSpeed, false);
+      m_swerveDriveSubsystem.setSwerveDrive(0, 0, rotSpeed, false);
 
   }
 
@@ -63,6 +58,6 @@ public class RotateCommand extends CommandBase {
     }
     @Override
     public void end(boolean interrupted) {
-        swerveDrive.setSwerveDrive(0, 0, 0, false);
+        m_swerveDriveSubsystem.setSwerveDrive(0, 0, 0, false);
     }
 }

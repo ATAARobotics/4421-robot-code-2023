@@ -89,12 +89,15 @@ public class RedRight_ConeMid_CubeHigh_ConeGrab extends SequentialCommandGroup {
                 // get into high cube scoring pose 
                 new InstantCommand(m_pivotSubsystem::highCube, m_pivotSubsystem),
                 new InstantCommand(m_telescopingArmSubsystem::scoreCube, m_telescopingArmSubsystem),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 0.6),
-                new WaitUntilCommand(() -> m_telescopingArmSubsystem.getMovementState() == 0),
-                // score
-                new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
-                new WaitCommand(0.4),
-
+                new ParallelRaceGroup(
+                    new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 4),
+                    new SequentialCommandGroup(
+                        new WaitUntilCommand(() -> m_telescopingArmSubsystem.getMovementState() == 0),
+                        // score
+                        new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
+                        new WaitCommand(0.4)
+                    )
+                ),
                 new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
                 new InstantCommand(m_pivotSubsystem::up, m_pivotSubsystem),
                 new InstantCommand(m_telescopingArmSubsystem::in, m_telescopingArmSubsystem),
@@ -108,7 +111,7 @@ public class RedRight_ConeMid_CubeHigh_ConeGrab extends SequentialCommandGroup {
 
                 new ParallelRaceGroup(
                     new IntakeCommand(m_intakeSubsystem),
-                    new DeadReckoning(swerveDriveSubsystem, 0, -1.5, 0.75)
+                    new DeadReckoning(swerveDriveSubsystem, 0, -1, 1.13)
                 ),
                 new ParallelCommandGroup(
                     new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_POINT[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_POINT[1]+startingY, new Rotation2d(0+startingRot)), false, false, true),

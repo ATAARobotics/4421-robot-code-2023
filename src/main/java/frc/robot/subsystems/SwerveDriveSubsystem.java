@@ -338,4 +338,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public Pigeon getPigeon(){
         return pigeon;
     }
+
+    public void WheelLock(){
+        SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 1));
+        for (SwerveModule module : swerveModules) {
+            module.setState(moduleStates[module.getId()], true);
+          
+        }
+    }
 }

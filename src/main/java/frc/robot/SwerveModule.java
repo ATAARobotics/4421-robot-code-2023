@@ -122,16 +122,30 @@ public class SwerveModule {
         angleController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
-    public void setState(SwerveModuleState state){
-        double speed = state.speedMetersPerSecond;
-        double angle = state.angle.getRadians();
-        SwerveModuleState finalSwerveState = new SwerveModuleState(speed,Rotation2d.fromRadians(angle));
+    public void setState(SwerveModuleState state, boolean ignoreVel){
+        if(ignoreVel == false){
+            double speed = state.speedMetersPerSecond;
+            double angle = state.angle.getRadians();
+            SwerveModuleState finalSwerveState = new SwerveModuleState(speed,Rotation2d.fromRadians(angle));
+    
+            setTargetAngle(finalSwerveState.angle.getRadians());
+            setSpeed(finalSwerveState);
+            setAngle();
+        }else{
+            double speed = state.speedMetersPerSecond;
+            double angle = state.angle.getRadians();
+            SwerveModuleState finalSwerveState = new SwerveModuleState(speed,Rotation2d.fromRadians(angle));
+            SwerveModuleState SpeedSwerveState = new SwerveModuleState(0,Rotation2d.fromRadians(angle));
 
-        setTargetAngle(finalSwerveState.angle.getRadians());
-        setSpeed(finalSwerveState);
-        setAngle();
+            setTargetAngle(finalSwerveState.angle.getRadians());
+            setSpeed(SpeedSwerveState);
+            setAngle();
+        }
+        
     }
-
+    public void setState(SwerveModuleState state){
+        setState(state, false);
+    }
     private void setAngle(){
         SmartDashboard.putNumber(name + " angle", rotationEncoder.getAbsolutePosition()+SmartDashboard.getNumber(name + " offset", rotationOffset));
         double rotationVelocity = -angleController.calculate(getAngle());

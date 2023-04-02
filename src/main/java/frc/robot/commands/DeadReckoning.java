@@ -31,4 +31,8 @@ public class DeadReckoning extends CommandBase{
     public boolean isFinished() {
         return timer.get() > timeRunning;
     }
+    @Override
+    public void end(boolean interrupted) {
+        m_SwerveDriveSubsystem.setSwerveDrive(0, 0, 0, true);
+    }
 }

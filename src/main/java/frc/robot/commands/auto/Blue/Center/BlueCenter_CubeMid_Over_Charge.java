@@ -57,11 +57,11 @@ public class BlueCenter_CubeMid_Over_Charge extends SequentialCommandGroup {
                 // Drive over charging station with dead-reckoning
                 
                 //new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 1.5),
-                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 5),
+                new DeadReckoning(m_swerveDriveSubsystem, -1.0, 0.0, 5.25),
 
                 // Auto-Balance on charging station
-                new WaitCommand(0.25),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0.0, 2),
+                new WaitCommand(1),
+                new DeadReckoning(m_swerveDriveSubsystem, 2, 0.0, 1.5),
                 new AutoBalance(m_swerveDriveSubsystem, true)
 
         );

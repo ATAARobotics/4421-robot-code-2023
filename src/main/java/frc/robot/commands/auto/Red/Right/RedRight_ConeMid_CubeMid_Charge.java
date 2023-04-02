@@ -85,12 +85,17 @@ public class RedRight_ConeMid_CubeMid_Charge extends SequentialCommandGroup {
                 // drive into scoring in 2 commands
                 //new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[0]+startingX, AutoConstants.A2_RED_COMMUNITY_RIGHT_SCORING[1]+startingY, new Rotation2d(0+startingRot)), false, true, false),
                 new AutoDriveToWayPoint(m_swerveDriveSubsystem, new Pose2d(AutoConstants.A2_RED_RIGHT_MID_SCORING[0]+startingX, AutoConstants.A2_RED_RIGHT_MID_SCORING[1]+startingY, new Rotation2d(0+startingRot)), true),
-                new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 0.6),
-                new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem),
-                new WaitUntilCommand(() -> (m_pivotSubsystem.getMovementState() == 0)),
-                // score
-                new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
-                new WaitCommand(0.4),
+                new ParallelRaceGroup(
+                    new DeadReckoning(m_swerveDriveSubsystem, 1.0, 0, 4),
+                    new ParallelCommandGroup(
+                        new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem),
+                        new WaitUntilCommand(() -> (m_pivotSubsystem.getMovementState() == 0)),
+                        // score
+                        new InstantCommand(() -> m_intakeSubsystem.runIntakeReversed(1), m_intakeSubsystem),
+                        new WaitCommand(0.4)
+                    )
+                ),
+                
                 new InstantCommand(m_intakeSubsystem::stopIntake, m_intakeSubsystem),
                 // drive to charging and balance
                 new DeadReckoning(m_swerveDriveSubsystem, -1, -3, 0.5),
