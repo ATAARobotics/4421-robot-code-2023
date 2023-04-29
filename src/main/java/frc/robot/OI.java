@@ -22,6 +22,7 @@ class OI {
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
+    private double heading;
     private boolean toggleFieldOriented;
     private double speed;
     private boolean override = false;
@@ -103,6 +104,9 @@ class OI {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = rotationStick.getAnalog("XVelocity");
+        if(Math.sqrt(Math.pow(rotationStick.getAnalog("XVelocity"), 2) +Math.pow(rotationStick.getAnalog("YVelocity"), 2)) >= 0.3){
+            heading = Math.atan2(rotationStick.getAnalog("XVelocity"), rotationStick.getAnalog("YVelocity"));
+        }
         //rotationVelocity = driveStick.getAnalog("RotationVelocity");
 
         speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
@@ -122,6 +126,8 @@ class OI {
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
+
+
     }
 
     // Getter functions for controls
@@ -131,6 +137,10 @@ class OI {
 
     public double getYVelocity() {
         return -xVelocity;
+    }
+
+    public double getHeading(){
+        return heading;
     }
 
     public double getSpeed() {

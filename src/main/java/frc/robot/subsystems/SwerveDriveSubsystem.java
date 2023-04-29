@@ -9,6 +9,8 @@ import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -51,6 +53,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     private double initialPoseX;
     private double initialPoseY;
+    private final PIDController rotController = new PIDController(3.0, 0.15, 0);
 
     // Safety speed override, this *shouldn't* ever be true
     private boolean safetyDisable = false;
@@ -110,6 +113,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Set up odometry
         odometry = new SwerveOdometry(swerveKinematics, new Rotation2d(pigeon.getYaw()), getModulePositions(), pigeon, alliance);
+        rotController.enableContinuousInput(-Math.PI, Math.PI);
 
         // Initialize the pose
         pose = initialPose;
@@ -126,10 +130,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     /**
      * This function should be run during every teleop and auto periodic
      */
-    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
+    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationHeading, double rotationVelocity, boolean useOdometry) {
         this.useOdometry = useOdometry;
+        rotController.setSetpoint(rotationHeading);
+        double RotSpeed = MathUtil.clamp(-rotController.calculate(odometry.getPoseMeters().getRotation().getRadians()), -10, 10);
+        SmartDashboard.putNumber("Teleop Rot Target", rotationHeading);
+        SmartDashboard.putNumber("Teleop Rot Speed", RotSpeed);
         if (fieldOriented) {
-            this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, -rotationVelocity, Rotation2d.fromDegrees(pigeon.getYaw()));
+            this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, RotSpeed, Rotation2d.fromDegrees(pigeon.getYaw()));
         }else{
             this.moduleSpeeds = new ChassisSpeeds(-xVelocity, -yVelocity, rotationVelocity);
         }
@@ -284,13 +292,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public double getRotationTemperature() {
         return rotationMotorHighestTemp;
     }
-
-    // turning left is positive, thus the negative
-    public Consumer<ChassisSpeeds> setChassisSpeed = chassisSpeed -> {
-        // System.out.println(chassisSpeed);
-        this.setSwerveDrive(chassisSpeed.vxMetersPerSecond, chassisSpeed.vyMetersPerSecond,
-                -chassisSpeed.omegaRadiansPerSecond, true);
-    };
 
     /**
      * Gets the velocity of a specific module in meters/second

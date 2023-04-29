@@ -66,7 +66,7 @@ public class AutoBalance extends CommandBase {
             drivePower = Math.copySign(1, drivePower);
         }
 
-        swerveSubsystem.setSwerveDrive(drivePower, 0, 0, false);
+        swerveSubsystem.setSwerveDrive(drivePower, 0, 0, 0, false);
         // Debugging Print Statments
         SmartDashboard.putNumber("Current Angle", currentAngle);
         SmartDashboard.putNumber("Error", error);

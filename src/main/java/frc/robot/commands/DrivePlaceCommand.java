@@ -131,7 +131,7 @@ public class DrivePlaceCommand extends CommandBase {
       SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
       // Drive // yspeed = xspeed  // x speed = y speed. setSwerveDrive is wrong
-      swerveDrive.setSwerveDrive(ySpeed, xSpeed, rotSpeed, true);
+      swerveDrive.setSwerveDrive(ySpeed, xSpeed, 0, rotSpeed, true);
 
   }
 

@@ -73,7 +73,7 @@ public class RobotContainer {
         m_swerveDriveSubsystem.setDefaultCommand(
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                         joysticks::getYVelocity,
-                        joysticks::getRotationVelocity, this::getSwerveSpeed,
+                        joysticks::getHeading, joysticks::getRotationVelocity, this::getSwerveSpeed,
                         this::getSwerveSpeedRot));
         // autoChooser
         
@@ -81,38 +81,41 @@ public class RobotContainer {
         // Do Nothing Auto
         autoChooser.setDefaultOption("Do Nothing", new DoNothing(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         
-        //Red
-        autoChooser.addOption("RedRight_ConeMid_CubeHigh_Charge", new RedRight_ConeMid_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedRight_ConeMid_CubeMid_Charge", new RedRight_ConeMid_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedRight_ConeMid_CubeHigh_ConeGrab", new RedRight_ConeMid_CubeHigh_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedRight_ConeMid_CubeMid_ConeGrab", new RedRight_ConeMid_CubeMid_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedRight_ConeMid_CubeHigh", new RedRight_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedRight_ConeMid_CubeMid", new RedRight_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        if(alliance == Alliance.Red){
+            //Red
+            autoChooser.addOption("RedRight_ConeMid_CubeHigh_Charge", new RedRight_ConeMid_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedRight_ConeMid_CubeMid_Charge", new RedRight_ConeMid_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedRight_ConeMid_CubeHigh_ConeGrab", new RedRight_ConeMid_CubeHigh_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedRight_ConeMid_CubeMid_ConeGrab", new RedRight_ConeMid_CubeMid_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedRight_ConeMid_CubeHigh", new RedRight_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedRight_ConeMid_CubeMid", new RedRight_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
 
-        autoChooser.addOption("RedLeft_ConeMid_CubeHigh", new RedLeft_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedLeft_ConeMid_CubeMid", new RedLeft_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedLeft_ConeMid_CubeHigh", new RedLeft_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedLeft_ConeMid_CubeMid", new RedLeft_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
 
-        autoChooser.addOption("RedCenter_CubeHigh_Over_Charge", new RedCenter_CubeHigh_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedCenter_CubeMid_Over_Charge", new RedCenter_CubeMid_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedCenter_CubeHigh_Charge", new RedCenter_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedCenter_CubeMid_Charge", new RedCenter_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        
-        //Blue
-        autoChooser.addOption("BlueLeft_ConeMid_CubeHigh_Charge", new BlueLeft_ConeMid_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueLeft_ConeMid_CubeMid_Charge", new BlueLeft_ConeMid_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueLeft_ConeMid_CubeHigh_ConeGrab", new BlueLeft_ConeMid_CubeHigh_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueLeft_ConeMid_CubeMid_ConeGrab", new BlueLeft_ConeMid_CubeMid_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueLeft_ConeMid_CubeHigh", new BlueLeft_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueLeft_ConeMid_CubeMid", new BlueLeft_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        
-        autoChooser.addOption("BlueRight_ConeMid_CubeHigh", new BlueRight_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueRight_ConeMid_CubeMid", new BlueRight_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedCenter_CubeHigh_Over_Charge", new RedCenter_CubeHigh_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedCenter_CubeMid_Over_Charge", new RedCenter_CubeMid_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedCenter_CubeHigh_Charge", new RedCenter_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("RedCenter_CubeMid_Charge", new RedCenter_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+        }
+        if(alliance == Alliance.Blue){
+            //Blue
+            autoChooser.addOption("BlueLeft_ConeMid_CubeHigh_Charge", new BlueLeft_ConeMid_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueLeft_ConeMid_CubeMid_Charge", new BlueLeft_ConeMid_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueLeft_ConeMid_CubeHigh_ConeGrab", new BlueLeft_ConeMid_CubeHigh_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueLeft_ConeMid_CubeMid_ConeGrab", new BlueLeft_ConeMid_CubeMid_ConeGrab(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueLeft_ConeMid_CubeHigh", new BlueLeft_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueLeft_ConeMid_CubeMid", new BlueLeft_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            
+            autoChooser.addOption("BlueRight_ConeMid_CubeHigh", new BlueRight_ConeMid_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueRight_ConeMid_CubeMid", new BlueRight_ConeMid_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
 
-        autoChooser.addOption("BlueCenter_CubeHigh_Over_Charge", new BlueCenter_CubeHigh_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueCenter_CubeMid_Over_Charge", new BlueCenter_CubeMid_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueCenter_CubeHigh_Charge", new BlueCenter_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("BlueCenter_CubeMid_Charge", new BlueCenter_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        
+            autoChooser.addOption("BlueCenter_CubeHigh_Over_Charge", new BlueCenter_CubeHigh_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueCenter_CubeMid_Over_Charge", new BlueCenter_CubeMid_Over_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueCenter_CubeHigh_Charge", new BlueCenter_CubeHigh_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
+            autoChooser.addOption("BlueCenter_CubeMid_Charge", new BlueCenter_CubeMid_Charge(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));   
+        }
+
         //Irrelevant
         autoChooser.addOption("Irrelevant_CubeHigh", new Irrelevant_CubeHigh(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
         autoChooser.addOption("Irrelevant_CubeMid", new Irrelevant_CubeMid(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
@@ -120,7 +123,7 @@ public class RobotContainer {
         
 
         // Testing Autos
-        // autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        //autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
         //autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem, m_intakeSubsystem));
 
         // autoChooser.addOption("SquareWithRot", new SquareWithRot(m_swerveDriveSubsystem));
@@ -173,42 +176,43 @@ public class RobotContainer {
         // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
         // .onFalse(new InstantCommand(m_telescopingSubsystem::stop));
 
-        joysticks.SlideLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0.1,
-                        () -> 0,
-                        () -> 0, () -> 1,
-                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                        joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                                        () -> 1));
-        joysticks.SlideRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> -0.1,
-                        () -> 0,
-                        () -> 0, () -> 1,
-                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                        joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                                        () -> 1));
-        joysticks.RotateLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> -0.1,
-                        () -> 0,
-                        () -> 0, () -> 1,
-                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                        joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                                        () -> 1));
-        joysticks.RotateRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
-                        () -> -0.1,
-                        () -> 0, () -> 1,
-                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                        joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                                        () -> 1));   
-        joysticks.AutoBalance.onTrue(
-                new AutoBalance(m_swerveDriveSubsystem, true)
-        ).onFalse(
-            new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                        joysticks::getYVelocity,
-                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                        () -> 1)
-        );
+        // joysticks.SlideLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0.1,
+        //                 () -> 0,
+        //                 () -> 0, () -> 1,
+        //                 () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+        //                                 joysticks::getYVelocity,
+        //                                 joysticks::getRotationVelocity, this::getSwerveSpeed,
+        //                                 () -> 1));
+        // joysticks.SlideRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> -0.1,
+        //                 () -> 0,
+        //                 () -> 0, () -> 1,
+        //                 () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+        //                                 joysticks::getYVelocity,
+        //                                 joysticks::getRotationVelocity, this::getSwerveSpeed,
+        //                                 () -> 1));
+        // joysticks.RotateLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 1,
+        //                 () -> 0,
+        //                 () -> 0, () -> 1,
+        //                 () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+        //                 joysticks::getYVelocity,
+        //                 joysticks::getRotationVelocity, this::getSwerveSpeed,
+        //                 this::getSwerveSpeedRot));
+
+        // joysticks.RotateRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
+        //                 () -> -0.1,
+        //                 () -> 0, () -> 1,
+        //                 () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+        //                                 joysticks::getYVelocity,
+        //                                 joysticks::getRotationVelocity, this::getSwerveSpeed,
+        //                                 () -> 1));   
+        // joysticks.AutoBalance.onTrue(
+        //         new AutoBalance(m_swerveDriveSubsystem, true)
+        // ).onFalse(
+        //     new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+        //                 joysticks::getYVelocity,
+        //                 joysticks::getRotationVelocity, this::getSwerveSpeed,
+        //                 () -> 1)
+        // );
         joysticks.Forward.onTrue(new InstantCommand(() -> {swerveSpeed=Constants.MAXIMUM_SPEED; swerveSpeedRot=Constants.MAXIMUM_ROTATIONAL_SPEED;}))
         .onFalse(new InstantCommand(() -> {swerveSpeed=Constants.SLOW_MAXIMUM_SPEED; swerveSpeedRot=Constants.SLOW_MAXIMUM_ROTATIONAL_SPEED;}));
 

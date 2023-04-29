@@ -215,7 +215,7 @@ public class SwerveModule {
         // If the smallest angle between the current angle and the target is greater
         // than Pi/2, invert the velocity and turn the wheel to a closer angle
         // Math.atan2(y, x) computes the angle to a given point from the x-axis
-        if (Math.abs(Math.atan2(Math.sin(angle - currentAngle), Math.cos(angle - currentAngle))) > Math.PI / 2.0) {
+        if (Math.abs((angle - currentAngle)) > (Math.PI / 2.0) && Math.abs((angle - currentAngle)) < (3*Math.PI / 2.0) ) {
             angle += Math.PI;
             angle %= 2.0 * Math.PI;
             // Ensure the value is not negative
@@ -277,6 +277,6 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getPosition(){
-        return new SwerveModulePosition(inversionConstant*driveMotor.getSelectedSensorPosition() * (Units.inchesToMeters(4.0)*Math.PI) / (6.75 * 2048.0), Rotation2d.fromDegrees(rotationEncoder.getAbsolutePosition()+rotationOffset));
+        return new SwerveModulePosition(inversionConstant*driveMotor.getSelectedSensorPosition() * ((Units.inchesToMeters(4.0)*Math.PI) / (6.75 * 2048.0)), Rotation2d.fromDegrees(rotationEncoder.getAbsolutePosition()+rotationOffset));
     }
 }

@@ -145,7 +145,7 @@ public class AutoDriveToWayPoint extends CommandBase {
       SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
       // Drive // x and y is flipped
-      m_swerveDriveSubsystem.setSwerveDrive(xSpeed + feedforward.calculate(odometry.getXVel()), ySpeed + feedforward.calculate(odometry.getYVel()), rotSpeed, true);
+      m_swerveDriveSubsystem.setSwerveDrive(xSpeed + feedforward.calculate(odometry.getXVel()), ySpeed + feedforward.calculate(odometry.getYVel()), 0, rotSpeed, true);
     }
 
     @Override
