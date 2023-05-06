@@ -48,7 +48,7 @@ public class RotateCommand extends CommandBase {
       // SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
       // Drive // yspeed = xspeed  // x speed = y speed. setSwerveDrive is wrong
-      m_swerveDriveSubsystem.setSwerveDrive(0, 0, 0, rotSpeed, false);
+      m_swerveDriveSubsystem.setSwerveDrive(0, 0, rotSpeed, false);
 
   }
 
@@ -58,6 +58,6 @@ public class RotateCommand extends CommandBase {
     }
     @Override
     public void end(boolean interrupted) {
-        m_swerveDriveSubsystem.setSwerveDrive(0, 0, 0, 0, false);
+        m_swerveDriveSubsystem.setSwerveDrive(0, 0, 0, false);
     }
 }

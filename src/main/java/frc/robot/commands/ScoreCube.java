@@ -22,7 +22,6 @@ public class ScoreCube extends SequentialCommandGroup {
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
         m_pivotSubsystem = pivotSubsystem;
-        System.out.println("hello");
         addCommands(
             new InstantCommand(m_pivotSubsystem::highCube, m_pivotSubsystem),
             new InstantCommand(m_telescopingArmSubsystem::scoreCube, m_telescopingArmSubsystem),

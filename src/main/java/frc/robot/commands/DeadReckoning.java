@@ -24,7 +24,7 @@ public class DeadReckoning extends CommandBase{
     @Override
     public void execute() {
         timer.start();
-        m_SwerveDriveSubsystem.setSwerveDrive(-X_Vel, -Y_Vel, 0, 0, true);
+        m_SwerveDriveSubsystem.setSwerveDrive(-X_Vel, -Y_Vel, 0, true);
     }
 
     @Override
@@ -33,6 +33,6 @@ public class DeadReckoning extends CommandBase{
     }
     @Override
     public void end(boolean interrupted) {
-        m_SwerveDriveSubsystem.setSwerveDrive(0, 0, 0, 0, true);
+        m_SwerveDriveSubsystem.setSwerveDrive(0, 0, 0, true);
     }
 }

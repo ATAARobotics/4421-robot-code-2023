@@ -73,7 +73,7 @@ public class RobotContainer {
         m_swerveDriveSubsystem.setDefaultCommand(
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                         joysticks::getYVelocity,
-                        joysticks::getHeading, joysticks::getRotationVelocity, this::getSwerveSpeed,
+                        joysticks::getRotationVelocity, joysticks::getHeading, this::getSwerveSpeed,
                         this::getSwerveSpeedRot));
         // autoChooser
         
@@ -213,7 +213,7 @@ public class RobotContainer {
         //                 joysticks::getRotationVelocity, this::getSwerveSpeed,
         //                 () -> 1)
         // );
-        joysticks.Forward.onTrue(new InstantCommand(() -> {swerveSpeed=Constants.MAXIMUM_SPEED; swerveSpeedRot=Constants.MAXIMUM_ROTATIONAL_SPEED;}))
+        joysticks.Forward.onTrue(new InstantCommand(() -> {swerveSpeed=Constants.MAXIMUM_SPEED; swerveSpeedRot=Constants.MAXIMUM_ROTATIONAL_SPEED*3;}))
         .onFalse(new InstantCommand(() -> {swerveSpeed=Constants.SLOW_MAXIMUM_SPEED; swerveSpeedRot=Constants.SLOW_MAXIMUM_ROTATIONAL_SPEED;}));
 
         joysticks.LightSwitch.onTrue(new InstantCommand(m_lightingSubsystem::FlipLights));

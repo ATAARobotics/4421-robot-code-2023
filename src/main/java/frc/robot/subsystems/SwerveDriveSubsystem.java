@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,7 +54,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     private double initialPoseX;
     private double initialPoseY;
-    private final PIDController rotController = new PIDController(3.0, 0.15, 0);
+    private final PIDController fastHeading = new PIDController(5, 0, 0);
+    private final PIDController slowHeading = new PIDController(5, 0, 0);
+    private final PIDController alignmentHeading = new PIDController(0.15, 0.3, 0);
+    
+    private final PIDController[] HeadingPIDS = {fastHeading, slowHeading, alignmentHeading};
+
+    private final PIDController getError = new PIDController(1, 0, 0);
+
 
     // Safety speed override, this *shouldn't* ever be true
     private boolean safetyDisable = false;
@@ -113,7 +121,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Set up odometry
         odometry = new SwerveOdometry(swerveKinematics, new Rotation2d(pigeon.getYaw()), getModulePositions(), pigeon, alliance);
-        rotController.enableContinuousInput(-Math.PI, Math.PI);
+        for (PIDController PID: HeadingPIDS) {
+            PID.enableContinuousInput(-Math.PI, Math.PI);
+        }
+        HeadingPIDS[0].setTolerance(Units.degreesToRadians(30));
+        HeadingPIDS[1].setTolerance(Units.degreesToRadians(5));
+        HeadingPIDS[2].setTolerance(Units.degreesToRadians(0));
 
         // Initialize the pose
         pose = initialPose;
@@ -130,20 +143,47 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     /**
      * This function should be run during every teleop and auto periodic
      */
-    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationHeading, double rotationVelocity, boolean useOdometry) {
+    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry, double rotationHeading, Boolean UserotationHeading) {
         this.useOdometry = useOdometry;
-        rotController.setSetpoint(rotationHeading);
-        double RotSpeed = MathUtil.clamp(-rotController.calculate(odometry.getPoseMeters().getRotation().getRadians()), -10, 10);
+        for (PIDController PID: HeadingPIDS) {
+            PID.setSetpoint(rotationHeading);
+        }
         SmartDashboard.putNumber("Teleop Rot Target", rotationHeading);
-        SmartDashboard.putNumber("Teleop Rot Speed", RotSpeed);
-        if (fieldOriented) {
-            this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, RotSpeed, Rotation2d.fromDegrees(pigeon.getYaw()));
+
+        if (this.fieldOriented) {
+            if(!UserotationHeading){
+                this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, rotationVelocity, Rotation2d.fromDegrees(pigeon.getYaw()));
+            }
+            else{
+
+                //System.out.println(Math.abs(getError.calculate(odometry.getPoseMeters().getRotation().getRadians(), rotationHeading)));
+                double HeadingSpeed = MathUtil.clamp(-fastHeading.calculate(Rotation2d.fromDegrees(pigeon.getYaw()).getRadians()), -Math.PI*10, Math.PI*10) * Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2))>= 10 ? 1:0.5 ;
+                if(!fastHeading.atSetpoint()){
+                    System.out.println("Fast");
+                    this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, HeadingSpeed, Rotation2d.fromDegrees(pigeon.getYaw() - (HeadingSpeed * 360 * 0.02)));
+                }
+                else{
+                    HeadingSpeed = MathUtil.clamp(-slowHeading.calculate(Rotation2d.fromDegrees(pigeon.getYaw()).getRadians()), -Math.PI*4, Math.PI*4);
+                    if(!slowHeading.atSetpoint()){
+                        System.out.println("Less Fast");
+                        this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, HeadingSpeed, Rotation2d.fromDegrees(pigeon.getYaw()));
+                    }
+                    else{
+                        System.out.println("Slow");
+                        HeadingSpeed = MathUtil.clamp(-alignmentHeading.calculate(Rotation2d.fromDegrees(pigeon.getYaw()).getRadians()), -Math.PI, Math.PI);
+                        this.moduleSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, HeadingSpeed, Rotation2d.fromDegrees(pigeon.getYaw()));
+                    }
+                }
+            }
         }else{
             this.moduleSpeeds = new ChassisSpeeds(-xVelocity, -yVelocity, rotationVelocity);
         }
         
     }
-
+    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
+        setSwerveDrive(xVelocity, yVelocity, rotationVelocity, useOdometry, 0, false);
+        
+    }
     public SwerveOdometry getOdometry() {
         return this.odometry;
     }

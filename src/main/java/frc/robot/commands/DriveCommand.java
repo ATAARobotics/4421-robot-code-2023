@@ -42,7 +42,7 @@ public class DriveCommand extends CommandBase {
         double ySpeed = MathUtil.clamp(ySupplier.getAsDouble() * speedSupplier.getAsDouble(), -Constants.MAXIMUM_SPEED, Constants.MAXIMUM_SPEED);
         double rotationSpeed = MathUtil.clamp(rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble(), -Constants.MAXIMUM_ROTATIONAL_SPEED, Constants.MAXIMUM_ROTATIONAL_SPEED);
 
-        swerveSubsystem.setSwerveDrive(xSpeed, ySpeed, HeadingSupplier.getAsDouble(),  rotationSpeed, true);
+        swerveSubsystem.setSwerveDrive(xSpeed, ySpeed,  rotationSpeed, true, HeadingSupplier.getAsDouble(), true);
     }
 
 }

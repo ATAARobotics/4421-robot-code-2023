@@ -22,7 +22,6 @@ public class ScoreCone extends SequentialCommandGroup {
         m_intakeSubsystem = intakeSubsystem;
         m_telescopingArmSubsystem = telescopingArmSubsystem;
         m_pivotSubsystem = pivotSubsystem;
-        System.out.println("hello");
         addCommands(
             new InstantCommand(() -> System.out.println("score cone")),
             new InstantCommand(m_pivotSubsystem::downPosition, m_pivotSubsystem),
