@@ -1,193 +1,83 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.*;
-import frc.robot.commands.auto.*;
-import frc.robot.subsystems.*;
+import static edu.wpi.first.units.Units.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import org.photonvision.PhotonCamera;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    // The initial position of the robot relative to the field. This is measured
-    // from the left-hand corner of the field closest to the driver, from the
-    // driver's perspective
+    /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    public Translation2d initialPosition = new Translation2d(0, 0);
+    private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    // Create hardware objects
-    private Pigeon pigeon;
-    private final OI joysticks = new OI();
+    private final CommandXboxController joystick = new CommandXboxController(0);
 
-    private final SwerveDriveSubsystem m_swerveDriveSubsystem;
-    private final PivotSubsystem m_pivotSubsystem;
-    private final IntakeSubsystem m_intakeSubsystem;
-    private final TelescopingArmSubsystem m_telescopingSubsystem;
-    private final LightingSubsystem mLightingSubsystem;
-    // Auto Stuff
-    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    private double swerveSpeed = Constants.SLOW_MAXIMUM_SPEED;
-
-    public RobotContainer(Alliance alliance) {
-        // Hardware-based objects
-        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        pigeon = new Pigeon();
-        
-        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore", alliance);
-        // new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry(), m_swerveDriveSubsystem);
-       
-        m_intakeSubsystem = new IntakeSubsystem();
-        m_pivotSubsystem = new PivotSubsystem();
-        m_telescopingSubsystem = new TelescopingArmSubsystem();
-        mLightingSubsystem = new LightingSubsystem();
-
-        m_swerveDriveSubsystem.setBrakes(true);
-
-        m_swerveDriveSubsystem.setDefaultCommand(
-                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                        joysticks::getYVelocity,
-                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                        () -> 1));
-        // autoChooser
-        
-        // Red Autos
-        autoChooser.setDefaultOption("RedLeaderOverBack", new RedLeaderOverBack(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("RedLeaderBalance", new RedLeaderBalance(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("RedLeftDeadReckoning", new RedLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("RedRightReckoning", new RedRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        
-        // Red + Odometry Autos
-        autoChooser.addOption("RedOdo21Auto", new RedOdo21Auto(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        autoChooser.addOption("Red2PieceRight", new Red2PieceRight(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("RedLeftStack", new RedLeftStack(m_swerveDriveSubsystem, m_intakeSubsystem));
-        // autoChooser.addOption("RedRightStack", new RedRightStack(m_swerveDriveSubsystem, m_intakeSubsystem));
-        // autoChooser.addOption("RedLeaderWGP", new RedLeaderWGP(m_swerveDriveSubsystem, m_intakeSubsystem));
-        
-        // Blue Autos
-        autoChooser.addOption("Teammate", new Teammate(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("BlueLeftDeadReckoning", new BlueLeftDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-        // autoChooser.addOption("BlueRightDeadReckoning", new BlueRightDeadReckoning(m_swerveDriveSubsystem, m_intakeSubsystem, m_telescopingSubsystem, m_pivotSubsystem));
-
-        // Testing Autos
-        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
-        // autoChooser.addOption("Test", new Test(m_swerveDriveSubsystem));
-
-        autoChooser.addOption("SquareWithRot", new SquareWithRot(m_swerveDriveSubsystem));
-        autoChooser.addOption("SquareWithOtherRot", new SquareWithOtherRot(m_swerveDriveSubsystem));
-
-        // Do Nothing Auto
-        autoChooser.addOption("Do Nothing", null);
-
-        SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        LiveWindow.disableAllTelemetry();
-
+    public RobotContainer() {
         configureBindings();
     }
 
-
     private void configureBindings() {
-        joysticks.IntakeIn.or(new Trigger(() -> joysticks.RotIntake.getAsBoolean())).whileTrue(new RunCommand(() -> m_intakeSubsystem.runIntake(joysticks.getOuttake() - joysticks.getOuttakeInversed())))
-        .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
-
-        joysticks.IntakeOut.whileTrue(new RunCommand(() -> m_intakeSubsystem.runIntakeReversed(joysticks.getOuttake() - joysticks.getOuttakeInversed())))
-        .onFalse(new InstantCommand(m_intakeSubsystem::stopIntake));
-       
-        joysticks.PivotUp.whileTrue(new StartEndCommand(m_pivotSubsystem::up, m_pivotSubsystem::stop, m_pivotSubsystem));
-        joysticks.DownToStop.whileTrue(new StartEndCommand(m_pivotSubsystem::storedPosition, m_pivotSubsystem::stop, m_pivotSubsystem))
-        .whileTrue(new StartEndCommand(() -> m_telescopingSubsystem.scoreCone(joysticks.getOuttake()), m_telescopingSubsystem::stop, m_telescopingSubsystem));
-        joysticks.PivotDown.whileTrue(new StartEndCommand(m_pivotSubsystem::down, m_pivotSubsystem::stop, m_pivotSubsystem));
-        joysticks.OverridePivotUp.whileTrue(new RunCommand(m_pivotSubsystem::forceup, m_pivotSubsystem))
-        .onFalse(new InstantCommand(m_pivotSubsystem::overridestop, m_pivotSubsystem));
-
-        joysticks.TelescopingOut.whileTrue(new RunCommand(m_telescopingSubsystem::out, m_telescopingSubsystem))
-        .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
-        joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
-        .onFalse(new RunCommand(m_telescopingSubsystem::stop, m_telescopingSubsystem));
-
-        joysticks.ResetOdo.onTrue(new InstantCommand(m_swerveDriveSubsystem::resetPosition));
-        // joysticks.TelescopingIn.whileTrue(new RunCommand(m_telescopingSubsystem::in, m_telescopingSubsystem))
-        // .onFalse(new InstantCommand(m_telescopingSubsystem::stop));
-
-        joysticks.SlideLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0.1,
-                        () -> 0,
-                        () -> 0, () -> 1,
-                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                        joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                                        () -> 1));
-        joysticks.SlideRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> -0.1,
-                        () -> 0,
-                        () -> 0, () -> 1,
-                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                        joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                                        () -> 1));
-        joysticks.RotateLeft.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> -0.5,
-                        () -> 0,
-                        () -> 0, () -> 1,
-                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                        joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                                        () -> 1));
-        joysticks.RotateRight.onTrue(new DriveCommand(m_swerveDriveSubsystem, () -> 0,
-                        () -> -0.1,
-                        () -> 0, () -> 1,
-                        () -> 1)).onFalse(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                                        joysticks::getYVelocity,
-                                        joysticks::getRotationVelocity, this::getSwerveSpeed,
-                                        () -> 1));   
-        joysticks.AutoBalance.whileTrue(
-                new AutoBalance(m_swerveDriveSubsystem, true)
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        drivetrain.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
         );
-        joysticks.Forward.onTrue(new InstantCommand(() -> swerveSpeed=Constants.MAXIMUM_SPEED))
-        .onFalse(new InstantCommand(() -> swerveSpeed=Constants.SLOW_MAXIMUM_SPEED));
 
-        joysticks.LightSwitch.onTrue(new InstantCommand(mLightingSubsystem::FlipLights));
+        // Idle while the robot is disabled. This ensures the configured
+        // neutral mode is applied to the drive motors while disabled.
+        final var idle = new SwerveRequest.Idle();
+        RobotModeTriggers.disabled().whileTrue(
+            drivetrain.applyRequest(() -> idle).ignoringDisable(true)
+        );
 
+        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        ));
+
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+        // reset the field-centric heading on left bumper press
+        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    public OI getOI() {
-        return joysticks;
-    }
-
-    public SwerveDriveSubsystem getSwerveDriveSubsystem() {
-        return m_swerveDriveSubsystem;
-    }
-
-   
-
-    public SendableChooser<Command> getAutonomousChooser() {
-        return autoChooser;
-    }
-
-    public PivotSubsystem getPivotSubsystem(){
-        return m_pivotSubsystem;
-    }
-
-    public TelescopingArmSubsystem getTelescopingArmSubsystem(){
-        return m_telescopingSubsystem;
-    }
-
-    public double getSwerveSpeed(){
-        return swerveSpeed;
+    public Command getAutonomousCommand() {
+        return Commands.print("No autonomous command configured");
     }
 }
