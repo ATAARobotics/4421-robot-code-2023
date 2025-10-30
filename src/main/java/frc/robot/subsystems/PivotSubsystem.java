@@ -117,12 +117,12 @@ public class PivotSubsystem extends SubsystemBase{
         setPoint = angle;
     }
 
-    public void upDeg() {
-        setPoint+= 0.01;
+    public void upByTick() {
+        setPoint += 0.01;
     }
 
-    public void downDeg() {
-        setPoint-= 0.01;
+    public void downByTick() {
+        setPoint -= 0.01;
     }
 
     @Override

@@ -60,8 +60,12 @@ public class RobotContainer {
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
-        joystick.x().onTrue(new InstantCommand(m_PivotSubsystem::upDeg));
-        joystick.y().onTrue(new InstantCommand(m_PivotSubsystem::downDeg));
+
+        // PIVOT
+        joystick.x().onTrue(new InstantCommand(m_PivotSubsystem::upByTick));
+        joystick.y().onTrue(new InstantCommand(m_PivotSubsystem::downByTick));
+
+
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
