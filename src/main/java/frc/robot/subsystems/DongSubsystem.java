@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -10,7 +11,7 @@ import com.ctre.phoenix6.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-public class PivotSubsystem extends SubsystemBase{
+public class DongSubsystem extends SubsystemBase{
 
     TalonFX FrontLeft;
     TalonFX FrontRight;
@@ -27,7 +28,14 @@ public class PivotSubsystem extends SubsystemBase{
 
     double minAngle;
     double maxAngle;
+    PIDController dongController;
 
+    double pidOutput;
+
+    double p;
+    double i;
+    double d;
+    double ff;
     public double setPoint;
     
     public enum Dir{
@@ -35,7 +43,14 @@ public class PivotSubsystem extends SubsystemBase{
         DOWN
     }
 
-    public PivotSubsystem(){
+    public DongSubsystem(){
+        p = 0.5;
+        i = 0.0;
+        d = 0.015;
+        dongController = new PIDController(p, i, d);
+        
+        pidOutput = dongController.calculate(angle);
+
         FrontLeft = new TalonFX((int)Constants.PivotConstants.FrontLeftPivotMotorID, "canivore");
         FrontRight = new TalonFX((int)Constants.PivotConstants.FrontRightPivotMotorID, "canivore");
         RearLeft = new TalonFX((int)Constants.PivotConstants.RearLeftPivotMotorID, "canivore");
@@ -63,6 +78,15 @@ public class PivotSubsystem extends SubsystemBase{
     public void moveDown(){
         moveMotors(Dir.DOWN, Constants.PivotConstants.maxSpeed);
     }
+
+    public void moveUpPID(){
+        
+    }
+
+    public void moveDownPID(){
+
+    }
+
 
     public void moveMotors(Dir dir, double speed){
         if (dir == Dir.UP){

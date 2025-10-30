@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.DongSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -33,7 +33,7 @@ public class RobotContainer {
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
-    private final PivotSubsystem m_PivotSubsystem = new PivotSubsystem();
+    private final DongSubsystem m_DongSubsystem = new DongSubsystem();
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -62,8 +62,8 @@ public class RobotContainer {
         );
 
         // PIVOT
-        joystick.x().onTrue(new InstantCommand(m_PivotSubsystem::upByTick));
-        joystick.y().onTrue(new InstantCommand(m_PivotSubsystem::downByTick));
+        joystick.x().onTrue(new InstantCommand(m_DongSubsystem::upByTick));
+        joystick.y().onTrue(new InstantCommand(m_DongSubsystem::downByTick));
 
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
