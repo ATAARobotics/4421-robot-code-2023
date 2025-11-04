@@ -20,7 +20,7 @@ public class DongSubsystem extends SubsystemBase{
 
     CANcoder encooder;
 
-    boolean LeftInveted;
+    boolean LeftInverted;
     boolean RightInverted;
 
     double angle;
@@ -36,7 +36,9 @@ public class DongSubsystem extends SubsystemBase{
     double i;
     double d;
     double ff;
+    final double ffValue = Constants.PivotConstants.ffValue;
     public double setPoint;
+    public double speed;
     
     public enum Dir{
         UP,
@@ -44,22 +46,22 @@ public class DongSubsystem extends SubsystemBase{
     }
 
     public DongSubsystem(){
-        p = 0.5;
-        i = 0.0;
-        d = 0.015;
+        p = 1.5;
+        i = 0.0001;
+        d = 0.0;
         dongController = new PIDController(p, i, d);
         
         pidOutput = dongController.calculate(angle);
 
-        FrontLeft = new TalonFX((int)Constants.PivotConstants.FrontLeftPivotMotorID, "canivore");
-        FrontRight = new TalonFX((int)Constants.PivotConstants.FrontRightPivotMotorID, "canivore");
-        RearLeft = new TalonFX((int)Constants.PivotConstants.RearLeftPivotMotorID, "canivore");
-        RearRight = new TalonFX((int)Constants.PivotConstants.RearRightPivotMotorID, "canivore");
+        FrontLeft = new TalonFX(Constants.PivotConstants.FrontLeftPivotMotorID, "canivore");
+        FrontRight = new TalonFX(Constants.PivotConstants.FrontRightPivotMotorID, "canivore");
+        RearLeft = new TalonFX(Constants.PivotConstants.RearLeftPivotMotorID, "canivore");
+        RearRight = new TalonFX(Constants.PivotConstants.RearRightPivotMotorID, "canivore");
 
-        LeftInveted = Constants.PivotConstants.leftInverted;
+        LeftInverted = Constants.PivotConstants.leftInverted;
         RightInverted = Constants.PivotConstants.rightInverted;
 
-        encooder = new CANcoder((int)Constants.PivotConstants.EncooderID, "canivore");
+        encooder = new CANcoder(Constants.PivotConstants.EncoderID, "canivore");
 
         tolerance = Constants.PivotConstants.tolerance;
 
@@ -72,32 +74,24 @@ public class DongSubsystem extends SubsystemBase{
     }
 
     public void moveUp(){
-        moveMotors(Dir.UP, Constants.PivotConstants.maxSpeed);
+        moveMotors(Dir.UP, speed);
     }
 
     public void moveDown(){
-        moveMotors(Dir.DOWN, Constants.PivotConstants.maxSpeed);
-    }
-
-    public void moveUpPID(){
-        
-    }
-
-    public void moveDownPID(){
-
+        moveMotors(Dir.DOWN, speed);
     }
 
 
     public void moveMotors(Dir dir, double speed){
         if (dir == Dir.UP){
-            if (LeftInveted && !RightInverted){
+            if (LeftInverted && !RightInverted){
                 FrontLeft.set(-speed);
                 RearLeft.set(-speed);
 
                 FrontRight.set(speed);
                 RearRight.set(speed);
             }
-            else if (RightInverted && !LeftInveted){
+            else if (RightInverted && !LeftInverted){
                 FrontLeft.set(speed);
                 RearLeft.set(speed);
 
@@ -108,14 +102,14 @@ public class DongSubsystem extends SubsystemBase{
                 throw new NotYetBoundException();
             }
         } else if (dir == Dir.DOWN) {
-            if (LeftInveted && !RightInverted){
+            if (LeftInverted && !RightInverted){
                 FrontLeft.set(speed);
                 RearLeft.set(speed);
 
                 FrontRight.set(-speed);
                 RearRight.set(-speed);
             }
-            else if (RightInverted && !LeftInveted){
+            else if (RightInverted && !LeftInverted){
                 FrontLeft.set(-speed);
                 RearLeft.set(-speed);
 
@@ -124,7 +118,7 @@ public class DongSubsystem extends SubsystemBase{
             }
             else {
                 throw new NotYetBoundException();
-            }
+            }                          
         } else {
             throw new NotYetBoundException();
         }
@@ -152,7 +146,26 @@ public class DongSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         angle = encooder.getAbsolutePosition().getValueAsDouble();
-    
+        double ffangle;
+        if (angle < -0.1) {
+            ffangle = 0;
+        } else {
+            ffangle = angle;
+        }
+        ff = ffValue * Math.cos(ffangle * (Math.PI/2) * (1/maxAngle));
+        speed = dongController.calculate(angle, setPoint);
+        if (speed >= 0) {
+            speed += ff;
+        }
+        
+        if (Math.abs(speed) > Constants.PivotConstants.maxSpeed) {
+            if (speed > 0) {
+                speed = Constants.PivotConstants.maxSpeed;
+            } else {
+                speed = -Constants.PivotConstants.maxSpeed;
+            }
+        }
+        speed = Math.abs(speed);
         if (setPoint < minAngle) setPoint = minAngle;
         if (setPoint > maxAngle) setPoint = maxAngle;
 
@@ -168,7 +181,7 @@ public class DongSubsystem extends SubsystemBase{
             moveUp();
         }
     
-        System.out.println("=========== ENCODER VALUE: " + angle + " | SETPOINT: " + setPoint + " ===========");
+        System.out.println("=========== ENCODER VALUE: " + angle + " | SETPOINT: " + setPoint + " ===========" + "\n\n\n Speed " + speed + "\n\n\n");
         }   
 }
     
