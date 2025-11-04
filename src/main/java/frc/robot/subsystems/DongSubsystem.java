@@ -18,7 +18,7 @@ public class DongSubsystem extends SubsystemBase{
     TalonFX RearRight;
     TalonFX RearLeft;
 
-    CANcoder encooder;
+    CANcoder encoder;
 
     boolean LeftInverted;
     boolean RightInverted;
@@ -32,9 +32,6 @@ public class DongSubsystem extends SubsystemBase{
 
     double pidOutput;
 
-    double p;
-    double i;
-    double d;
     double ff;
     final double ffValue = Constants.PivotConstants.ffValue;
     public double setPoint;
@@ -46,10 +43,8 @@ public class DongSubsystem extends SubsystemBase{
     }
 
     public DongSubsystem(){
-        p = 1.5;
-        i = 0.0001;
-        d = 0.0;
-        dongController = new PIDController(p, i, d);
+
+        dongController = new PIDController(Constants.PivotConstants.p, Constants.PivotConstants.i, Constants.PivotConstants.d);
         
         pidOutput = dongController.calculate(angle);
 
@@ -61,14 +56,14 @@ public class DongSubsystem extends SubsystemBase{
         LeftInverted = Constants.PivotConstants.leftInverted;
         RightInverted = Constants.PivotConstants.rightInverted;
 
-        encooder = new CANcoder(Constants.PivotConstants.EncoderID, "canivore");
+        encoder = new CANcoder(Constants.PivotConstants.EncoderID, "canivore");
 
         tolerance = Constants.PivotConstants.tolerance;
 
         minAngle = Constants.PivotConstants.minAngle;
         maxAngle = Constants.PivotConstants.maxAngle;
 
-        angle = encooder.getAbsolutePosition().getValueAsDouble();
+        angle = encoder.getAbsolutePosition().getValueAsDouble();
         setPoint = angle;
 
     }
@@ -145,10 +140,10 @@ public class DongSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        angle = encooder.getAbsolutePosition().getValueAsDouble();
+        angle = encoder.getAbsolutePosition().getValueAsDouble();
         double ffangle;
-        if (angle < -0.1) {
-            ffangle = 0;
+        if (angle < Constants.PivotConstants.minAngle) {
+            ffangle = -0.01;
         } else {
             ffangle = angle;
         }
