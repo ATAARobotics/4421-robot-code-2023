@@ -151,6 +151,14 @@ public class DongSubsystem extends SubsystemBase{
         setPoint -= 0.01;
     }
 
+    public void upByAmount(double joystickValue){
+        setPoint += joystickValue / 50;
+    }
+
+    public void downByAmount(double joystickValue){
+        setPoint -= joystickValue / 50;
+    }
+
     @Override
     public void periodic() {
         // Update PID values from SmartDashboard
@@ -179,8 +187,12 @@ public class DongSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Dong Setpoint", setPoint);
         SmartDashboard.putNumber("Dong Speed", speed);
         SmartDashboard.putNumber("Dong Max Speed", Constants.PivotConstants.maxSpeed);
+        SmartDashboard.putNumber("Dong Angle", angle);
 
         angle = encoder.getAbsolutePosition().getValueAsDouble();
+
+        if (setPoint < minAngle) setPoint = minAngle;
+        if (setPoint > maxAngle) setPoint = maxAngle;
 
         double ffangle;
         if (angle < Constants.PivotConstants.minAngle) {
@@ -202,8 +214,7 @@ public class DongSubsystem extends SubsystemBase{
             }
         }
         speed = Math.abs(speed);
-        if (setPoint < minAngle) setPoint = minAngle;
-        if (setPoint > maxAngle) setPoint = maxAngle;
+        
 
         if (Math.abs(angle - setPoint) <= tolerance) {
             stopMotors();
