@@ -9,7 +9,7 @@ public class Constants {
 
         public static final int EncoderID = 35;
 
-        public static final double maxSpeed = 0.40;
+        public static final double maxSpeed = 0.60;
         public static final double tolerance = 0.0;
 
         public static final double maxAngle = 0.241455;
@@ -20,8 +20,8 @@ public class Constants {
 
         public static final double ffValue = 0.015;
         
-        public static final double p = 1.5;
-        public static final double i = 0.0001;
+        public static final double p = 2.5;
+        public static final double i = 0.00025;
         public static final double d = 0;
     }    
 }

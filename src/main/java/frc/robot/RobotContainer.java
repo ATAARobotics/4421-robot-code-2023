@@ -62,8 +62,8 @@ public class RobotContainer {
         );
 
         // PIVOT
-        joystick.x().onTrue(new InstantCommand(m_DongSubsystem::upByTick));
-        joystick.y().onTrue(new InstantCommand(m_DongSubsystem::downByTick));
+        joystick.y().onTrue(new InstantCommand(m_DongSubsystem::upByTick));
+        joystick.x().onTrue(new InstantCommand(m_DongSubsystem::downByTick));
 
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));

@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -28,7 +30,6 @@ public class DongSubsystem extends SubsystemBase{
 
     double minAngle;
     double maxAngle;
-    PIDController dongController;
 
     double pidOutput;
 
@@ -36,16 +37,28 @@ public class DongSubsystem extends SubsystemBase{
     final double ffValue = Constants.PivotConstants.ffValue;
     public double setPoint;
     public double speed;
+
+    // double tempP = 1.5;
+    // double tempI = 0.0001;
+    // double tempD = 0.0;
+
+    // PIDController dongController = new PIDController(
+    //     SmartDashboard.getNumber("Dong P", tempP),
+    //     SmartDashboard.getNumber("Dong I", tempI),
+    //     SmartDashboard.getNumber("Dong D", tempD)
+    // );
+    PIDController dongController = new PIDController(
+        Constants.PivotConstants.p,
+        Constants.PivotConstants.i,
+        Constants.PivotConstants.d
+    );
     
     public enum Dir{
         UP,
         DOWN
     }
 
-    public DongSubsystem(){
-
-        dongController = new PIDController(Constants.PivotConstants.p, Constants.PivotConstants.i, Constants.PivotConstants.d);
-        
+    public DongSubsystem(){        
         pidOutput = dongController.calculate(angle);
 
         FrontLeft = new TalonFX(Constants.PivotConstants.FrontLeftPivotMotorID, "canivore");
@@ -140,19 +153,47 @@ public class DongSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+        // Update PID values from SmartDashboard
+        // double newP = SmartDashboard.getNumber("Dong P", tempP);
+        // double newI = SmartDashboard.getNumber("Dong I", tempI);
+        // double newD = SmartDashboard.getNumber("Dong D", tempD);
+
+        // if (newP != tempP || newI != tempI || newD != tempD) {
+        //     tempP = newP;
+        //     tempI = newI;
+        //     tempD = newD;
+        //     dongController.setP(tempP);
+        //     dongController.setI(tempI);
+        //     dongController.setD(tempD);
+        // }
+
+        // SmartDashboard.putNumber("Dong P", tempP);
+        // SmartDashboard.putNumber("Dong I", tempI);
+        // SmartDashboard.putNumber("Dong D", tempD);
+
+        SmartDashboard.putNumber("Dong P", Constants.PivotConstants.p);
+        SmartDashboard.putNumber("Dong I", Constants.PivotConstants.i);
+        SmartDashboard.putNumber("Dong D", Constants.PivotConstants.d);
+
+
+        SmartDashboard.putNumber("Dong Setpoint", setPoint);
+        SmartDashboard.putNumber("Dong Speed", speed);
+        SmartDashboard.putNumber("Dong Max Speed", Constants.PivotConstants.maxSpeed);
+
         angle = encoder.getAbsolutePosition().getValueAsDouble();
+
         double ffangle;
         if (angle < Constants.PivotConstants.minAngle) {
             ffangle = -0.01;
         } else {
             ffangle = angle;
         }
-        ff = ffValue * Math.cos(ffangle * (Math.PI/2) * (1/maxAngle));
+        ff = ffValue * Math.cos(ffangle * (Math.PI / 2) * (1 / maxAngle));
         speed = dongController.calculate(angle, setPoint);
         if (speed >= 0) {
             speed += ff;
         }
-        
+
         if (Math.abs(speed) > Constants.PivotConstants.maxSpeed) {
             if (speed > 0) {
                 speed = Constants.PivotConstants.maxSpeed;
@@ -175,8 +216,9 @@ public class DongSubsystem extends SubsystemBase{
         } else if (angle < maxAngle && angle < setPoint - tolerance) {
             moveUp();
         }
-    
+
         System.out.println("=========== ENCODER VALUE: " + angle + " | SETPOINT: " + setPoint + " ===========" + "\n\n\n Speed " + speed + "\n\n\n");
-        }   
+        //System.out.println("=========== PID: ============== \n \n \n " + tempP + " | " + tempI + " | " + tempD + " ===========" + "\n\n\n");
+    } 
 }
     
