@@ -143,12 +143,16 @@ public class DongSubsystem extends SubsystemBase{
         setPoint = angle;
     }
 
-    public void upByTick() {
-        setPoint += 0.01;
+    public void upAll() {
+        setPoint = maxAngle;
     }
 
-    public void downByTick() {
-        setPoint -= 0.01;
+    public void upHalf() {
+        setPoint = (maxAngle + minAngle) / 2;
+    }
+
+    public void down() {
+        setPoint = minAngle;
     }
 
     public void upByAmount(double joystickValue){

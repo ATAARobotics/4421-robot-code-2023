@@ -63,8 +63,9 @@ public class RobotContainer {
         );
 
         // PIVOT
-        joystick.y().onTrue(new InstantCommand(m_DongSubsystem::upByTick));
-        joystick.x().onTrue(new InstantCommand(m_DongSubsystem::downByTick));
+        joystick.povUp().onTrue(new InstantCommand(m_DongSubsystem::upAll));
+        joystick.povLeft().onTrue(new InstantCommand(m_DongSubsystem::upHalf));
+        joystick.povDown().onTrue(new InstantCommand(m_DongSubsystem::down));
 
         joystick.leftTrigger(0.05).whileTrue(new RepeatCommand(new InstantCommand(() -> m_DongSubsystem.upByAmount(joystick.getLeftTriggerAxis()))));
         joystick.rightTrigger(0.05).whileTrue(new RepeatCommand(new InstantCommand(() -> m_DongSubsystem.downByAmount(joystick.getRightTriggerAxis()))));
